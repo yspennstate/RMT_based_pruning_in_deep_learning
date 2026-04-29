@@ -228,9 +228,9 @@ A complete s=0.05 → 0.70 schedule (14 cycles, including stage-1 magnitude pref
 If you use this code please cite the paper:
 
 ```bibtex
-@article{ser_pruning_2026,
+@article{berlyand2026spectral,
   title  = {Spectral Edge Reallocation: Random Matrix Theory--Guided Pruning of Vision Transformers and Convolutional Networks},
-  author = {Authors},
+  author = {Berlyand, Leonid and Bourdais, Theo and Owhadi, Houman and Shmalo, Yitzchak},
   year   = {2026},
 }
 ```
