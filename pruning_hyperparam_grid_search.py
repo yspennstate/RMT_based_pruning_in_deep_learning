@@ -1,7 +1,7 @@
 """
-Overnight grid search for RMT pruning hyperparameters.
+Pruning hyperparameter grid search for RMT pruning hyperparameters.
 Dense grid over the best region found by Optuna, plus a wider Optuna
-exploration. Designed to run for ~10 hours unattended.
+exploration. Designed for long unattended runs (~10 hours on 1× A40).
 
 Results saved incrementally to hp_results/grid_*.json so nothing is lost
 if the process is interrupted.
@@ -286,7 +286,7 @@ def phase2_optuna_refine(start_time, grid_best):
     study = optuna.create_study(
         direction='maximize',
         sampler=optuna.samplers.TPESampler(seed=999),
-        study_name='overnight_refine'
+        study_name='long unattended_refine'
     )
 
     best_score = 0
@@ -393,7 +393,7 @@ def final_summary():
             for d in all_results[:20]
         ]
     }
-    with open(os.path.join(RESULTS_DIR, "overnight_master_summary.json"), 'w') as f:
+    with open(os.path.join(RESULTS_DIR, "long unattended_master_summary.json"), 'w') as f:
         json.dump(master, f, indent=2)
 
     best = all_results[0]
@@ -408,7 +408,7 @@ def final_summary():
 # ============================================================
 if __name__ == "__main__":
     start_time = time.time()
-    print(f"Overnight grid search starting at {time.strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Pruning hyperparameter grid search starting at {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Will run for up to {MAX_RUNTIME_HOURS} hours")
     print(f"Device: {DEVICE}")
 

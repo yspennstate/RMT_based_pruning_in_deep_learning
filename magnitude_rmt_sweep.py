@@ -11,7 +11,7 @@ NO singular value decomposition is performed at any point. The only RMT
 input is σ₊ from the pre-computed cache at rmt_cache/rmt_splus_metrics.json.
 
 Infrastructure: atomic saves, resume-from-checkpoint, 50% GPU/CPU cap,
-BelowNormal priority. Same crash-safety as overnight_sweep.py.
+BelowNormal priority. Same crash-safety as pruning_method_comparison_sweep.py.
 
 Usage:
   python magnitude_rmt_sweep.py                    # full grid

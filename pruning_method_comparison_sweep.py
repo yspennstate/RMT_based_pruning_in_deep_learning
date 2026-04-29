@@ -1,12 +1,12 @@
 """
-Overnight comprehensive pruning sweep.
+Pruning method comparison sweep.
 
 Compares multiple pruning methods (magnitude baseline + RMT-grounded variants)
-across a sweep of target sparsities. Designed to run unattended for ~4 hours
+across a sweep of target sparsities. Designed to run unattended for ~4 hours on 1× A40
 with maximum crash safety:
 
   * Atomic incremental saves (write .tmp, os.replace) after every cell.
-  * Resume-from-checkpoint: if `overnight_sweep_results.json` exists, any
+  * Resume-from-checkpoint: if `pruning_method_comparison_results.json` exists, any
     (method, sparsity) cell already filled is skipped — so a crash plus
     relaunch picks up exactly where it left off, no work lost.
   * Per-cell try/except so a bad cell logs its error and the sweep continues.
@@ -34,12 +34,12 @@ Methods compared (rows of the grid):
 Target sparsities: 5%, 10%, 15%, ..., 70% (14 points).
 
 Usage:
-  python overnight_sweep.py                    # full grid
-  python overnight_sweep.py --methods magnitude per_weight_random
-  python overnight_sweep.py --sparsities 30 40 50
-  python overnight_sweep.py --resume-only      # only fill missing cells
+  python long unattended_sweep.py                    # full grid
+  python long unattended_sweep.py --methods magnitude per_weight_random
+  python long unattended_sweep.py --sparsities 30 40 50
+  python long unattended_sweep.py --resume-only      # only fill missing cells
 
-Output: optuna_run/rmt_cache/overnight_sweep_results.json
+Output: optuna_run/rmt_cache/pruning_method_comparison_results.json
 """
 
 import argparse
@@ -82,9 +82,9 @@ from theory_pruning import (  # noqa: E402
 
 ALPHA, BETA, GOF = 0.25, 0.8, 1
 HERE = Path(__file__).parent
-OUT_FILE = HERE / "rmt_cache" / "overnight_sweep_results.json"
+OUT_FILE = HERE / "rmt_cache" / "pruning_method_comparison_results.json"
 OUT_FILE.parent.mkdir(exist_ok=True)
-LOG_FILE = HERE / "overnight_sweep_log.txt"
+LOG_FILE = HERE / "long unattended_sweep_log.txt"
 
 DEFAULT_SPARSITIES = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40,
                       0.45, 0.50, 0.55, 0.60, 0.65, 0.70]
@@ -468,7 +468,7 @@ def main():
     else:
         sparsities = [s / 100.0 if s > 1.0 else s for s in args.sparsities]
 
-    log(f"=== Overnight sweep starting ===")
+    log(f"=== Long unattended sweep starting ===")
     log(f"methods:    {args.methods}")
     log(f"sparsities: {[f'{s*100:.0f}%' for s in sparsities]}")
 

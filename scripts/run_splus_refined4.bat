@@ -1,6 +1,6 @@
 @echo off
 REM ================================================================
-REM Refined4 sweep — autonomous overnight run.
+REM Refined4 sweep — autonomous long unattended run.
 REM Waits for refined3 to complete, then runs 3 phases sequentially.
 REM Total compute: ~6h + up to ~1.2h waiting = fits under 8h window.
 REM

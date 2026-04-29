@@ -11,7 +11,7 @@ Each method is tested with and without Haar z=0.20 SV-cleanup as preprocessing
 at every sparsity in {5, 10, ..., 70}%.
 
 Crash-safe: atomic incremental saves, resume from checkpoint, per-cell
-try/except. Designed to run unattended overnight.
+try/except. Designed to run unattended long unattended.
 
 Output: optuna_run/rmt_cache/rmt_magnitude_sweep_results.json
 Stats:  optuna_run/rmt_cache/rmt_layer_stats.json (computed once, cached)
@@ -48,7 +48,7 @@ from theory_pruning import (  # noqa: E402
     evaluate_now,
     DEVICE,
 )
-from overnight_sweep import (  # noqa: E402
+from pruning_method_comparison_sweep import (  # noqa: E402
     apply_magnitude,
     haar_clean_only,
     measure_actual_sparsity,

@@ -15,6 +15,16 @@ The repository contains every method evaluated in the paper:
 
 Code currently used to produce the validated checkpoints in the paper is preserved as-is — file names retain their internal ("v8", "until_drop", etc.) lineage, but the table below maps every file to the paper-facing method name.
 
+## Relationship to the prior repository
+
+A predecessor of this code is the public repo **[yspennstate/RMT_pruning_ViT](https://github.com/yspennstate/RMT_pruning_ViT)**, which implements the Marchenko–Pastur–based ViT-Base pruning algorithm of Berlyand, Bourdais, Owhadi & Shmalo (2022). The current repository is a strict superset of that code:
+
+1. **Inherited modules.** `src/RMT.py`, `src/SplittableLayers.py`, `src/training.py`, `src/utils.py` are byte-identical with the prior repo. `src/pruning.py` and `src/validation.py` are extended with reservoir / reinsert primitives and a multi-resolution validation path (no behavioural change to the original primitives). The two top-level entry scripts `prune.py` and `fine_tune.py` are also identical with the prior repo, so the headline ViT-Base figure of Berlyand et al. reproduces exactly.
+2. **What is new.** The protocols studied in the current paper — SER, Hybrid Magnitude–SER, drop-threshold variant (from-scratch and seeded), Spectral Edge Budgeting / S+ with a Haar bulk model, the multi-architecture queue runners, and the layer-aware adaptive RMT controller in `adaptive_rmt/` — are all new. They sit on top of the inherited library; they do not replace any of it.
+3. **What changed in the inherited code.** Hardcoded paths and the prior repo’s baked-in HuggingFace token have been removed and replaced by environment variables (`HF_TOKEN`, `RMT_OPTUNA_RUN`, `RMT_CACHE`). No algorithmic changes.
+
+If you only want to reproduce the original ViT-Base figure, the prior repo is smaller and self-contained. If you want the full multi-architecture protocol-comparison story (Tables 1 and 2 of the new paper), use this repository.
+
 ---
 
 ## File map (paper method → code)
@@ -64,8 +74,8 @@ Code currently used to produce the validated checkpoints in the paper is preserv
 | Iterative “growing a” schedule | `iterative_growing_a.py` |
 | SV-decides-when-to-stop iterative variant | `iterative_sv_decides.py` |
 | Sweep analyzer | `analyze_sweep.py` |
-| Long sweep driver | `overnight_grid_search.py` |
-| Alt sweep driver | `overnight_sweep.py` |
+| SEB hyperparameter long-grid driver | `pruning_hyperparam_grid_search.py` |
+| Pruning-method comparison sweep | `pruning_method_comparison_sweep.py` |
 
 ### Spectral Edge Reallocation (SER) ablations
 
@@ -109,16 +119,23 @@ The `adaptive_rmt/` package implements layer-aware RMT budget allocation used by
 
 ### Utility / inherited from the prior RMT-ViT repository
 
-`src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code (separate repo: https://github.com/yspennstate/RMT_pruning_ViT). It is used as a library by the new methods above:
+`src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code, which lives in a separate public repository: **https://github.com/yspennstate/RMT_pruning_ViT** (this repo). The two repositories are deliberately layered:
 
-| Module | Role |
-|---|---|
-| `RMT.py` | Marchenko–Pastur fit, σ+ edge, Tracy-Widom helpers. |
-| `SplittableLayers.py` | Linear/Conv layers that can be split into bulk + signal. |
-| `pruning.py` | Low-level prune / reinsert primitives. |
-| `training.py` | Standard training / fine-tune loop. |
-| `utils.py` | Misc helpers. |
-| `validation.py` | ImageNet validation pass. |
+- The prior repo is the **single-architecture (ViT-Base) implementation** of the original Marchenko–Pastur–based pruning algorithm (Algorithm 3 of the prior paper). It is small, focused, and intended for someone who wants to reproduce the headline ViT-Base figure in 1–2 commands.
+- The current repo is the **multi-architecture / multi-protocol successor.** It re-uses the prior repo’s Marchenko–Pastur, splittable-layer, and validation infrastructure unchanged, and builds the new protocols (SER, Hybrid Magnitude–SER, drop-threshold variant, SEB / S+) on top of that foundation.
+
+The six modules in `src/` are used as a library by every new method:
+
+| Module | Role | Status vs. prior repo |
+|---|---|---|
+| `RMT.py` | Marchenko–Pastur fit, \(\sigma_+\) edge, Tracy–Widom helpers. | Verbatim copy. |
+| `SplittableLayers.py` | Linear/Conv layers that can be split into bulk + signal. | Verbatim copy. |
+| `pruning.py` | Low-level prune / reinsert primitives. | Extended with reservoir / reinsert helpers used by SER (~ +50 lines, no behavioural change to the original primitives). |
+| `training.py` | Standard training / fine-tune loop. | Verbatim copy. |
+| `utils.py` | Misc helpers. | Verbatim copy. |
+| `validation.py` | ImageNet validation pass. | Extended with the multi-resolution / mass-validation paths used by the multi-architecture sweep (~ +45 lines). The HuggingFace token, which was hard-coded in the prior repo, is now read from `$HF_TOKEN`. |
+
+`prune.py` and `fine_tune.py` at the repository root are bit-identical with the prior repo (433 and 100 lines respectively). They give you a one-command repro of the **original** ViT-Base figure (the same plot reproduced in the prior repo's README), which serves as the baseline curve in Table 1 of the new paper.
 
 ### Helpers
 
