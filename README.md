@@ -23,74 +23,74 @@ Code currently used to produce the validated checkpoints in the paper is preserv
 
 | Paper method | File | Notes |
 |---|---|---|
-| **Hybrid Magnitude–SER**, single architecture | `src/hybrid_mag20_then_v8.py` | Run for one architecture, full s=0.05–0.70 schedule. |
-| **Hybrid Magnitude–SER**, single model with `--model` arg | `src/hybrid_mag20_then_v8_model.py` | Same protocol, parameterized by timm checkpoint name. |
-| **Hybrid Magnitude–SER**, multi-arch queue runner | `src/hybrid_mag20_then_v8_model_queue.py` | Used to drive the multi-architecture rows of Table 2 (one process per pod queue). |
-| **Drop-threshold variant**, single model | `src/hybrid_mag_until_drop_then_v8_model.py` | Stops stage-1 when post-FT top-1 drops > 0.7 pp. |
-| **Drop-threshold variant**, queue runner | `src/hybrid_mag_until_drop_then_v8_model_queue.py` | Multi-arch driver for the variant. |
-| **Multi-arch orchestrator** (calls the queue runners) | `src/model_queue_runner.py` | Top-level loop that selects the next model from the per-queue config. |
-| **Multi-arch launcher** (interactive entry) | `src/start_model_queue.py` | Spawns or resumes a queue. |
+| **Hybrid Magnitude–SER**, single architecture | `hybrid_mag20_then_v8.py` | Run for one architecture, full s=0.05–0.70 schedule. |
+| **Hybrid Magnitude–SER**, single model with `--model` arg | `hybrid_mag20_then_v8_model.py` | Same protocol, parameterized by timm checkpoint name. |
+| **Hybrid Magnitude–SER**, multi-arch queue runner | `hybrid_mag20_then_v8_model_queue.py` | Used to drive the multi-architecture rows of Table 2 (one process per pod queue). |
+| **Drop-threshold variant**, single model | `hybrid_mag_until_drop_then_v8_model.py` | Stops stage-1 when post-FT top-1 drops > 0.7 pp. |
+| **Drop-threshold variant**, queue runner | `hybrid_mag_until_drop_then_v8_model_queue.py` | Multi-arch driver for the variant. |
+| **Multi-arch orchestrator** (calls the queue runners) | `model_queue_runner.py` | Top-level loop that selects the next model from the per-queue config. |
+| **Multi-arch launcher** (interactive entry) | `start_model_queue.py` | Spawns or resumes a queue. |
 
 ### Classical magnitude pruning (Appendix “S+ method”)
 
 | Paper method | File |
 |---|---|
-| Classical magnitude pruning sweep | `src/magnitude_rmt_sweep.py` |
-| Classical magnitude + RMT comparison sweep | `src/rmt_magnitude_sweep.py` |
-| Classical magnitude vs uniform-budget comparison | `src/rmt_vs_uniform.py` |
-| Magnitude pre-fine-tune helpers | `src/run_finetune_magnitude.py` (and `_v3.py`, `_v4.py`) |
-| Magnitude pre-fine-tune for a specific timm checkpoint | `src/run_finetune_magnitude_model_exec.py` |
-| Magnitude pre-fine-tune queue driver | `src/run_finetune_magnitude_model_exec_queue.py` |
-| End-to-end fine-tune pipeline | `src/run_finetune_pipeline.py` (and `_v2.py`) |
+| Classical magnitude pruning sweep | `magnitude_rmt_sweep.py` |
+| Classical magnitude + RMT comparison sweep | `rmt_magnitude_sweep.py` |
+| Classical magnitude vs uniform-budget comparison | `rmt_vs_uniform.py` |
+| Magnitude pre-fine-tune helpers | `run_finetune_magnitude.py` (and `_v3.py`, `_v4.py`) |
+| Magnitude pre-fine-tune for a specific timm checkpoint | `run_finetune_magnitude_model_exec.py` |
+| Magnitude pre-fine-tune queue driver | `run_finetune_magnitude_model_exec_queue.py` |
+| End-to-end fine-tune pipeline | `run_finetune_pipeline.py` (and `_v2.py`) |
 
 ### Classical RMT pruning (Appendix “Classical RMT”)
 
 | Paper method | File |
 |---|---|
-| Classical RMT cycle implementation | `src/prune.py` |
-| Theory-driven RMT prune (negative control) | `src/theory_pruning.py` |
-| Per-layer RMT diagnostics + randomness null tests | `src/randomness_diagnostic.py` |
+| Classical RMT cycle implementation | `prune.py` |
+| Theory-driven RMT prune (negative control) | `theory_pruning.py` |
+| Per-layer RMT diagnostics + randomness null tests | `randomness_diagnostic.py` |
 
 ### Spectral Edge Budgeting (SEB / "S+" with Haar bulk model)
 
 | Paper method | File |
 |---|---|
-| Haar/MP optimizer for the SEB hyperparameters \((\beta, s_\mathrm{d}, p)\) | `src/haar_optuna.py` |
-| Refined Haar optimizer (later sweep iterations) | `src/haar_optuna_refined.py` |
-| Haar small-z search (low-z regime) | `src/haar_small_z.py` |
-| Hyperparameter grid search v1 | `src/hp_search.py` |
-| Hyperparameter grid search v2 | `src/hp_search_v2.py` |
-| Iterative 5%-step comparison | `src/iterative_5pct_compare.py` |
-| Iterative “growing a” schedule | `src/iterative_growing_a.py` |
-| SV-decides-when-to-stop iterative variant | `src/iterative_sv_decides.py` |
-| Sweep analyzer | `src/analyze_sweep.py` |
-| Long sweep driver | `src/overnight_grid_search.py` |
-| Alt sweep driver | `src/overnight_sweep.py` |
+| Haar/MP optimizer for the SEB hyperparameters \((\beta, s_\mathrm{d}, p)\) | `haar_optuna.py` |
+| Refined Haar optimizer (later sweep iterations) | `haar_optuna_refined.py` |
+| Haar small-z search (low-z regime) | `haar_small_z.py` |
+| Hyperparameter grid search v1 | `hp_search.py` |
+| Hyperparameter grid search v2 | `hp_search_v2.py` |
+| Iterative 5%-step comparison | `iterative_5pct_compare.py` |
+| Iterative “growing a” schedule | `iterative_growing_a.py` |
+| SV-decides-when-to-stop iterative variant | `iterative_sv_decides.py` |
+| Sweep analyzer | `analyze_sweep.py` |
+| Long sweep driver | `overnight_grid_search.py` |
+| Alt sweep driver | `overnight_sweep.py` |
 
 ### Spectral Edge Reallocation (SER) ablations
 
 | Paper method | File |
 |---|---|
-| Removed-matrix audit (v5 cycle of SER) | `src/run_removed_matrix_audit_v5_model_exec.py` |
-| Removed-matrix audit (v8 cycle of SER, current) | `src/run_removed_matrix_audit_v8_model_exec.py` |
-| Resume a partial SER run | `src/remote_resume_suffix.py` |
-| Status snapshot | `src/remote_status_once.py` |
-| Resume supervisor | `src/remote_suffix_supervisor.py` |
+| Removed-matrix audit (v5 cycle of SER) | `run_removed_matrix_audit_v5_model_exec.py` |
+| Removed-matrix audit (v8 cycle of SER, current) | `run_removed_matrix_audit_v8_model_exec.py` |
+| Resume a partial SER run | `remote_resume_suffix.py` |
+| Status snapshot | `remote_status_once.py` |
+| Resume supervisor | `remote_suffix_supervisor.py` |
 
 ### Singular-value preprocessing tests (Appendix “SV preprocessing”)
 
 | Paper method | File |
 |---|---|
-| Spectral denoise prune-only test | `src/spectral_denoise_test.py` |
-| SV pruning test | `src/sv_pruning_test.py` |
-| SV theory probe | `src/sv_theory_test.py` |
-| SV hyperparameter grid | `src/sv_hp_grid.py` |
-| SV power-law grid | `src/sv_power_grid.py` |
-| SV threshold grid | `src/sv_threshold_grid.py` |
+| Spectral denoise prune-only test | `spectral_denoise_test.py` |
+| SV pruning test | `sv_pruning_test.py` |
+| SV theory probe | `sv_theory_test.py` |
+| SV hyperparameter grid | `sv_hp_grid.py` |
+| SV power-law grid | `sv_power_grid.py` |
+| SV threshold grid | `sv_threshold_grid.py` |
 
 ### Adaptive RMT control (Section "Budget allocation")
 
-The `src/adaptive_rmt/` package implements layer-aware RMT budget allocation used by the queue runners.
+The `adaptive_rmt/` package implements layer-aware RMT budget allocation used by the queue runners.
 
 | Module | Role |
 |---|---|
@@ -105,11 +105,11 @@ The `src/adaptive_rmt/` package implements layer-aware RMT budget allocation use
 
 ### Per-architecture queue config
 
-`src/model_queue_runs/queue_*/queue_guard.py` — one file per pod queue (a, b, c, d, e, f). These are watchdog scripts that the orchestrator calls; they decide whether to launch the next model in their bucket.
+`model_queue_runs/queue_*/queue_guard.py` — one file per pod queue (a, b, c, d, e, f). These are watchdog scripts that the orchestrator calls; they decide whether to launch the next model in their bucket.
 
 ### Utility / inherited from the prior RMT-ViT repository
 
-`src/pod_src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code (separate repo: https://github.com/yspennstate/RMT_pruning_ViT). It is used as a library by the new methods above:
+`src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code (separate repo: https://github.com/yspennstate/RMT_pruning_ViT). It is used as a library by the new methods above:
 
 | Module | Role |
 |---|---|
@@ -124,12 +124,12 @@ The `src/adaptive_rmt/` package implements layer-aware RMT budget allocation use
 
 | File | Role |
 |---|---|
-| `src/build_model_rmt_cache.py` | Pre-compute per-layer SVD cache for a timm checkpoint (one-time cost, then reused by every method). |
-| `src/download_train.py`, `src/download_val_only.py` | Download ImageNet-1k from HuggingFace into `$HF_CACHE`. Require `HF_TOKEN`. |
-| `src/fine_tune.py` | Stand-alone fine-tune (used as a smoke test). |
-| `src/parse_log_to_json.py` | Convert the runners’ stdout logs into the cycle-by-cycle JSONs that populate Table 2. |
-| `src/direct_run_watchdog.py` | Watchdog that restarts a stalled run. |
-| `src/queue_continue_on_complete.py`, `src/queue_switch_after_current.py`, `src/queue_watchdog.py` | Queue management helpers. |
+| `build_model_rmt_cache.py` | Pre-compute per-layer SVD cache for a timm checkpoint (one-time cost, then reused by every method). |
+| `download_train.py`, `download_val_only.py` | Download ImageNet-1k from HuggingFace into `$HF_CACHE`. Require `HF_TOKEN`. |
+| `fine_tune.py` | Stand-alone fine-tune (used as a smoke test). |
+| `parse_log_to_json.py` | Convert the runners’ stdout logs into the cycle-by-cycle JSONs that populate Table 2. |
+| `direct_run_watchdog.py` | Watchdog that restarts a stalled run. |
+| `queue_continue_on_complete.py`, `queue_switch_after_current.py`, `queue_watchdog.py` | Queue management helpers. |
 | `scripts/*.bat`, `scripts/*.sh` | One-shot launchers used during development. The `.bat` files target Windows pods, the `.sh` files target Linux. |
 
 ---
@@ -148,18 +148,18 @@ export HF_HUB_CACHE=/path/to/hf_cache
 export RMT_OPTUNA_RUN=$(pwd)/optuna_run     # results go here
 
 # 4. Pre-compute the per-layer RMT cache for ViT-B/16
-python src/build_model_rmt_cache.py --timm-checkpoint vit_base_patch16_224.augreg2_in21k_ft_in1k
+python build_model_rmt_cache.py --timm-checkpoint vit_base_patch16_224.augreg2_in21k_ft_in1k
 
 # 5. Run the headline Hybrid Magnitude–SER protocol
-python src/hybrid_mag20_then_v8_model.py \
+python hybrid_mag20_then_v8_model.py \
     --timm-checkpoint vit_base_patch16_224.augreg2_in21k_ft_in1k \
     --target-sparsities 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 \
     --output-dir $RMT_OPTUNA_RUN/randomness_audit_results_my_run
 ```
 
-The runner writes one JSON per cycle into the output directory; concatenate them with `python src/parse_log_to_json.py` to get the row of Table 2 for that architecture.
+The runner writes one JSON per cycle into the output directory; concatenate them with `python parse_log_to_json.py` to get the row of Table 2 for that architecture.
 
-To reproduce **all rows** of Table 2, point the queue runners at multiple timm checkpoints — the queues used in the paper live in `src/model_queue_runs/queue_*/queue_guard.py`. The queue mapping for the paper run is:
+To reproduce **all rows** of Table 2, point the queue runners at multiple timm checkpoints — the queues used in the paper live in `model_queue_runs/queue_*/queue_guard.py`. The queue mapping for the paper run is:
 
 | Queue | Architecture |
 |---|---|
@@ -179,7 +179,7 @@ All baseline architectures are pulled from `timm` by their canonical checkpoint 
 ## Reproducing the drop-threshold variant rows
 
 ```bash
-python src/hybrid_mag_until_drop_then_v8_model.py \
+python hybrid_mag_until_drop_then_v8_model.py \
     --timm-checkpoint resnet50.tv_in1k \
     --drop-threshold-pp 0.7 \
     --output-dir $RMT_OPTUNA_RUN/randomness_audit_results_my_drop_run
@@ -209,22 +209,22 @@ A complete s=0.05 → 0.70 schedule (14 cycles, including stage-1 magnitude pref
 ├── requirements.txt                — Python dependencies
 ├── LICENSE                         — MIT
 ├── src/                            — all method implementations
-│   ├── adaptive_rmt/               — adaptive RMT package (layer-aware budget)
-│   ├── pod_src/                    — RMT/pruning utilities (re-used from prior repo)
-│   ├── model_queue_runs/           — per-queue watchdog configs
-│   ├── hybrid_mag20_then_v8*.py    — Hybrid Magnitude–SER (headline)
-│   ├── hybrid_mag_until_drop*.py   — Drop-threshold variant
-│   ├── magnitude_rmt_sweep.py      — Classical magnitude baseline sweep
-│   ├── prune.py                    — Classical RMT (cycle implementation)
-│   ├── theory_pruning.py           — Theory-driven RMT prune (negative control)
-│   ├── randomness_diagnostic.py    — RMT randomness null tests
-│   ├── haar_*.py                   — SEB / S+ Haar bulk optimizer
-│   ├── hp_search*.py               — SEB hyperparameter grid search
-│   ├── iterative_*.py              — iterative prune-restore variants
-│   ├── sv_*.py, spectral_denoise_test.py — SV preprocessing tests
-│   ├── run_finetune_*.py           — magnitude / pipeline fine-tune drivers
-│   ├── run_removed_matrix_audit_*  — SER ablation cycles
-│   └── ...                         — utility scripts (build cache, parse logs, watchdogs)
+├── adaptive_rmt/               — adaptive RMT package (layer-aware budget)
+├── src/                    — RMT/pruning utilities (re-used from prior repo)
+├── model_queue_runs/           — per-queue watchdog configs
+├── hybrid_mag20_then_v8*.py    — Hybrid Magnitude–SER (headline)
+├── hybrid_mag_until_drop*.py   — Drop-threshold variant
+├── magnitude_rmt_sweep.py      — Classical magnitude baseline sweep
+├── prune.py                    — Classical RMT (cycle implementation)
+├── theory_pruning.py           — Theory-driven RMT prune (negative control)
+├── randomness_diagnostic.py    — RMT randomness null tests
+├── haar_*.py                   — SEB / S+ Haar bulk optimizer
+├── hp_search*.py               — SEB hyperparameter grid search
+├── iterative_*.py              — iterative prune-restore variants
+├── sv_*.py, spectral_denoise_test.py — SV preprocessing tests
+├── run_finetune_*.py           — magnitude / pipeline fine-tune drivers
+├── run_removed_matrix_audit_*  — SER ablation cycles
+├── ...                             — utility scripts (build cache, parse logs, watchdogs)
 ├── scripts/                        — one-shot .bat / .sh launchers
 └── configs/                        — (placeholder; runtime configs live alongside the runners)
 ```
