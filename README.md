@@ -1,6 +1,6 @@
-# RMT-Based Pruning in Deep Learning
+# Spectral Edge Reallocation: Random Matrix Theory–Guided Pruning of Vision Transformers and Convolutional Networks
 
-Reproduction code for the paper **"Spectral Edge Reallocation: Random Matrix Theory–Guided Pruning of Vision Transformers and Convolutional Networks."**
+Reproduction code for the paper of the same title.
 
 The repository contains every method evaluated in the paper:
 
