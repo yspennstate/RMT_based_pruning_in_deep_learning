@@ -1,6 +1,6 @@
-# Spectral Edge Reallocation: Random Matrix Theory–Guided Pruning of Vision Transformers and Convolutional Networks
+# Pruning Deep Neural Networks via Random Matrix Theory
 
-Reproduction code for the paper of the same title.
+Reproduction code for the paper of the same title (in the manuscript: *“Pruning Deep Neural Networks via the Marchenko–Pastur Distribution”*).
 
 The repository contains every method evaluated in the paper:
 
@@ -228,10 +228,11 @@ A complete s=0.05 → 0.70 schedule (14 cycles, including stage-1 magnitude pref
 If you use this code please cite the paper:
 
 ```bibtex
-@article{berlyand2026spectral,
-  title  = {Spectral Edge Reallocation: Random Matrix Theory--Guided Pruning of Vision Transformers and Convolutional Networks},
+@article{berlyand2026pruning,
+  title  = {Pruning Deep Neural Networks via Random Matrix Theory},
   author = {Berlyand, Leonid and Bourdais, Theo and Owhadi, Houman and Shmalo, Yitzchak},
   year   = {2026},
+  note   = {Manuscript title: ``Pruning Deep Neural Networks via the Marchenko--Pastur Distribution''},
 }
 ```
 
