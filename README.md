@@ -159,22 +159,16 @@ python hybrid_mag20_then_v8_model.py \
 
 The runner writes one JSON per cycle into the output directory; concatenate them with `python parse_log_to_json.py` to get the row of Table 2 for that architecture.
 
-To reproduce **all rows** of Table 2, point the queue runners at multiple timm checkpoints — the queues used in the paper live in `model_queue_runs/queue_*/queue_guard.py`. The queue mapping for the paper run is:
+The same protocol has been validated on the following architectures, covering plain transformers, hierarchical / windowed transformers, hybrid models, and convolutional networks:
 
-| Queue | Architecture |
-|---|---|
-| queue_a | DeiT-Small, ResNet50 (tv_in1k), ResNet50d, ViT-Small/16 |
-| queue_b | DeiT-Base, ViT-B/16/384 |
-| queue_c | ViT-Large/16 |
-| queue_d | Swin-Tiny, Swin-Small |
-| queue_e | Swin-Base/384 |
-| queue_f | ConvNeXt-Base, ConvNeXtV2-Base |
-| queue_h | Hiera-Base+ |
-| queue_h_lit | ResNet50 (tv_in1k) replica |
-| queue_v11_resnet | ResNet101d |
-| direct_deit_followup | ResNet18, ResNet34 |
+- **ViT** — ViT-Small/16, ViT-B/16, ViT-B/16/384, ViT-Large/16
+- **DeiT** — DeiT-Tiny, DeiT-Small, DeiT-Base
+- **Swin** — Swin-Tiny, Swin-Small, Swin-Base/384
+- **ConvNeXt / ConvNeXtV2** — ConvNeXt-Base, ConvNeXtV2-Base
+- **Hiera** — Hiera-Base+
+- **ResNet** — ResNet18, ResNet34, ResNet50 (`tv_in1k`), ResNet50d, ResNet101d
 
-All baseline architectures are pulled from `timm` by their canonical checkpoint name (e.g. `deit_small_patch16_224.fb_in1k`, `swin_small_patch4_window7_224.ms_in1k`, `convnext_base.fb_in22k_ft_in1k`, `hiera_base_plus_224.mae_in1k_ft_in1k`).
+All baselines are pulled from `timm` by their canonical checkpoint name (e.g. `deit_small_patch16_224.fb_in1k`, `swin_small_patch4_window7_224.ms_in1k`, `convnext_base.fb_in22k_ft_in1k`, `hiera_base_plus_224.mae_in1k_ft_in1k`). To reproduce **all rows** of Table 2 in the paper, point the queue runner (`model_queue_runner.py`) at the timm checkpoints above one at a time, or in parallel on separate GPUs.
 
 ## Reproducing the drop-threshold variant rows
 
