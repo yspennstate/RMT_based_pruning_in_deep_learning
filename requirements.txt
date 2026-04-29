@@ -1,0 +1,22 @@
+# Core deep-learning stack
+torch>=2.1
+torchvision>=0.16
+timm>=1.0.9
+
+# RMT / scientific
+numpy>=1.24
+scipy>=1.10
+TracyWidom>=0.2
+
+# Data + HF
+huggingface_hub>=0.20
+datasets>=2.14
+pyarrow>=15
+Pillow>=10
+
+# Optimization / sweeps
+optuna>=3.5
+
+# Utilities
+tqdm>=4.65
+pyyaml>=6.0

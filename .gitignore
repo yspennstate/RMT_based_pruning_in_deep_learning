@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+.venv/
+venv/
+env/
+
+# Run outputs (would balloon the repo)
+optuna_run/
+results/
+checkpoints/
+*.pt
+*.bin
+*.safetensors
+hf_cache/
+*.parquet
+*.arrow
+rmt_cache/
+rmt_cache_models/
+
+# Logs
+*.log
+stdout.log
+stderr.log
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Local secrets (must never be committed)
+.env
+.env.*
+!.env.example
