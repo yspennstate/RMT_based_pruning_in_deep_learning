@@ -37,3 +37,15 @@ stderr.log
 .env
 .env.*
 !.env.example
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.lof
+*.lot

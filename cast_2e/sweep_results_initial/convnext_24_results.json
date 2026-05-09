@@ -1,0 +1,18 @@
+{
+  "model": "convnext_base.fb_in22k_ft_in1k",
+  "dense_top1": 0.85812,
+  "ser_source_top1": 0.85256,
+  "cells": [
+    {
+      "label": "D24_dense_perm",
+      "k": 2,
+      "n": 4,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.76878,
+      "n_layers_modified": 73,
+      "elapsed_s": 149.4308602809906
+    }
+  ]
+}

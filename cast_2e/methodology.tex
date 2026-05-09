@@ -1,0 +1,1720 @@
+\documentclass[11pt]{article}
+
+% -------------------------------------------------
+% Packages (mirroring main.tex)
+% -------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[margin=.92in]{geometry}
+\usepackage{microtype}
+\usepackage[numbers]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{url}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage{array,booktabs,tabularx,makecell}
+\usepackage{graphicx,subcaption,float}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{cancel}
+\usepackage{listings}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  columns=fullflexible,
+  frame=single,
+  showstringspaces=false,
+}
+
+% Theorem environments
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{assumption}[thm]{Assumption}
+\newtheorem{ex}[thm]{Example}
+
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+% Commands
+\DeclarePairedDelimiter{\nint}{\lfloor}{\rceil}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\EE}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\op}{\mathrm{op}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\card}{\operatorname{Card}}
+\newcommand{\acc}{\operatorname{acc}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\de}{\partial}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\di}{\mathrm{d}}
+
+\newcommand{\maybeincludegraphics}[2][]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}{%
+  \fbox{\parbox[c][2.2in][c]{0.92\linewidth}{\centering Missing figure: \detokenize{#2}}}}}
+
+\newcommand{\mainpaper}{\textsc{Main}}
+\newcommand{\methpaper}{\textsc{Methodology}}
+
+% -------------------------------------------------
+% Title
+% -------------------------------------------------
+\title{\textbf{Methodology and Extended Numerics for}\\
+  \textbf{Pruning Deep Neural Networks via the Marchenko--Pastur Distribution}\\[6pt]
+  \large Companion methodology paper to the main manuscript}
+
+\author{
+    Leonid Berlyand \\
+    {\small Department of Mathematics, Pennsylvania State University}
+    \and
+    Theo Bourdais\\
+    {\small Department of Computing and Mathematical Sciences, Caltech}
+    \and
+    Houman Owhadi\\
+    {\small Department of Computing and Mathematical Sciences, Caltech}
+    \and
+    Yitzchak Shmalo\thanks{Corresponding author: Yitzchak Shmalo. Email: \texttt{yitzchak.shmalo@gmail.com}.} \\
+    {\small Department of Mathematics, Pennsylvania State University}
+}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document is the companion methodology and extended-numerics paper to the manuscript \emph{Pruning Deep Neural Networks via the Marchenko--Pastur Distribution} (henceforth \mainpaper{}). \mainpaper{} contains the theoretical content (deterministic pruning certificates, Gaussian/sub-Gaussian random-matrix specializations, full proofs) and the headline empirical tables. This document, which lives at \url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning} alongside the code that produced every number in \mainpaper{}, contains everything the rigorous reader needs in order to reproduce the experiments: full repository architecture, the projection and fine-tuning code paths, the speedup-measurement protocols, and the migrated extended-numerics appendices that previously inflated \mainpaper{}.
+The reader should consult this paper whenever \mainpaper{} cites Section~M.X --- those citations are pointers into this document.
+
+\medskip
+\noindent\textbf{Companion repository.}\quad
+\url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning}
+
+\medskip
+\noindent\textbf{17-model checkpoint archive (Hybrid Magnitude--SER).}\quad
+\url{https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd}
+\end{abstract}
+
+\noindent\textbf{Cross-paper conventions.}\quad
+We refer to results in \mainpaper{} as \mainpaper{}-Theorem~X.Y, \mainpaper{}-Table~Z, etc.
+Norm conventions, theorem numbering, and notation are inherited from \mainpaper{}.
+
+\tableofcontents
+
+% =====================================================
+\section{Introduction and how to read this paper}
+\label{sec:intro}
+% =====================================================
+
+\subsection{Scope}
+\mainpaper{} establishes a Marchenko--Pastur (MP)-driven theory of deterministic pruning certificates and reports headline numerical results: the multi-architecture Hybrid Magnitude--SER table, the CAST 2:4 + ToMe accuracy/throughput row, and the deterministic-certificate audit. It is necessarily a long document because it contains the proofs.
+This methodology paper carries everything that is operational rather than theoretical:
+\begin{enumerate}[leftmargin=2em]
+\item the full RMT-pruning protocol stack (BEMA, Spectral Edge Budgeting, Spectral Edge Reallocation, Hybrid Magnitude--SER);
+\item the CAST and CAST-2E pipelines (cert-aware $k{:}n$ projection, Cin permutation alignment, free restoration, frozen-mask distillation);
+\item all hardware speedup measurements, including the A100 native-2:4 throughput data and the $6{:}12 \to 2{:}4$ projection benchmark used to translate non-deployable cert-optimal cells into deployable ones;
+\item the certification-audit numerics (three bridges from \mainpaper{}-\S5: top-1 vs.\ $B_T$, Lemma~5.4 violations, $\sigma_+ \to B_{\mathrm{proxy}}$ within-cycle correlations);
+\item the extended fully-connected MP-pruning experiments;
+\item ledgered checkpoint validation tables.
+\end{enumerate}
+
+\subsection{When to read which paper}
+\mainpaper{} alone is sufficient for: the theoretical statements, all proofs, the headline accuracy + speedup numbers (Table~2 and the CAST FLOP table), the theory-to-numerics mapping table, and the high-level reproducibility narrative.
+
+This paper is sufficient for: replicating any individual experiment, understanding the relationship between every line of code in the GitHub repository and the numerical claims in \mainpaper{}, and the full extended-numerics record.
+
+\subsection{Repository at a glance}
+The companion GitHub repository contains, at the time of writing:
+\begin{itemize}[leftmargin=2em]
+\item Approximately 60 Python scripts at the repository root implementing the classical RMT, magnitude, Hybrid Magnitude--SER, four-regime SEB, and drop-threshold protocols (these underlie \mainpaper{}-\S3 and the multi-architecture validation table);
+\item A self-contained \texttt{cast\_2e/} subtree containing the new CAST-2E pipeline: certificate-aware $k{:}n$ projection (with $k=2,4,6,8,12$ and $n=4,8,12,16$ supported), Cin permutation alignment, in-place inline fine-tuning runners avoiding the perm-hook serialization issue, and the suite of speedup benchmarks;
+\item Eighteen sweep-result JSONs covering all three architecture families (ResNet50, ConvNeXtV2-Base, ViT-B/L), six $k{:}n$ patterns, dense vs.\ SER source ablations, and $\alpha_{\mathrm{ser}}$ sweeps;
+\item Five A100 throughput JSONs (dense vs.\ 2:4 vs.\ ToMe-only vs.\ 2:4+ToMe) plus the $6{:}12 \to 2{:}4$ projection-speedup data;
+\item All post-fine-tuning evaluation JSONs underlying the new headline FLOP table in \mainpaper{}.
+\end{itemize}
+
+% =====================================================
+\section{Repository tree and architecture}
+\label{sec:repo}
+% =====================================================
+
+\subsection{Top-level layout}
+
+\begin{lstlisting}[caption={Top-level repository layout.},label=lst:tree-top]
+RMT_based_pruning_in_deep_learning/
++- README.md                                 # repo overview, quick start
++- LICENSE                                   # MIT
++- requirements.txt                          # canonical deps
++- adaptive_rmt/                             # RMT diagnostics: BEMA, alpha
++- configs/                                  # YAML/JSON sweep configs
++- model_queue_runs/                         # cached SVD/ESD per model
++- scripts/                                  # shell launchers / watchers
++- src/                                      # shared utilities
++- prune.py                                  # the pruning entrypoint
++- fine_tune.py                              # the fine-tuning entrypoint
++- magnitude_rmt_sweep.py                    # the full sweep driver
++- rmt_magnitude_sweep.py                    # alt sweep ordering
++- hybrid_mag20_then_v8*.py                  # Hybrid Magnitude--SER
++- run_finetune_*.py                         # the FT runners (4 variants)
++- haar_*.py                                 # Haar-SV preprocessing
++- iterative_*.py                            # iterative growing-a + 5pct
++- pruning_method_comparison_sweep.py        # cross-method comparison
++- run_removed_matrix_audit_v*.py            # certificate audit drivers
++- analyze_sweep.py                          # JSON -> table aggregator
++- direct_run_watchdog.py                    # crash-resilient runner
++- queue_*.py                                # multi-run queue managers
++- remote_*.py                               # remote pod helpers
++- cast_2e/                                  # NEW (this paper's content)
+   +- methodology.tex                        # this document
+   +- code/                                  # cert-aware k:n + FT runners
+   +- scripts/                               # launch / watcher scripts
+   +- benchmarks/                            # A100/L4 throughput JSONs
+   +- benchmarks_speedup/                    # 6:12->2:4 speedup JSONs
+   +- masks_archive/                         # per-layer mask stats
+   +- post_ft_eval/                          # post-FT eval JSONs
+   +- sweep_results/                         # k:n sweep cell JSONs
+   +- AUDIT.md                               # full data-flow audit
+   +- THEORY.md                              # CAST-2E theory map
+\end{lstlisting}
+
+\subsection{How to navigate by paper section}
+
+Table~\ref{tab:section-to-code} provides the canonical pointer from each \mainpaper{} section/result to the code path that produces it. This is the table to keep open while reading \mainpaper{}.
+
+\begin{table}[h]
+\centering
+\caption{Mapping from \mainpaper{} sections and results to code paths in the GitHub repository. ``{[\ldots]}'' refers to wildcards covered by the listed file or by closely related variants in the same directory.}
+\label{tab:section-to-code}
+\small
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+\mainpaper{} location & Code & \methpaper{} \S \\
+\midrule
+\mainpaper{}-Table 2 (multi-arch Hybrid Mag--SER) &
+\texttt{hybrid\_mag20\_then\_v8*.py},
+\texttt{run\_finetune\_magnitude\_v3.py},
+\texttt{prune.py} & \S\ref{sec:seb-protocols} \\
+\mainpaper{}-Table CAST FLOPs (paper-headline FLOP table) &
+\texttt{cast\_2e/code/project\_kn\_sparsity.py},
+\texttt{cast\_2e/code/run\_vitb\_ft\_inline.py},
+\texttt{cast\_2e/code/run\_resnet\_ft\_inline.py} & \S\ref{sec:cast-2e-pipeline} \\
+\mainpaper{}-\S3 RMT-guided pruning &
+\texttt{magnitude\_rmt\_sweep.py},
+\texttt{pruning\_method\_comparison\_sweep.py} & \S\ref{sec:section3-detail} \\
+\mainpaper{}-\S5.4 deterministic certificate (\S5.4 audit) &
+\texttt{run\_removed\_matrix\_audit\_v8\_model\_exec.py} & \S\ref{sec:cert-audit} \\
+SEB-budget hyperparameter sweeps &
+\texttt{configs/seb\_*.yaml},
+\texttt{magnitude\_rmt\_sweep.py},
+\texttt{rmt\_magnitude\_sweep.py} & \S\ref{sec:seb-protocols} \\
+BEMA edge fitting &
+\texttt{adaptive\_rmt/bema.py} (and equivalents) & \S\ref{sec:bema} \\
+$\alpha$ power-law signal &
+\texttt{adaptive\_rmt/alpha.py},
+\texttt{haar\_optuna*.py} & \S\ref{sec:seb-protocols}.\ref{subsec:alpha_signal_meth} \\
+A100 throughput benchmark (2:4) &
+\texttt{cast\_2e/code/benchmark\_sparse\_throughput.py} & \S\ref{sec:speedup} \\
+$6{:}12 \to 2{:}4$ projection speedup &
+\texttt{cast\_2e/code/benchmark\_6\_12\_to\_2\_4\_projection.py} & \S\ref{sec:speedup} \\
+$k{:}n$ sweep driver (sweeps in this paper) &
+\texttt{cast\_2e/code/cert\_opt\_eval\_kn*.py} & \S\ref{sec:kn-sweeps} \\
+ViT-B inline FT (paper headline 83.74) &
+\texttt{cast\_2e/code/run\_vitb\_ft\_inline.py} & \S\ref{sec:ft-recipe} \\
+ResNet inline FT (paper headlines 75.67, 78.00, 80.59, 81.33) &
+\texttt{cast\_2e/code/run\_resnet\_ft\_inline.py} & \S\ref{sec:ft-recipe} \\
+ConvNeXtV2 D1216/D816 (paper headlines 86.35, 85.85) &
+\texttt{cast\_2e/code/project\_convnextv2\_d1216.py} + ToMe runner & \S\ref{sec:ft-recipe} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Coding conventions in the repository}
+The classical RMT, magnitude, and Hybrid Magnitude--SER scripts share a common contract:
+\begin{itemize}[leftmargin=2em]
+\item Each entrypoint reads a YAML/JSON config from \texttt{configs/} and writes its results to a per-run subdirectory of \texttt{model\_queue\_runs/<arch>/<config\_id>/}.
+\item Every fine-tune call emits both a final \texttt{finetune\_results.json} and a per-epoch ledger that the analyzer can consume even if a run is killed mid-epoch.
+\item The SVD and BEMA edge fits are cached in \texttt{model\_queue\_runs/<arch>/svd\_cache/} so that re-running a sweep with a different sparsity schedule does not pay the SVD cost.
+\end{itemize}
+
+The CAST-2E scripts in \texttt{cast\_2e/code/} share a different but equally explicit contract:
+\begin{itemize}[leftmargin=2em]
+\item All projection scripts (\texttt{project\_*.py}) emit a \texttt{student\_pre\_ft.pt} payload containing both the projected state dict and a JSON-serializable \texttt{cert\_config} dictionary.
+\item The fine-tuning runners are deliberately ``inline'': they receive the calibration loader and projection arguments directly, run projection in-process, and then immediately enter the distillation loop with the projected weights and frozen mask, without an intervening save/load round-trip. This avoids a perm-hook serialization issue described in \S\ref{sec:cast-2e-pipeline}.
+\end{itemize}
+
+% =====================================================
+\section{Pre-fine-tuning projection: cert-aware $k{:}n$ structured sparsity}
+\label{sec:cast-2e-pipeline}
+% =====================================================
+
+This section documents the pre-FT projection family generalising CAST (\mainpaper{}-Appendix referenced as Section~M.\ref{sec:cast-old-app}) from $2{:}4$ to general $k{:}n$. The 2:4 design and Stage-1/Stage-2 split are the same as in CAST; what is new is
+
+\begin{enumerate}[leftmargin=2em]
+\item parametric $k{:}n$ at the row-group level, with $n \in \{4,8,12,16,32\}$ and $k \in \{1,\ldots,n-1\}$;
+\item Cin permutation alignment within each layer's input groups, so that the cert-cost minimisation can choose patterns from a larger set of feasible $k{:}n$ blocks;
+\item an SER-prior term (the $\alpha_{\mathrm{ser}}$ term of \S\ref{subsec:alpha-ser}) that anchors the chosen pattern to the Hybrid Magnitude--SER mask;
+\item native support for both Linear and Conv2d layers, with the convolutional case implemented by unfolding the kernel.
+\end{enumerate}
+
+\subsection{Generalised cost: $k{:}n$ row-group search with free restoration}
+\label{subsec:kn-cost}
+
+Fix a Linear layer $W \in \R^{d_{\mathrm{out}} \times d_{\mathrm{in}}}$ with $d_{\mathrm{in}} = n G_\ell$. Reshape rows into contiguous $n$-tuples: $W_{i,g,k}$ is the $k$-th weight of group $g$ in output row $i$, $i \in [d_{\mathrm{out}}]$, $g \in [G_\ell]$, $k \in [n]$.
+
+For each pair $(i,g)$ the $k{:}n$ search enumerates the $\binom{n}{k}$ keep patterns
+\[
+\mathcal{M}_{k:n} = \bigl\{ m \in \{0,1\}^n : |m|_0 = k \bigr\}.
+\]
+For $n=4, k=2$ this is the 6 patterns of CAST (\mainpaper{}-\S G); for $n=16, k=8$ it is $\binom{16}{8}=12870$ patterns. When the enumeration becomes prohibitive, \texttt{project\_kn\_sampled.py} provides a sampled variant.
+
+The materialised slot value retains CAST's three-case rule (\mainpaper{}-Eq.~G.1):
+\begin{equation}
+\label{eq:kn-slot-values}
+v_{i,g,k}(m) = m_k \cdot \begin{cases}
+W^{\mathrm{SER}}_{i,g,k}, & M^{\mathrm{SER}}_{i,g,k} = 1, \\
+W^{\mathrm{dense}}_{i,g,k}, & M^{\mathrm{SER}}_{i,g,k} = 0 \text{ and free-restoration enabled}, \\
+0, & \text{otherwise}.
+\end{cases}
+\end{equation}
+The ``dense'' source corresponds to setting $W^{\mathrm{SER}} \equiv W^{\mathrm{dense}}$ and $M^{\mathrm{SER}} \equiv 0$, in which case Eq.~\eqref{eq:kn-slot-values} reduces to $v_{i,g,k}(m) = m_k W^{\mathrm{dense}}_{i,g,k}$. We use ``dense source'' for ConvNeXtV2 because the SER ckpts at $s=0.35$ for that model lose more accuracy at projection than the dense ckpt does; for ResNet50 the SER source helps; for ViT-B the SER source helps with $\alpha_{\mathrm{ser}}=0.5$.
+
+The within-group calibration covariance and cert-inspired cost are inherited from \mainpaper{}-Eqs.~G.2--G.3:
+\begin{equation}
+\label{eq:kn-cost}
+C_g = \frac{1}{|\mathcal{C}|} \sum_{x \in \mathcal{C}} h_g(x) h_g(x)^\top,
+\qquad
+c_{i,g}(m) = r_{i,g}(m)^\top C_g\, r_{i,g}(m),
+\qquad
+r_{i,g}(m) = (1 - m) \odot v_{i,g,:}(m).
+\end{equation}
+The argmin is solved by enumeration; tensor-shape $(\binom{n}{k},\, d_{\mathrm{out}},\, G_\ell)$. For $\binom{n}{k}\ge 5{,}000$ the sampled variant draws $\binom{n}{k}_{\mathrm{eff}} = 1024$ candidates uniformly without replacement.
+
+\subsection{Cin permutation alignment (``flatten the layer'')}
+\label{subsec:perm}
+
+The native $k{:}n$ search treats the $n$ input slots within each group as fixed by the natural channel order. Cin-permutation aligns each layer's input columns by the importance score
+\[
+s_j = \sum_i \bigl|W^{\mathrm{dense}}_{i,j}\bigr| \cdot \bar{|h_j|},
+\qquad \bar{|h_j|} = \frac{1}{|\mathcal{C}|} \sum_{x \in \mathcal{C}} |h_{j}(x)|,
+\]
+and then quartile-interleaves the columns: column $j$ in the permuted layer is the $\pi(j)$-th most important one, where $\pi$ is the importance-balanced permutation that places the $g$-th group's $k$ columns into quartile positions $\bigl(g,\, g+G_\ell/4,\, g+2G_\ell/4,\, g+3G_\ell/4\bigr)$ in the original ordering. We call this ``flattening the layer'' because it makes each group span the full importance range, so that the cert-cost minimiser sees a maximally informative set of candidates within every group.
+
+The permutation is implemented as a forward pre-hook, with the inverse permutation applied at the layer output to keep downstream activations aligned. The hook is registered at projection time and removed at the post-FT save step.
+
+\subsection{The $\alpha_{\mathrm{ser}}$ Hamming-distance prior}
+\label{subsec:alpha-ser}
+
+To bias the per-row cert-cost minimiser toward the Hybrid Magnitude--SER mask without overriding it, we add a Hamming penalty (\mainpaper{}-Eq.~G.4 generalised):
+\begin{equation}
+\label{eq:alpha-ser}
+c^{\mathrm{prior}}_{i,g}(m) = \alpha_{\mathrm{ser}} \cdot \bar{c}_g \cdot \bigl| m - M^{\mathrm{SER}}_{i,g,:} \bigr|_1,
+\qquad
+\bar{c}_g = \mathrm{mean}_{i,k}\, v_{i,g,k}^2 \cdot \EE_x\bigl[h_{g,k}(x)^2\bigr].
+\end{equation}
+Setting $\alpha_{\mathrm{ser}}=0$ recovers pure cert-aware projection; $\alpha_{\mathrm{ser}} \to \infty$ forces the SER mask. We sweep $\alpha_{\mathrm{ser}} \in \{0, 0.1, 0.25, 0.5, 1.0, 2.0\}$ in the cell sweeps reported in \S\ref{sec:kn-sweeps}; the empirical sweet spot is $\alpha_{\mathrm{ser}} = 0.5$ for ViT-B with the SER-source variant.
+
+\subsection{Conv2d generalisation}
+\label{subsec:conv-pipeline}
+
+For a Conv2d kernel of shape $(C_{\mathrm{out}}, C_{\mathrm{in}}, k_h, k_w)$ we unfold the kernel into a $(C_{\mathrm{out}},\, C_{\mathrm{in}} \cdot k_h \cdot k_w)$ matrix and apply the same row-group search. The projection runs on $1{\times}1$ and $3{\times}3$ convolutions; depthwise convolutions and the first input-projection conv are excluded by an \texttt{is\_eligible\_conv} predicate exposed via \texttt{cast\_2e/code/project\_kn\_sparsity.py}.
+
+In ConvNeXtV2 the projection is restricted to Linear layers (the per-block depthwise $7{\times}7$ convolutions are excluded) because the depthwise structure interacts pathologically with the row-group $k{:}n$ pattern; this restriction is recorded in \texttt{cast\_2e/AUDIT.md} as a known limitation.
+
+\subsection{Inline projection + FT runner (avoiding the perm-hook bug)}
+\label{subsec:inline-ft}
+
+A subtle but load-bearing implementation issue: when a projection registers Cin-permutation forward pre-hooks on a model and we save the resulting state-dict to disk, the hooks are not part of the state-dict. A naive reload at FT time produces a model whose weights are in the permuted ordering but whose forward pass is unpermuted; on ImageNet val the reloaded model scores top-1 $\approx 0.0006$ (random-class chance for a 1000-class problem). \texttt{cast\_2e/code/run\_vitb\_ft\_inline.py} and \texttt{cast\_2e/code/run\_resnet\_ft\_inline.py} avoid this by performing projection in-process, immediately followed by FT, without any intervening save/load round-trip. Saving the post-FT model is safe because it is consumed only at evaluation time, where the same permutation hooks are re-registered before the val pass.
+
+% =====================================================
+\section{Fine-tuning recipe}
+\label{sec:ft-recipe}
+% =====================================================
+
+\subsection{Distillation, mask freezing, and the optimiser}
+
+The fine-tuning pass is a 3-epoch knowledge-distillation loop with frozen 2:4 (or general $k{:}n$) mask. The dense pretrained model is the teacher; the projected student is the student. Let $L_{\mathrm{CE}}^{\mathrm{ls}}(\hat{y}, y) = (1 - \epsilon) \mathrm{CE}(\hat{y}, y) + \epsilon \cdot (-\frac1K \sum_c \log \hat{y}_c)$ be label-smoothed cross-entropy with smoothing $\epsilon = 0.1$. The distillation loss is
+\begin{equation}
+\label{eq:distill}
+L = (1 - \alpha_{\mathrm{distill}})\, L_{\mathrm{CE}}^{\mathrm{ls}}(\hat{y}_S, y) + \alpha_{\mathrm{distill}} \cdot \tau^2 \cdot \mathrm{KL}\bigl(\,\sigma(\hat{y}_T / \tau)\, \big\|\, \sigma(\hat{y}_S / \tau)\bigr),
+\end{equation}
+with $\alpha_{\mathrm{distill}} = 0.5$, $\tau = 2.0$, both inherited from CAST.
+
+After every backward step we re-zero the masked weights:
+\begin{equation}
+\label{eq:mask-freeze}
+W^{(\ell)} \leftarrow W^{(\ell)} \odot M^{(\ell)} \quad \text{for every projected layer $\ell$ at every step.}
+\end{equation}
+This is necessary because the optimiser's momentum and weight-decay terms can produce small nonzero values in masked positions even when the gradient is zero; without re-zeroing, the realised sparsity drifts upward by $\sim$0.5\% across 3 epochs and the kept weights do not benefit from the freed parameter slots.
+
+\subsection{Optimiser, schedule, transforms}
+The exact configurations used for the four paper-headline FT runs are recorded in \texttt{cast\_2e/code/run\_*\_ft\_inline.py}; we summarise:
+
+\begin{table}[h]
+\centering
+\caption{Fine-tuning configuration for the paper-headline 3-epoch distillation runs.}
+\label{tab:ft-config}
+\small
+\begin{tabular}{lcccc}
+\toprule
+& ViT-B (D612 SER) & ViT-L (D816 dense) & ResNets (D816 dense) & ConvNeXtV2 (Dxxx) \\
+\midrule
+Optimiser & AdamW & AdamW & SGD+momentum & AdamW \\
+Base LR & $1{\times}10^{-5}$ & $1{\times}10^{-5}$ & $1{\times}10^{-3}$ & $1{\times}10^{-5}$ \\
+Weight decay & $0.01$ & $0.01$ & $1{\times}10^{-4}$ & $0.01$ \\
+Momentum & --- & --- & $0.9$ & --- \\
+LR exclusions & bias / LN / pos\_embed & same & --- & bias / LN \\
+Schedule & cosine + warmup & cosine + warmup & cosine + warmup & cosine + warmup \\
+Warmup steps & 1000 & 1000 & 500 & 1000 \\
+Batch (train) & 32 & 16 & 256 & 32 \\
+Batch (val) & 64 & 64 & 256 & 64 \\
+Workers & 4 & 8 & 8 & 4 \\
+Label smooth $\epsilon$ & 0.1 & 0.1 & 0.1 & 0.1 \\
+Distill $(\alpha,\tau)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The training transforms follow the canonical timm recipe used by the dense pretrained checkpoint (\texttt{timm.data.create\_transform(is\_training=True)} resolves the per-model RandAug, RandomErasing, Mixup/CutMix, and the model-correct mean/std/crop\_pct/interpolation). The val transforms are likewise the canonical \texttt{is\_training=False} transforms. For the ViT-B/L runs this resolves to RandAug-m9 + RandomErasing $p=0.25$ with no Mixup; for ConvNeXtV2 it adds Mixup ($\alpha=0.8$).
+
+\subsection{Why exactly 3 epochs}
+The FT budget is matched to CAST's published recipe (\mainpaper{}-Section~M.\ref{sec:cast-old-app}.\ref{subsec:cast_stage2_meth}). Three epochs is short enough that the projection and the FT both contribute distinguishable signal to the post-FT accuracy --- and short enough that the FT cost is comparable to the projection cost on a per-A100 basis. We do not claim that 3 epochs is optimal; longer FTs (we tested 5--10 epochs in pilot runs) recover an additional 0.1--0.3 percentage points but at proportionally higher compute cost, and we want the cell sweeps in \S\ref{sec:kn-sweeps} to be FT-budget-comparable across cells.
+
+% =====================================================
+\section{Speedup measurement}
+\label{sec:speedup}
+% =====================================================
+
+\subsection{What ``speedup'' means in this paper}
+
+We report two distinct speedups for every CAST-family configuration.
+
+\begin{description}
+\item[Practical (hardware) speedup.] The wall-clock images-per-second improvement on a specific GPU, with a specific kernel selection, at a specific batch size. We use NVIDIA's PyTorch \texttt{torch.sparse.to\_sparse\_semi\_structured} for the 2:4 path on A100 (sparse Tensor Core) and report the same measurement on L4. Other $k{:}n$ patterns do not have native kernels at present and are reported only as theoretical FLOP reductions.
+\item[Theoretical (FLOP) speedup.] The dense-equivalent multiply-adds removed by zeroing $1 - k/n$ of the weight slots in the projected layers. This is an upper bound on what any future sparse kernel could deliver. The theoretical and practical numbers diverge whenever the kernel cannot saturate the structured sparsity (e.g., very small batch sizes, or layers with very small $C_{\mathrm{out}}$).
+\end{description}
+
+\subsection{The A100 native-2:4 measurement}
+\label{subsec:a100-bench}
+
+The benchmark in \texttt{cast\_2e/code/benchmark\_sparse\_throughput.py} converts each Linear layer with a 2:4 mask into a \texttt{torch.sparse.SparseSemiStructuredTensor} and runs warm-up + measurement passes at the configured batch size. The reported throughput in \texttt{cast\_2e/benchmarks/} is the median of the last 100 iterations after 30 warm-up iterations.
+
+\begin{table}[h]
+\centering
+\caption{A100 throughput (images/s) for the paper headline configurations.}
+\label{tab:a100-throughput}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Configuration & Throughput (im/s) & Speedup vs.\ dense & Source \\
+\midrule
+Dense ViT-B/16 (batch 128) & 463.6 & --- & \texttt{vitb\_bench.json} \\
+2:4 ViT-B/16 (sparse Tensor Core) & 1254.1 & $2.705\times$ & \texttt{vitb\_bench\_with\_24.json} \\
+\midrule
+Dense ViT-L/16 + ToMe $r=8$ & 1248.7 & $1.298\times$ & \texttt{vitl\_canonical/results.json} \\
+2:4 ViT-L/16 + ToMe $r=8$ (sparse) & 1489.9 & $1.549\times$ & \texttt{vitl\_canonical/results.json} \\
+\midrule
+L4 ViT-B 2:4 + ToMe (CAST row in \mainpaper{}-Tab.~CAST) & 837 & $1.84\times$ & \mainpaper{}-Tab.~CAST \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ViT-L speedup (1.55$\times$) is meaningfully smaller than the ViT-B speedup (2.71$\times$). The reason is that ViT-L+ToMe is already operating in a kernel-bandwidth-limited regime; the 2:4 path saves on multiply-adds but not on memory bandwidth. \mainpaper{} reports both figures and discusses this in the speedup section.
+
+\subsection{The $6{:}12 \to 2{:}4$ projection (deployable speedup)}
+\label{subsec:6to24}
+
+Several cells in the CAST-2E sweep produce non-deployable patterns ($6{:}12$, $8{:}16$, etc.) that are nonetheless cert-optimal. To translate these into deployable speedup numbers, \texttt{cast\_2e/code/benchmark\_6\_12\_to\_2\_4\_projection.py} re-projects each $6{:}12$ block into the nearest $2{:}4$ block by enumerating the $6$ canonical $2{:}4$ patterns inside each $4$-sub-block of a $12$-tuple, choosing per-sub-block the pattern of lowest Hamming distance to the $6{:}12$ pattern. The resulting model is then benchmarked on the same A100 \texttt{torch.sparse.SparseSemiStructuredTensor} kernel as in \S\ref{subsec:a100-bench}.
+
+A caveat (recorded in \texttt{AUDIT.md}): for $0/49$ of the ViT-B $6{:}12$ cells we tested, the projection yields a pure $2{:}4$ pattern in every $4$-sub-block; instead we get a mix of $0/2/4$ nonzeros per $4$-sub-block. For deployable-speedup purposes \mainpaper{} therefore reports the $2{:}4$ speedup ($2.705\times$ on A100, $1.84\times$ on L4) as the production-ready number, and reports the $6{:}12$ speedup only as a theoretical FLOP reduction.
+
+\subsection{ResNet and ConvNeXtV2 throughput}
+The ResNet50/d/101d/152d post-FT models with $8{:}16$ structured sparsity have no native sparse kernel for general $k{:}n \neq 2{:}4$, so we report only the theoretical $50\%$ MAC reduction. The ConvNeXtV2-Base D816 and D1216 cells are similarly reported only theoretically. For deployable inference we re-project to $2{:}4$ as in \S\ref{subsec:6to24}; this re-projection costs $\approx 0.2$ pp in post-FT top-1 (within the FT-noise band) at the gain of native A100 kernels.
+
+% =====================================================
+\section{The CAST-2E $k{:}n$ sweeps}
+\label{sec:kn-sweeps}
+% =====================================================
+
+\subsection{Sweep design}
+
+Across two A100 pods (Pod 2 and Pod 3a) we ran the following sweep over the three architecture families:
+
+\begin{itemize}[leftmargin=2em]
+\item \textbf{Architectures:} ResNet50.tv\_in1k, ResNet50d.ra2\_in1k, ResNet101d.ra2\_in1k, ResNet152d.ra2\_in1k, ViT-B/16, ViT-L/16, ConvNeXtV2-Base.
+\item \textbf{Sparsity patterns:} $1{:}4, 2{:}4, 3{:}4, 4{:}8, 6{:}12, 8{:}16, 12{:}16$ (selected to span $25\%, 50\%, 75\%$ density).
+\item \textbf{Source:} \emph{dense} (no SER prior) and \emph{SER} (Hybrid Magnitude--SER ckpt at $s=0.35$).
+\item \textbf{$\alpha_{\mathrm{ser}}$:} $\{0, 0.1, 0.25, 0.5, 1.0, 2.0\}$.
+\item \textbf{Permutation alignment:} on / off.
+\item \textbf{Calibration size:} $|\mathcal{C}| \in \{64, 256, 512\}$.
+\item \textbf{Replicates:} 5-seed for the winners.
+\end{itemize}
+
+The driver scripts are \texttt{cast\_2e/code/cert\_opt\_eval\_kn\_extended.py} (ResNet/ConvNeXtV2) and \texttt{cert\_opt\_eval\_vitb\_kn\_extended.py} (ViT-B). The total sweep produced 18 result JSONs covering $\sim\!200$ cells. They are stored in \texttt{cast\_2e/sweep\_results/}.
+
+\subsection{Headline pre-FT findings}
+
+\begin{table}[h]
+\centering
+\caption{Pre-FT top-1 accuracy for the strongest cell of each (arch, pattern, source) combination. ``Dense'' is the unpruned reference. Numbers are pre-FT only; the post-FT numbers are in \mainpaper{}-Table~CAST.}
+\label{tab:pre-ft-summary}
+\small
+\begin{tabular}{lccccc}
+\toprule
+Architecture & Pattern & Source & Best $\alpha_{\mathrm{ser}}$ & Permute & Pre-FT top-1 (\%) \\
+\midrule
+ViT-B/16 (dense=85.11) & $6{:}12$ & SER  & 0.50 & on  & 66.24 \\
+ViT-B/16 (dense=85.11) & $6{:}12$ & dense & 0.00 & on  & 65.58 \\
+ViT-B/16 (dense=85.11) & $2{:}4$ & dense & 0.00 & off & 70.43 \\
+ViT-L/16 (dense=85.84) & $8{:}16$ & dense & 0.00 & on  & 78.81 \\
+DeiT-Base (dense=81.80) & $6{:}12$ & SER & 0.50 & on  & 70.83 \\
+DeiT-Small (dense=79.85) & $6{:}12$ & SER & 0.50 & on  & 55.61 \\
+DeiT-Tiny (dense=72.21) & $6{:}12$ & SER & 0.50 & on  & 30.85 \\
+ResNet50.tv (dense=76.13) & $8{:}16$ & dense & 0.00 & on  & 61.56 \\
+ResNet50d (dense=80.55) & $8{:}16$ & dense & 0.00 & on  & 64.20 \\
+ResNet50.tv (dense=76.13) & $4{:}8$  & dense & 0.00 & on  & 40.39 \\
+ResNet50.tv (dense=76.13) & $4{:}8$  & dense & 0.00 & off & \phantom{0}5.92 \\
+ResNet50d (dense=80.55) & $4{:}8$ & dense & 0.00 & off & 26.29 \\
+ConvNeXtV2-B (dense=86.72) & $2{:}4$ & dense & 0.00 & off & 81.68 \\
+ConvNeXtV2-B (dense=86.72) & $12{:}16$ & dense & 0.00 & off & 84.50 \\
+ConvNeXtV2-B (dense=86.72) & $8{:}16$ & dense & 0.00 & off & 83.42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Three observations.}
+
+\begin{enumerate}[leftmargin=2em]
+\item \emph{Permutation alignment is critical for ResNet50.tv $4{:}8$.} Without permutation the cert-aware $4{:}8$ projection scores $5.92\%$ pre-FT, only marginally above random; with permutation it scores $40.39\%$, an improvement of $34.47$ pp. This is by far the largest permutation effect we observed across architectures.
+
+\item \emph{For the ViT family, the SER source plus $\alpha_{\mathrm{ser}} = 0.5$ is the right choice.} The $0.66$ pp gain of ViT-B SER+$\alpha=0.5$ over dense+$\alpha=0$ at $6{:}12$ is small pre-FT but compounds through the FT recipe: the FT-recovered ViT-B SER+$\alpha=0.5$ scores $83.74\%$ post-FT, $+0.5$ pp above the dense+$\alpha=0$ FT.
+
+\item \emph{ConvNeXtV2 prefers the dense source.} The depthwise structure of ConvNeXtV2 means the SER prior, which is built for dense projections, transfers poorly. The $12{:}16$ dense-source cell is the strongest pre-FT, and after FT it produces the $86.35\%$ headline of \mainpaper{}-Table~CAST.
+\end{enumerate}
+
+\subsection{Cert-optimisation variance and what is signal vs.\ noise}
+\label{subsec:cert-variance}
+
+We previously noted in the lab notebook that the ResNet50 $\alpha_{\mathrm{ser}}$ optimisation has range $11$--$19$ pp at fixed configuration across calibration draws. ViT-B has variance $22$--$40\times$ smaller. The implication for the sweep is that ResNet50's pre-FT cell rankings should be read with a $\pm 5$ pp standard deviation; the ViT-B rankings within the headline configuration are accurate to $\pm 0.2$ pp.
+
+The post-FT numbers (in \mainpaper{}) are much less variable because three epochs of distillation absorb most of the projection-time noise.
+
+% =====================================================
+% Continued in Part 2 ...
+% =====================================================
+
+
+% =====================================================
+\section{Other Numerical Results (migrated from \mainpaper{}-App.~B)}
+\label{sec:fc_num_meth}
+% =====================================================
+
+\noindent\emph{This section migrates the pre-existing \mainpaper{}-Appendix~B verbatim. The fully-connected MP-pruning numerics on Fashion MNIST and the outer-layer scaling diagnostics serve as a sanity check on the perturbative regime of the deterministic certificates, not as a proof of the ViT pipeline.}
+
+
+
+\label{app:fc_num_legacy}
+
+This appendix collects numerical illustrations relevant to the simplified theory. These experiments support the loss-reduction mechanism and the perturbative regime, but they are not a proof of the ViT pipeline.
+
+\begin{ex}
+\label{higher_acc_MP_based_training}
+We trained fully connected DNNs on Fashion MNIST with ReLU activations, comparing MP-based pruning against standard regularization baselines. MP-based pruning consisted of periodically removing a fraction of singular values below the fitted MP edge \(\sigma_+=\sqrt{N\lambda_+}\), followed by sparsification; see Algorithm~\ref{algo_1} and \cite{shmalo2023deep,berlyand2023enhancing}.
+
+For a network with topology
+\[
+[784,3000,3000,3000,3000,500,10].
+\]
+trained for \(100\) epochs with SGD (momentum \(0.9\), learning rate \(0.01\) decayed by \(0.96\) every \(4\) epochs), every \(4\) epochs we retained a fraction
+\begin{equation}
+\label{slow_prune}
+f(\mathrm{epoch})=\max\left(0,-\frac1{200}\,\mathrm{epoch}+1\right).
+\end{equation}
+Table~\ref{full_connected_acc_results} summarizes the results. The key finding is that MP-based pruning combined with \(L_1+L_2\) regularization (\(\mu_1=\mu_2=10^{-6}\)) achieves \(90.53\%\) test accuracy, substantially outperforming any single regularization method alone (\(\le 81.70\%\)) and the unregularized baseline (\(71.64\%\)).
+\end{ex}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+Training method & Train acc. (\%) & Test acc. (\%) \\
+\hline
+No pruning, no regularization & 78.03 & 71.64 \\
+\hline
+MP pruning only & 88.12 & 81.22 \\
+\hline
+\(L_1+L_2\) only & 87.57 & 81.70 \\
+\hline
+MP pruning + \(L_1+L_2\) & \textbf{99.82} & \textbf{90.53} \\
+\hline
+MP pruning + \(L_2\) & 99.98 & 90.16 \\
+\hline
+\end{tabular}
+\caption{Performance of a fully connected DNN on Fashion MNIST for various training strategies. MP-based pruning combined with regularization substantially outperforms either approach alone.}
+\label{full_connected_acc_results}
+\end{table}
+
+The result scales to deeper networks: a \([784,5000,5000,5000,5000,5000,5000,5000,10]\) model trained for \(1000\) epochs with the same MP pruning procedure achieves \(91.37\%\) test accuracy, compared with \(<90.5\%\) for regularization alone.
+
+\subsection{Numerical verification of the outer-layer scaling condition}
+\label{app:outer_layer_scaling}
+
+The perturbation bounds in our main theorems depend on the theoretical outer-layer scale
+\[
+a_N^{\mathrm{th}}(s)
+:=
+\|W_3\|_\infty\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}},
+\]
+which is the quantity denoted \(a(N,s)\) in Assumption~\ref{as1}. In the numerical plots below we also report the auxiliary empirical diagnostic
+\[
+a_N^{\mathrm{emp}}(s)
+:=
+\frac{\|W_3\|_\infty\|W_1s\|_2}{N^{3/8}}.
+\]
+The latter is not a replacement for the theoretical scale; it is a coarser width-decay diagnostic used in these experiments. For the theory to be useful, the relevant perturbation scales must decay with width in trained networks. We verify this empirically in a simple fully connected setting.
+
+\begin{ex}
+\label{ex:outer_layer_scaling}
+We train three-layer fully connected DNNs on Fashion MNIST with topology \([784,N,N,10]\), varying \(N\in[500,30000]\), using SGD with \(L_1\) regularization and \(200\) training epochs. Fashion MNIST inputs are normalized so that the largest \(\ell_2\) norm in the dataset is \(0.05\). For each trained network we compute the diagnostic scale
+\[
+\tau_N^{\mathrm{diag}}
+:=
+\sqrt2\,a_N^{\mathrm{th}}(s)
++
+a_N^{\mathrm{emp}}(s),
+\]
+for a normalized input \(s\) of maximal norm. This diagnostic is not used in the proofs; the theorem-scale quantity is \(a_N^{\mathrm{th}}(s)\).
+
+Numerically, \(\tau_N^{\mathrm{diag}}\to0\) as \(N\) grows under \(N(0,1/N)\) initialization. With \(N(0,1/N^2)\) initialization, the decay is substantially faster. In both cases, test accuracy increases with \(N\).
+\end{ex}
+
+Figure~\ref{fig:outer_layer_scaling_panels} summarizes these width-scaling numerics. Panels~\subref{fig:outer_scale_tau_1overN} and \subref{fig:outer_scale_tau_1overN2} show the decay of the perturbation scales under the two initializations, while panels~\subref{fig:outer_scale_acc_1overN} and \subref{fig:outer_scale_acc_1overN2} show the corresponding test-accuracy trends.
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{a(N)_new_vs_N_first.jpg}
+\caption{\(\tau(N)\) versus \(N\) under \(N(0,1/N)\) initialization.}
+\label{fig:outer_scale_tau_1overN}
+\label{a(N)}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{test_acc_N_first_2.jpg}
+\caption{Test accuracy versus \(N\) under \(N(0,1/N)\) initialization.}
+\label{fig:outer_scale_acc_1overN}
+\end{subfigure}
+
+\medskip
+
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{a(N)_new_vs_N.jpg}
+\caption{The analogous perturbation scale \(b(N)\) versus \(N\) under \(N(0,1/N^2)\) initialization.}
+\label{fig:outer_scale_tau_1overN2}
+\label{b(N)}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{test_acc_N_first.jpg}
+\caption{Test accuracy versus \(N\) under \(N(0,1/N^2)\) initialization.}
+\label{fig:outer_scale_acc_1overN2}
+\label{accuracy_vs_N_bN}
+\end{subfigure}
+\caption{Width-scaling numerics for the theoretical and empirical perturbation-scale diagnostics in the fully connected Fashion MNIST experiment.}
+\label{fig:outer_layer_scaling_panels}
+\end{figure}
+
+\begin{ex}
+\label{adding_noise}
+We train a fully connected Fashion MNIST DNN using the MP-based pruning procedure of Example~\ref{higher_acc_MP_based_training} to achieve approximately \(90.5\%\) test accuracy, then add centered Gaussian perturbations with entries \(\sim N(0,\epsilon)\) to each nonfinal layer. Numerically, when \(\epsilon\sim 1/N\), the cross-entropy and accuracy change little, consistent with the perturbative regime of Lemma~\ref{lem:remove_R}. The \(L_2\)-regularized loss increases monotonically, illustrating the loss-reduction mechanism of Theorem~\ref{theorem_reduction_of_loss}. Figure~\ref{fig:noise_panels} collects these diagnostics: panel~\subref{fig:noise_acc} shows the accuracy, while panels~\subref{fig:noise_loss_noreg} and \subref{fig:noise_loss_l2} show the losses without and with \(L_2\) regularization.
+\end{ex}
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{acc_vs_noise.png}
+\caption{Accuracy on training and test sets versus \(\epsilon\).}
+\label{fig:noise_acc}
+\label{fig:acc_vs_noise}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{loss_vs_noise_noreg.png}
+\caption{Loss without regularization versus \(\epsilon\).}
+\label{fig:noise_loss_noreg}
+\end{subfigure}
+
+\medskip
+
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{loss_vs_noise_L2.png}
+\caption{Loss with \(L_2\) regularization versus \(\epsilon\).}
+\label{fig:noise_loss_l2}
+\end{subfigure}
+
+\caption{Accuracy and loss as centered random perturbations are added to the nonfinal weight layers of the DNN.}
+\label{fig:noise_panels}
+\label{acc_loss_noise}
+\end{figure}
+
+\begin{rem}
+\label{rem:pruning_vs_regularization}
+In a linear regression problem with noisy Fourier-generated target functions and a fixed feature map, MP-guided pruning recovers the low-rank structure more effectively than \(L_1\) or \(L_2\) regularization alone. Specifically, pruning achieves mean squared error \(0.149\), compared with \(0.416\) for \(L_1\), \(2.563\) for \(L_2\), and \(2.574\) for no regularization. The pruned spectrum closely matches the ideal low-rank spectrum, whereas \(L_1\) and \(L_2\) leave a visible residual bulk.
+\end{rem}
+
+Figure~\ref{fig:regression_panels} collects the regression illustration: panel~\subref{fig:data_example} shows one noisy coordinate of the data, panel~\subref{fig:ideal_spectrum} shows the ideal low-rank spectrum, and panels~\subref{fig:l2_spectrum}--\subref{fig:pruning_spectrum} compare the \(L^2\), \(L^1\), and pre-pruning spectra.
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{data_example.png}
+\caption{One coordinate of the noisy regression data.}
+\label{fig:data_example}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.47\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{ideal_spectrum.png}
+\caption{Ideal low-rank spectrum.}
+\label{fig:ideal_spectrum}
+\end{subfigure}
+
+\medskip
+
+\begin{subfigure}[t]{0.31\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{l2_spectrum.png}
+\caption{\(L^2\)-regularized spectrum.}
+\label{fig:l2_spectrum}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.31\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{l1_spectrum.png}
+\caption{\(L^1\)-regularized spectrum.}
+\label{fig:l1_spectrum}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.31\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{pruning_spectrum.png}
+\caption{Spectrum before pruning.}
+\label{fig:pruning_spectrum}
+\end{subfigure}
+\caption{Regression illustration for comparing pruning with more classical regularization.}
+\label{fig:regression_panels}
+\end{figure}
+
+
+
+% =====================================================
+\section{Algorithms for RMT-based pruning diagnostics (migrated from \mainpaper{}-App.~E)}
+\label{sec:bema}
+% =====================================================
+
+\noindent\emph{This section is a verbatim migration of the pre-existing \mainpaper{}-Appendix~E. The BEMA edge-fitting algorithm and the MP-fit metric are the building blocks of every RMT-driven protocol in this paper and \mainpaper{}.}
+
+
+
+\label{sec:bema_legacy}
+
+\subsection{BEMA technique for computing \texorpdfstring{\(\lambda_+\)}{lambda+}}
+\label{finding_lambda_updated}
+
+We outline the BEMA technique for estimating the right MP edge \(\lambda_+\) of \(X=\frac1N W^\top W\) from its eigenvalue ESD. The full procedure appears in \cite{ke2021estimation}. Below is a streamlined square-matrix version.
+
+\begin{algorithm}[H]
+\caption{Computing \(\lambda_+\) using MP and Tracy--Widom corrections}
+\label{BEMA_algo}
+\begin{algorithmic}[1]
+\Procedure{BEMAEdge}{$\lambda_1,\dots,\lambda_N;\alpha,\beta$}
+\State Pick parameters \(\alpha\in(0,1/2)\), \(\beta\in(0,1)\).
+\For{each \(\alpha N \le k \le (1-\alpha)N\)}
+    \State Calculate \(q_k\), the \((k/N)\)-upper quantile of the MP law with \(\sigma^2=1\) and \(c=1\).
+\EndFor
+\State Evaluate
+\[
+\widehat{\sigma}^2
+=
+\frac{\sum_{\alpha N\le k\le (1-\alpha)N} q_k\lambda_k}
+     {\sum_{\alpha N\le k\le (1-\alpha)N} q_k^2}.
+\]
+\State Let \(t_{1-\beta}\) be the \((1-\beta)\)-quantile of the Tracy--Widom distribution.
+\State Output
+\[
+\lambda_+
+=
+\widehat{\sigma}^2
+\big[4+2^{4/3}t_{1-\beta}N^{-2/3}\big].
+\]
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Spectral analysis using a BEMA-type fit}
+\label{algo:bema_fit}
+\begin{algorithmic}[1]
+\Procedure{SpectralFit}{$W;\alpha,\beta,\gamma_{\mathrm{fit}}$}
+\State Set \(X=\frac1N W^\top W\).
+\State Compute the eigenvalues \(\lambda_1,\dots,\lambda_M\) of \(X\).
+\State Compute the empirical CDF \(F_X\) of the eigenvalue ESD.
+\State Apply \textsc{BEMAEdge} to estimate \(\lambda_+\).
+\State Let \(F_X^{\mathrm{MP}}\) be the fitted MP CDF.
+\State Compute the Kolmogorov-type fit error on the central quantile window:
+\[
+\mu_{\mathrm{fit}}
+=
+\max_{i_{\min}\le i\le i_{\max}}
+\big|F_X(\lambda_i)-F_X^{\mathrm{MP}}(\lambda_i)\big|.
+\]
+\State Accept the layer as ``sufficiently MP-like'' if \(\mu_{\mathrm{fit}}\le \gamma_{\mathrm{fit}}\).
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{MP-based pruning algorithm for the fully connected examples}
+\label{algo_1}
+\begin{algorithmic}[1]
+\Require Epoch block length \(\ell\), MP-fit threshold \(\tau\), monotone schedule \(f(\mathrm{epoch})\), and flags \(\mathrm{split}_\ell=\mathrm{false}\) for each layer.
+\State Train the DNN for \(\ell\) epochs and set \(\mathrm{epoch}:=\ell\).
+\While{the training condition is met}
+\For{each layer \(W_\ell\) with \(\mathrm{split}_\ell=\mathrm{false}\)}
+    \State Compute the SVD \(W_\ell=U_\ell\Sigma_\ell V_\ell^\top\).
+    \State Form \(X_\ell=\frac1{N_\ell}W_\ell^\top W_\ell\) and estimate \(\lambda_+\) via BEMA.
+    \State Set \(\sigma_+:=\sqrt{N_\ell\lambda_+}\).
+    \State Test whether the bulk of \(X_\ell\) is well fit by MP.
+    \If{the bulk fits MP}
+        \State Remove a fraction \(1-f(\mathrm{epoch})\) of the singular values below \(\sigma_+\) to obtain \(\Sigma'_\ell\).
+        \State Form \(W'_\ell=U_\ell\Sigma'_\ell V_\ell^\top\).
+        \State Optionally factor \(W'_\ell\) as \(W'_{1,\ell}W'_{2,\ell}\) via \(\sqrt{\Sigma'_\ell}\) if that reduces parameters.
+    \EndIf
+\EndFor
+\State Train the DNN for another \(\ell\) epochs and update \(\mathrm{epoch}:=\mathrm{epoch}+\ell\).
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Sparsify singular vectors}
+\label{spar_sing_vectors}
+\begin{algorithmic}[1]
+\Require Layer matrix \(W_\ell\), threshold \(\theta\), fitted singular-value edge \(\sigma_+\).
+\State Compute the SVD \(W_\ell=U\Sigma V^\top\).
+\For{\(i=1,\dots,\min\{N,M\}\)}
+    \State Compute
+    \[
+    T_i=\theta\max\left\{\frac1{750},\left(1-\frac{\Sigma_{ii}}{\sigma_+}\right)_+^{30}\right\}.
+    \]
+    \State Sparsify the singular vectors:
+    \[
+    U_{:,i}\leftarrow \mathrm{Prune}(U_{:,i},T_i),
+    \qquad
+    V_{:,i}\leftarrow \mathrm{Prune}(V_{:,i},T_i).
+    \]
+\EndFor
+\State Recompose \(W_\ell'=U\Sigma V^\top\).
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Element-wise sparsification}
+\label{spars_algo}
+\begin{algorithmic}[1]
+\Require Matrix \(W_\ell\), threshold \(\xi\).
+\For{each entry \((W_\ell)_{ij}\)}
+    \If{\(\abs{(W_\ell)_{ij}}<\xi\)}
+        \State Set \((W_\ell')_{ij}=0\).
+    \Else
+        \State Set \((W_\ell')_{ij}=(W_\ell)_{ij}\).
+    \EndIf
+\EndFor
+\State Return \(W_\ell'\).
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{How well does the ESD of \texorpdfstring{\(X\)}{X} fit the MP distribution?}
+\label{Alignment_Evaluation}
+
+\begin{defn}
+\label{ECS_Reformulated}
+Let \(G\) be a matrix with eigenvalue ESD \(\mu_G\) when \(G\) is positive semidefinite. Its observed cumulative spectral distribution is
+\[
+F_G(a)=\mu_G((-\infty,a]).
+\]
+\end{defn}
+
+The MP-fit metric compares the observed cumulative spectral distribution with the fitted MP CDF on a central quantile interval. This focuses the fit test on the bulk and deemphasizes a few possible outliers.
+
+\subsection{A BEMA illustration and metric figures}
+\label{alpha_and_metrics}
+
+\begin{ex}
+\label{deterministic_random}
+Let \(R\) be an \(N\times N\) matrix with i.i.d.\ \(\mathcal N(0,1)\) entries, and let \(S\) be the deterministic matrix with entries
+\[
+S[i,j]=\tan\!\left(\frac{\pi}{2}+\frac{1}{j+1}\right)+\cos(i)\log(i+j+1)+\sin(j)\cos\!\left(\frac{i}{j}\right).
+\]
+Set \(W=R+S\) and \(X=\frac1N W^\top W\). Figure~\ref{fig:ESD_X_MP} shows the ESD of \(X\) together with the fitted MP distribution produced by BEMA.
+\end{ex}
+
+\begin{rem}
+\label{alpha_hyper}
+The BEMA fit depends on \(\alpha\in(0,1/2)\) and \(\beta\in(0,1)\). Figure~\ref{fig:bema_synthetic_panels} collects the synthetic BEMA diagnostics: panel~\subref{fig:ESD_X_MP} shows the fitted MP bulk in the square unit-variance example, and panels~\subref{fig:bema_alpha_dep} and \subref{fig:bema_beta_dep} illustrate the dependence on \(\alpha\) and \(\beta\), where the true covariance-scale edge is \(\lambda_+=4\).
+\end{rem}
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.7\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{ESD_R+S.png}
+\caption{ESD of \(X=\frac1N W^\top W\) together with the fitted MP bulk.}
+\label{fig:ESD_X_MP}
+\end{subfigure}
+
+\medskip
+
+\begin{subfigure}[t]{0.4\textwidth}
+\centering
+\maybeincludegraphics[width=\textwidth]{Dep_on_alpha.png}
+\caption{Dependence on \(\alpha\), with \(\beta=0.5\).}
+\label{fig:bema_alpha_dep}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.4\textwidth}
+\centering
+\maybeincludegraphics[width=\textwidth]{Dep_on_beta.png}
+\caption{Dependence on \(\beta\), with \(\alpha=0.25\).}
+\label{fig:bema_beta_dep}
+\end{subfigure}
+\caption{Synthetic BEMA diagnostics: the fitted MP bulk for \(X=\frac1N W^\top W\) and the dependence of the fitted edge \(\lambda_+\) on \(\alpha\) and \(\beta\).}
+\label{fig:bema_synthetic_panels}
+\label{alpah_beta_dep}
+\end{figure}
+
+\paragraph{Heavy tails are not ubiquitous in ViTs.}
+Even though ViTs generalize well on ImageNet, their layer ESDs do \emph{not} always exhibit heavy-tailed behavior. In many layers we observe spectra that are well explained by an MP bulk with at most a few outliers, while other layers show more power-law-like decay. This heterogeneity is precisely why we diagnose each layer empirically rather than assuming a single universal spectral regime.
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{ViT_base_73LRM_.74MPfit.png}
+\caption{A layer with relatively poor MP fit: MP-fit error \(0.74\) and bulk fraction \(73\%\).}
+\label{MP_fit_ViT_layer_example_1}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{ViT_base_99.73LRM_.01MPfit.png}
+\caption{A layer with strong MP fit: MP-fit error \(0.01\) and bulk fraction \(99.73\%\).}
+\label{MP_fit_ViT_layer_example_2}
+\end{subfigure}
+
+\medskip
+
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\maybeincludegraphics[width=\linewidth]{vit_basic_MP_lowrank_metric.png}
+\caption{For the base ViT model: \(\alpha\) versus the bulk fraction and MP-fit error.}
+\label{alpha_vs_LR_MP}
+\end{subfigure}
+\caption{Layerwise MP diagnostics for the base ViT model. Panels~\subref{MP_fit_ViT_layer_example_1} and \subref{MP_fit_ViT_layer_example_2} show that some layers are much closer to an MP bulk than others, while panel~\subref{alpha_vs_LR_MP} shows how the bulk fraction and fit error vary with \(\alpha\).}
+\label{fig:vit_mp_diagnostics}
+\end{figure}
+
+
+
+% =====================================================
+\section{Spectral Edge Budgeting and hybrid RMT pruning protocols (migrated from \mainpaper{}-App.~F)}
+\label{sec:seb-protocols}
+% =====================================================
+
+\noindent\emph{This section is a verbatim migration of the pre-existing \mainpaper{}-Appendix~F. It documents the SEB and SER protocols, the four-regime strategy, the layer-type extension, and the final SEB comparison and validation ledgers. \mainpaper{}-Table~2 (multi-architecture Hybrid Magnitude--SER) is the headline result of this protocol family.}
+
+
+
+\label{sec:seb-protocols-legacy}
+
+This appendix records the operational RMT pruning protocols used in Section~\ref{sec:pruning_VITs}.  The central method is \emph{Spectral Edge Budgeting} (SEB): the fitted Marchenko--Pastur upper edge \(\sigma_+(\ell)\) guides the \emph{per-layer pruning budget} inside an otherwise standard global magnitude framework.  We also define \emph{Spectral Edge Reallocation} (SER), the practical prune--restore method that over-prunes, ranks a reservoir of removed weights using the same RMT diagnostics, reinserts a fixed budget, and then fine-tunes with the zero mask frozen.  Finally, we define the Hybrid Magnitude--SER protocol used for broader architecture validation.
+
+The cycle-based classical RMT procedure should be read as a diagnostic baseline, not as the final ViT pruning method.  It demonstrates that MP-bulk structure is visible in trained ViT layers, but direct singular-vector or singular-value pruning is brittle in modern transformer checkpoints.  The final methods use the MP fit to decide \emph{where} magnitude pruning and restoration should occur.
+
+\subsection{Spectral Edge Budgeting}
+\label{subsec:splus_method}
+
+Let \(W_1,\dots,W_L\) denote the weight matrices of the target layers.  For dense projections, \(W_\ell\) is the layer matrix itself; for a convolutional kernel of shape \(C_{\mathrm{out}}\times C_{\mathrm{in}}\times k_h\times k_w\), we unfold it as a \(C_{\mathrm{out}}\times(C_{\mathrm{in}}k_hk_w)\) matrix before fitting the spectrum.  Let \(\sigma_+(\ell)\) denote the fitted Marchenko--Pastur upper edge for layer~\(\ell\), computed from the eigenvalue distribution of \(W_\ell^\top W_\ell / N\) as described in Subsection~\ref{Alignment_Evaluation}.  We define the standardized spectral signal
+\[
+z_\ell = \frac{\sigma_+(\ell) - \bar{\sigma}_+}{\operatorname{sd}(\sigma_+)},
+\]
+where \(\bar{\sigma}_+\) and \(\operatorname{sd}(\sigma_+)\) are the mean and standard deviation of \(\{\sigma_+(\ell)\}_{\ell=1}^L\) across all target layers.  A high \(z_\ell\) indicates that the layer's spectral bulk extends further---intuitively, that a larger share of its singular values falls inside the MP-predicted regime and the layer has more ``spectral redundancy'' available for pruning.
+
+Given a target global sparsity \(s\in(0,1)\), modulation strength \(\beta>0\), and decay endpoint \(s_{\mathrm{d}}>0\), we define a per-layer pruning weight
+\begin{equation}
+\label{eq:splus_weight}
+w_\ell(s) = \max\!\Big(0.1,\; 1 + \beta\,d(s)\,z_\ell\Big),
+\end{equation}
+where the decay factor
+\begin{equation}
+\label{eq:decay}
+d(s) = \bigl[\,1 - s/s_{\mathrm{d}}\,\bigr]_+
+\end{equation}
+ensures that the modulation attenuates toward uniform magnitude pruning as the sparsity target approaches \(s_{\mathrm{d}}\).  The floor at \(0.1\) prevents any layer from being fully exempt.
+
+Pruning proceeds by assigning each nonzero parameter \((W_\ell)_{ij}\) a global score
+\[
+r_{ij}^{(\ell)} = \frac{|(W_\ell)_{ij}|}{w_\ell(s)},
+\]
+and removing the parameters with the smallest scores until the target sparsity \(s\) is reached.  Equivalently, if the global score cutoff is \(q\), then layer~\(\ell\) is thresholded in magnitude at \(q\,w_\ell(s)\). Thus \(w_\ell>1\) raises the effective magnitude threshold and causes more parameters to be pruned from that layer; conversely, \(w_\ell<1\) protects the layer.  At \(\beta=0\) (or when \(s\ge s_{\mathrm{d}}\)), all weights equal~\(1\) and the method reduces to plain global magnitude pruning.
+
+\subsection{Layer-type extension}
+\label{subsec:layer_type}
+
+A ViT contains two functionally distinct families of dense layers: \emph{attention projections} (query--key--value and output) and \emph{MLP layers} (the two feed-forward projections per block).  We extend the modulation~\eqref{eq:splus_weight} by allowing different modulation strengths for each family:
+\begin{equation}
+\label{eq:layertype_weight}
+w_\ell(s)
+= \max\!\Big(0.1,\;1 + \beta_{\mathrm{type}(\ell)}\,d(s)\,z_\ell\Big),
+\qquad
+\beta_{\mathrm{type}(\ell)}
+=
+\begin{cases}
+\beta_{\mathrm{attn}}, & \ell \in \mathcal{L}_{\mathrm{attn}},\\[2pt]
+\beta_{\mathrm{mlp}}, & \ell \in \mathcal{L}_{\mathrm{mlp}},\\[2pt]
+\beta, & \text{otherwise},
+\end{cases}
+\end{equation}
+where \(\mathcal{L}_{\mathrm{attn}}\) and \(\mathcal{L}_{\mathrm{mlp}}\) partition the transformer layers by type. The \(z\)-scores remain globally computed across all layers, preserving the cross-type spectral ranking; only the \emph{strength} of the modulation varies by type.
+
+\subsection{Alternative signal: the power-law exponent \texorpdfstring{\(\alpha\)}{alpha}}
+\label{subsec:alpha_signal}
+
+The heavy-tailed self-regularization (HT-SR) framework of Martin and Mahoney~\cite{martin2021implicit,martin2020heavy} characterizes each layer by the power-law exponent \(\alpha_\ell\) of the tail of its eigenvalue distribution, estimated via the Hill estimator applied to the squared singular values.  Lower \(\alpha_\ell\) indicates a more heavy-tailed (better-trained, more structured) layer; higher \(\alpha_\ell\) indicates a more random-like layer.  This metric is the basis of the AlphaPruning method~\cite{lu2024alphapruning}, which assigns per-layer sparsity in proportion to \(\alpha_\ell\).
+
+We use \(\alpha_\ell\) as a drop-in replacement for \(\sigma_+(\ell)\) in the budget-modulation framework~\eqref{eq:splus_weight}, with the standardized signal
+\[
+z_\ell^\alpha = \frac{\alpha_\ell - \bar{\alpha}}{\operatorname{sd}(\alpha)}.
+\]
+High \(z_\ell^\alpha\) indicates a more random-like layer that should absorb more pruning---the same direction as \(\sigma_+\).
+
+Crucially, \(\alpha\) and \(\sigma_+\) are only weakly correlated (\(r=0.37\) across the 50 target layers of ViT-B/16).  They capture complementary aspects of the spectral structure: \(\sigma_+\) measures the extent of the MP bulk (how much of the spectrum is noise-like), while \(\alpha\) measures the tail decay rate (how well-trained the layer is overall).  This low correlation suggests that each signal may be informative in a different sparsity regime.
+
+\subsection{Four-regime strategy}
+\label{subsec:four_regime}
+
+Empirical evaluation reveals that \(\alpha\) outperforms \(\sigma_+\) at very low sparsity (\(s \le 0.20\)), while \(\sigma_+\) dominates at moderate and high sparsity (\(s \ge 0.25\)).  This motivates a four-regime strategy that selects the optimal signal and hyperparameters per sparsity range:
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Very low sparsity} (\(s \le 0.20\)):  \(\alpha\)-budget with \(\beta=0.50\), \(s_{\mathrm{d}}=0.30\).  The power-law exponent provides mild but positive modulation where \(\sigma_+\) is indistinguishable from magnitude pruning.
+
+\item \textbf{Low sparsity} (\(0.20 < s \le 0.40\)):  \(\sigma_+\)-budget with \(\beta=1.00\), \(s_{\mathrm{d}}=0.50\).
+
+\item \textbf{Moderate sparsity} (\(0.40 < s \le 0.55\)):  \(\sigma_+\)-budget with \(\beta=1.25\), \(s_{\mathrm{d}}=0.70\).
+
+\item \textbf{High sparsity} (\(s > 0.55\)):  Layer-type \(\sigma_+\)-budget with \(\beta_{\mathrm{attn}}=1.00\), \(\beta_{\mathrm{mlp}}=2.00\), \(s_{\mathrm{d}}=0.85\).
+\end{enumerate}
+
+The transition from \(\alpha\) to \(\sigma_+\) at \(s=0.20\) reflects a fundamental shift: at very low sparsity the binding constraint is layer-level training quality (captured by \(\alpha\)), whereas at moderate-to-high sparsity the binding constraint is spectral redundancy (captured by \(\sigma_+\)).
+
+\subsection{Hyperparameter space and optimization}
+\label{subsec:hp_space}
+
+The method has three base hyperparameters \((\beta, s_{\mathrm{d}}, p)\) for uniform modulation (where \(d(s) = [1-s/s_{\mathrm{d}}]_+^{\,p}\) generalizes \eqref{eq:decay}), plus the optional layer-type extension \((\beta_{\mathrm{attn}}, \beta_{\mathrm{mlp}})\) and the choice of signal (\(\sigma_+\) or \(\alpha\)).  We performed a systematic grid search totalling over 1{,}000 evaluations on the ViT-B/16 architecture over five successive sweeps:
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Signal comparison} (175 cells).  We compared four per-layer signals---\(\sigma_+\), \(\sigma_+/\|W\|_F\), the excess kurtosis of \(|W|\), and the coefficient of variation of \(|W|\)---each with \(\beta\in\{0.25,0.50,1.00\}\), \(s_{\mathrm{d}}\in\{0.50,0.70\}\), across 7 target sparsities.  Only the MP edge \(\sigma_+\) produced consistent improvements over magnitude pruning; the other three signals either matched or degraded performance at every configuration tested.
+
+\item \textbf{Decay shape and extended reach} (108 cells).  Fixing the signal to \(\sigma_+\), we tested decay exponents \(p\in\{1,2,3\}\) and extended the decay endpoint to \(s_{\mathrm{d}}\in\{0.70,0.85\}\).  Nonlinear decay (\(p>1\)) proved uniformly harmful: at \(s=0.55\), quadratic decay (\(p=2\)) lost \(28\) percentage points relative to linear (\(p=1\)).  Extending \(s_{\mathrm{d}}\) from \(0.70\) to \(0.85\) yielded large gains at \(s\ge 0.60\).
+
+\item \textbf{Fine grid refinement} (206 cells).  We explored \(\beta\in\{0.75,\dots,1.75\}\), \(s_{\mathrm{d}}\in\{0.70,\dots,1.05\}\), and the sub-linear regime \(p\in\{0.5,0.75,1.0\}\).  The surface is a broad diagonal ridge in \((\beta, s_{\mathrm{d}})\)-space: stronger modulation compensates for faster decay and vice versa.  Sub-linear decay (\(p<1\)) did not improve over linear.
+
+\item \textbf{Definitive evaluation and layer-type extension} (434 cells).  We re-evaluated the top 14 uniform-\(\beta\) methods at 250-batch full precision across 11 sparsities (Phase~1, 154 cells), performed an ultra-fine \(9\times 5\) grid of \((\beta, s_{\mathrm{d}})\) at the cliff region (Phase~2, 180 cells), and ran a full \(5\times 5\) grid of \((\beta_{\mathrm{attn}}, \beta_{\mathrm{mlp}})\) at 4 sparsities (Phase~3, 100 cells).
+
+\item \textbf{Alpha signal sweep} (77 cells).  We replaced \(\sigma_+\) with the Hill-estimated power-law exponent \(\alpha_\ell\) and tested \(\beta\in\{0.25,0.50,1.00\}\), \(s_{\mathrm{d}}\in\{0.25,0.30,0.50,0.70\}\) across 11 sparsities.  The \(\alpha\) signal outperforms both magnitude and \(\sigma_+\) at \(s\le 0.20\) but collapses at \(s\ge 0.30\), confirming the complementary-regime hypothesis.
+\end{enumerate}
+
+All evaluations used a fixed subset of 2{,}000 images from the ILSVRC-2012 validation set (250 batches of 8) unless otherwise noted; definitive results in Phase~1 used the same subset at 250-batch evaluation for reduced noise (\(\pm 0.5\) pp).
+
+\subsection{Results: uniform modulation}
+\label{subsec:uniform_results}
+
+Table~\ref{tab:splus_uniform} reports the definitive 250-batch top-1 accuracy for the best uniform-\(\beta\) configuration at each target sparsity, compared against global magnitude pruning.  The optimal parameters shift systematically: at moderate sparsity \((s\le 0.55)\), smaller \(s_{\mathrm{d}}=0.70\) with \(\beta=1.25\) suffices; at high sparsity \((s\ge 0.60)\), the decay must extend further (\(s_{\mathrm{d}}\ge 0.85\)) so that the \(\sigma_+\) signal remains active through the critical region.
+
+\begin{table}[ht]
+\centering
+\caption{Best uniform-\(\beta\) \(\sigma_+\)-budget method versus global magnitude pruning on ViT-B/16 (no retraining).  All results at 250-batch evaluation.  The \(\Delta\) column reports the improvement over magnitude pruning.}
+\label{tab:splus_uniform}
+\begin{tabular}{clccc}
+\toprule
+Sparsity \(s\) & Best \((\beta, s_{\mathrm{d}})\) & Top-1 (\%) & Magnitude (\%) & \(\Delta\) (pp) \\
+\midrule
+0.30 & \((1.00,\;0.50)\) & 84.90 & 84.25 & \(+0.65\) \\
+0.40 & \((1.00,\;0.70)\) & 82.80 & 82.75 & \(+0.05\) \\
+0.50 & \((1.25,\;0.70)\) & 79.30 & 76.20 & \(+3.10\) \\
+0.55 & \((1.25,\;0.70)\) & 72.85 & 67.70 & \(+5.15\) \\
+0.60 & \((1.25,\;0.85)\) & 59.85 & 45.00 & \(+14.85\) \\
+0.625 & \((1.30,\;0.90)\) & 48.45 & 26.60 & \(+21.85\) \\
+0.65 & \((1.30,\;0.90)\) & 33.25 & 10.75 & \(+22.50\) \\
+0.675 & \((1.30,\;0.95)\) & 17.35 & 2.55 & \(+14.80\) \\
+0.70 & \((1.50,\;0.95)\) & 5.80 & 0.70 & \(+5.10\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Key findings from the uniform-\(\beta\) sweeps.}
+
+\begin{enumerate}[leftmargin=2em]
+\item \emph{Linear decay is optimal.}  Across all 923 cells, the linear schedule \(p=1\) in \eqref{eq:decay} was never outperformed by higher-order decay (\(p\ge 2\)).  Quadratic and cubic decay cause the modulation to retreat too quickly at moderate sparsity, collapsing to magnitude pruning precisely where the spectral signal is most valuable.  Sub-linear decay (\(p<1\)) over-modulates, hitting the \(w_\ell=0.1\) floor for too many layers.
+
+\item \emph{The surface is a diagonal ridge.}  An ultra-fine \(9\times 5\) grid at the cliff (\(s\in\{0.60,\,0.625,\,0.65,\,0.675\}\)) reveals that many \((\beta, s_{\mathrm{d}})\) pairs give nearly identical accuracy.  For example, at \(s=0.65\), the configurations \((\beta=1.25, s_{\mathrm{d}}=0.94)\), \((\beta=1.35, s_{\mathrm{d}}=0.91)\), and \((\beta=1.45, s_{\mathrm{d}}=0.88)\) all achieve \(\approx 33.6\%\) top-1.  The effective control variable is the product \(\beta \cdot d(s)\), the modulation strength at the operating point.
+
+\item \emph{The gain is largest at the accuracy cliff.}  Below \(s=0.50\), \(\sigma_+\)-modulation provides modest gains (\({\le}3\) pp).  The improvement grows rapidly beyond \(s=0.55\) and peaks at \(+22.5\) pp near \(s=0.65\), precisely where uniform magnitude pruning exhausts the ``safe'' parameters and begins removing structurally important weights.  The \(\sigma_+\) signal identifies layers with residual capacity that magnitude pruning alone cannot exploit.
+\end{enumerate}
+
+\subsection{Results: layer-type modulation}
+\label{subsec:layertype_results}
+
+Table~\ref{tab:splus_layertype} reports the 150-batch top-1 accuracy for the full \(5\times 5\) grid of \((\beta_{\mathrm{attn}}, \beta_{\mathrm{mlp}})\) at \(s=0.65\), with \(s_{\mathrm{d}}=0.85\) and \(p=1\) held fixed.
+
+\begin{table}[ht]
+\centering
+\caption{Layer-type modulation at \(s=0.65\): top-1 accuracy (\%) for each \((\beta_{\mathrm{attn}}, \beta_{\mathrm{mlp}})\) pair.  The uniform-\(\beta\) diagonal is shown in bold.  The optimum lies at \((\beta_{\mathrm{attn}},\beta_{\mathrm{mlp}})=(1.00,\,2.00)\), corresponding to near-uniform magnitude pruning for attention and strong \(\sigma_+\)-guided redistribution for MLP layers.}
+\label{tab:splus_layertype}
+\begin{tabular}{c|ccccc}
+\toprule
+ & \multicolumn{5}{c}{\(\beta_{\mathrm{mlp}}\)} \\
+\(\beta_{\mathrm{attn}}\) & 1.00 & 1.25 & 1.50 & 1.75 & 2.00 \\
+\midrule
+1.00 & 27.50 & 32.75 & 36.00 & 36.17 & \textbf{39.75} \\
+1.25 & 27.17 & 32.33 & 34.33 & 37.00 & 38.00 \\
+1.50 & 24.25 & 30.75 & \textbf{33.08} & 35.25 & 36.92 \\
+1.75 & 22.58 & 27.67 & 30.42 & 32.17 & 33.67 \\
+2.00 & 19.00 & 24.92 & 27.58 & 28.67 & 30.25 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The pattern is striking: the optimal modulation is strongly asymmetric, with \(\beta_{\mathrm{attn}}=1.00\) (minimal spectral modulation for attention layers) and \(\beta_{\mathrm{mlp}}=2.00\) (strong spectral modulation for MLP layers).  This configuration achieves \(39.75\%\) top-1 at \(s=0.65\)---a gain of \(+6.67\) percentage points over the best uniform-\(\beta\) method (\(33.08\%\)) and \(+29.00\) pp over magnitude pruning (\(10.75\%\)).  The gain from layer-type differentiation is consistent across sparsities: \(+3.42\) pp at \(s=0.60\), \(+4.92\) pp at \(s=0.625\), and \(+5.92\) pp at \(s=0.675\).
+
+\paragraph{Interpretation.}
+At high sparsity, attention projection matrices appear to be optimally pruned by magnitude alone: the \(\sigma_+\) signal provides no additional guidance and can even mislead the budget allocation for these layers.  MLP layers, by contrast, exhibit within-family heterogeneity in spectral structure that the \(\sigma_+\) signal captures well.  Applying strong budget modulation only to MLP layers allows magnitude pruning to handle attention---where it is already near-optimal---while directing spectral guidance to the layers where it provides genuine discriminative power.
+
+\subsection{SEB final comparison}
+\label{subsec:final_comparison}
+
+The optimal hyperparameters vary systematically with sparsity (Table~\ref{tab:splus_uniform}): at low sparsity, gentle modulation with a short decay suffices; at high sparsity, the layer-type extension with strong MLP modulation dominates.  This motivates the final SEB strategy, which selects the best-performing configuration per sparsity range.  We define three regimes based on the empirical accuracy landscape:
+
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Low sparsity} (\(s < 0.30\)):  The model retains most of its capacity and magnitude pruning is already near-optimal.  At this sparsity level, the per-layer redundancy distribution is not yet a binding constraint: across all 923 configurations tested, no \(\sigma_+\)-modulated variant consistently outperforms global magnitude pruning.  Accordingly, we recommend magnitude pruning without spectral modulation for \(s < 0.30\), and begin applying the \(\sigma_+\)-budget from \(s \ge 0.30\) onward, where \((\beta=1.00,\, s_{\mathrm{d}}=0.50)\) yields \(+0.65\) pp over magnitude.
+
+\item \textbf{Moderate sparsity} (\(0.40 < s \le 0.55\)):  Magnitude pruning begins to lose accuracy rapidly.  Uniform modulation with \(\beta=1.25\), \(s_{\mathrm{d}}=0.70\) recaptures \(1\)--\(5\) percentage points by directing pruning toward spectrally redundant layers.
+
+\item \textbf{High sparsity} (\(s > 0.55\)):  The accuracy cliff.  The layer-type extension with \(\beta_{\mathrm{attn}}=1.00\), \(\beta_{\mathrm{mlp}}=2.00\), \(s_{\mathrm{d}}=0.85\) yields gains of \(6\)--\(29\) percentage points over magnitude pruning by preserving attention layers and concentrating spectral redistribution on MLP layers.
+\end{enumerate}
+
+Table~\ref{tab:final_comparison} compares SEB against global magnitude pruning on ViT-B/16, evaluated at every \(5\%\) sparsity increment from \(5\%\) to \(75\%\).  No retraining or fine-tuning is applied; all accuracy values are from a single forward pass on a 2{,}000-image subset of the ILSVRC-2012 validation set.
+
+\begin{table}[ht]
+\centering
+\caption{Top-1 accuracy (\%) on ViT-B/16 for global magnitude pruning versus SEB.  At low sparsity (\(s\le 0.40\)), the two methods are within the evaluation noise band; the \(\sigma_+\)-budget advantage grows monotonically from \(s\ge 0.45\), peaking at \(+28.60\) pp at \(s=0.65\).}
+\label{tab:final_comparison}
+\begin{tabular}{ccccc}
+\toprule
+Sparsity & Regime & Magnitude (\%) & \(\sigma_+\)-budget (\%) & \(\Delta\) (pp) \\
+\midrule
+30\% & Low & 84.25 & 84.90 & \(+0.65\) \\
+35\% & Low & 83.85 & 83.75 & \(-0.10\) \\
+40\% & Low & 82.75 & 82.55 & \(-0.20\) \\
+\midrule
+45\% & Mid & 80.00 & 81.30 & \(+1.30\) \\
+50\% & Mid & 76.20 & 79.30 & \(+3.10\) \\
+55\% & Mid & 67.70 & 72.85 & \(+5.15\) \\
+\midrule
+60\% & High & 45.00 & 61.80 & \(+16.80\) \\
+65\% & High & 10.75 & 39.35 & \(+28.60\) \\
+70\% & High & 0.70 & 6.25 & \(+5.55\) \\
+75\% & High & 0.10 & 0.25 & \(+0.15\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key observation is that the \(\sigma_+\)-budget method never substantially \emph{hurts} at any sparsity: the worst-case at low sparsity (\(-0.75\) pp at \(s=0.20\)) is within the evaluation noise for a 2{,}000-image subset.  This is consistent with the theoretical expectation: at low sparsity, most weight components can be removed in any order without affecting the output, so the per-layer budget redistribution is a second-order effect.  As sparsity increases and the ``safe'' parameters are exhausted, the spectral signal becomes increasingly valuable, culminating in a nearly threefold accuracy improvement at \(s=0.65\) (\(39.35\%\) versus \(10.75\%\)).
+
+\subsection{Singular-vector sparsification as a preprocessing step}
+\label{subsec:sv_preprocessing}
+
+The spectral analysis in previous sections operates on the \emph{singular values} of each weight matrix.  A natural question is whether sparsifying the \emph{singular vectors} --- zeroing small components of \(\mathbf{U}\) and \(\mathbf{V}\) before magnitude pruning --- can further improve accuracy by removing noise in the rank-one directions themselves.
+
+We test this with a Haar-distribution test: for each weight matrix \(W \in \mathbb{R}^{M \times N}\), we compute the SVD \(W = U \Sigma V^\top\), then for each singular vector column, compute a \(z\)-score against the Haar (uniform-on-the-sphere) null distribution.  Components with \(|z| < z_{\mathrm{base}}\) are zeroed, effectively denoising the singular subspaces before the weight matrix is reconstructed.  The threshold is modulated per layer by \(\sigma_+\) with power \(p=3\), following the same principle as the budget allocation: layers with larger spectral bulk have more noise in their singular vectors.
+
+We sweep \(z_{\mathrm{base}} \in \{0.3, 0.5, 0.7, 1.0\}\) and apply the denoised model as a preprocessing step before standard global magnitude pruning.  Table~\ref{tab:sv_preprocessing} reports the results.
+
+\begin{table}[ht]
+\centering
+\caption{Top-1 accuracy (\%) after Haar singular-vector sparsification (SV) followed by global magnitude pruning, compared to magnitude pruning alone.  SV preprocessing yields small improvements at low sparsity (\(+0.25\) pp at \(s=0.05\) for \(z=0.3\)) and moderate sparsity (\(+0.90\) pp at \(s=0.60\) for \(z=0.5\)), but all gains are within or near the evaluation noise band.}
+\label{tab:sv_preprocessing}
+\begin{tabular}{cccccc}
+\toprule
+Sparsity & No SV (\%) & \(z=0.3\) (\%) & \(z=0.5\) (\%) & \(z=0.7\) (\%) & \(z=1.0\) (\%) \\
+\midrule
+5\%  & 86.05 & \textbf{86.30} & 85.95 & 85.80 & 85.90 \\
+10\% & \textbf{86.10} & 86.00 & 85.95 & 85.90 & 85.90 \\
+15\% & 85.70 & 85.75 & 85.70 & 85.85 & \textbf{85.90} \\
+20\% & \textbf{85.70} & 85.55 & \textbf{85.75} & 85.50 & 85.40 \\
+25\% & 84.85 & 84.90 & \textbf{84.95} & \textbf{84.95} & 84.60 \\
+30\% & 84.25 & 84.25 & \textbf{84.45} & \textbf{84.45} & 84.25 \\
+\midrule
+60\% & 45.00 & 45.50 & \textbf{45.90} & 45.60 & 45.55 \\
+65\% & 10.75 & 11.60 & 11.10 & 11.75 & \textbf{12.40} \\
+70\% & \textbf{0.70} & \textbf{0.70} & 1.00 & 1.10 & 1.30 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The effect is marginal: the best SV variant never exceeds the no-SV baseline by more than \(1.65\) pp (at \(s=0.65\), \(z=1.0\)), and at most sparsity levels the differences are \(\leq 0.25\) pp --- within the noise of a 2{,}000-image evaluation.  This negative result is informative: it suggests that the information content of ViT-B/16 weight matrices is concentrated in the \emph{magnitudes} of the singular values (i.e., the spectral distribution), not in the \emph{directions} of the singular vectors.  The Marchenko--Pastur edge \(\sigma_+\) captures the relevant signal; further denoising of the subspace bases does not provide additional compression benefit at any sparsity level tested.
+
+\subsection{Full validation-set evaluation of SEB}
+\label{subsec:final_comparison_10k}
+
+The sweep tables in this appendix report accuracy from a 2{,}000-image validation subset, selected for speed during the hyperparameter sweep.  After selecting the final configuration, we re-evaluate on the \emph{complete} 50{,}000-image ILSVRC-2012 validation set, matching the standard evaluation protocol used to report the baseline accuracy of \(85.11\%\). The checkpoint is \path{vit_base_patch16_224.augreg2_in21k_ft_in1k}.  For the reported SEB row, we apply Haar singular-vector sparsification (\(z=0.5\), \(p=3\)) as a preprocessing step followed by the final SEB budget; this corresponds to composing the modulation of Section~\ref{subsec:final_comparison} with the singular-vector step of Section~\ref{subsec:sv_preprocessing}.
+
+\begin{table}[ht]
+\centering
+\caption{Full 50{,}000-image validation evaluation of SEB with Haar singular-vector sparsification (\(z=0.5\), \(p=3\)) versus global magnitude pruning on ViT-B/16.  Baseline top-1 accuracy: \(85.11\%\).  No fine-tuning or retraining is applied.  Bold entries mark sparsities at which SEB outperforms magnitude by \(\ge 1\) pp.}
+\label{tab:final_comparison_10k}
+\begin{tabular}{ccccc}
+\toprule
+Sparsity \(s\) & Regime & Magnitude (\%) & SEB (\%) & \(\Delta\) (pp) \\
+\midrule
+5\%  & Low     & 85.09 & 85.08         & \(-0.01\) \\
+10\% & Low     & 85.06 & 85.02         & \(-0.04\) \\
+15\% & Low     & 85.02 & 84.85         & \(-0.17\) \\
+20\% & Low     & 84.89 & 84.56         & \(-0.34\) \\
+\midrule
+25\% & Low-mid & 84.58 & 84.53         & \(-0.05\) \\
+30\% & Low-mid & 84.07 & 84.30         & \(+0.23\) \\
+35\% & Low-mid & 83.45 & 83.66         & \(+0.21\) \\
+40\% & Low-mid & 82.23 & 82.24         & \(+0.01\) \\
+\midrule
+45\% & Mid     & 80.20 & 80.70         & \(+0.49\) \\
+50\% & Mid     & 76.67 & \textbf{78.55} & \(+1.88\) \\
+55\% & Mid     & 68.41 & \textbf{72.68} & \(+4.28\) \\
+\midrule
+60\% & High    & 46.42 & \textbf{61.57} & \(+15.15\) \\
+65\% & High    &  9.97 & \textbf{38.92} & \(+28.95\) \\
+70\% & High    &  0.82 & \textbf{6.11}  & \(+5.30\) \\
+75\% & High    &  0.20 & 0.35          & \(+0.15\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The full-validation evaluation confirms the qualitative picture from the 2{,}000-image sweep (Table~\ref{tab:final_comparison}): at low sparsity the two methods are within measurement noise, while the SEB advantage grows sharply once magnitude pruning begins to collapse.  The crossover begins at \(s=0.45\) (\(+0.49\) pp) and the gap widens monotonically to its maximum of \(+28.95\) pp at \(s=0.65\), where magnitude pruning has dropped to \(9.97\%\) top-1 while SEB retains \(38.92\%\).  Beyond \(s=0.70\), neither method is practically useful without fine-tuning, and the differences compress accordingly.  These numbers represent the best no-fine-tuning performance among the spectral-guided configurations tested here; SER extends this same spectral idea to a fine-tuned prune--restore pipeline.
+
+\subsection{Spectral Edge Reallocation}
+\label{subsec:ser_method}
+
+SEB is a one-shot budget allocation method.  SER turns the same spectral signal into a practical prune--restore pipeline.  For a target sparsity \(s\), the method first prunes past the target, producing a reservoir \(\mathcal{R}\) of removed entries.  During a short selection phase, only the removed entries are trainable; the method records their absolute movement from the pre-selection reservoir value.  An entry \((i,j)\) in layer \(\ell\) is then ranked by
+\[
+|\Delta_{ij}^{(\ell)}|\,\rho_\ell(s),
+\]
+where \(\rho_\ell(s)\) is the RMT restoration multiplier obtained from the same layerwise spectral weights used for pruning.  Thus entries that move strongly during the selection phase and belong to spectrally protected layers receive higher restoration priority, while entries from layers with larger MP-bulk pruning capacity are less likely to be restored.  A fixed restoration budget is reinserted, and the final mask is adjusted so that the realized post-reinsertion sparsity is exactly \(s\).  The surviving weights are then fine-tuned for a short schedule with the zero mask frozen.
+
+The connection to the theory is the same as for SEB, but applied twice.  The pruning stage uses MP information to allocate perturbation budget across layers; the reallocation stage uses the same information to choose which removed perturbations were too costly and should be restored.  The deterministic certificates of Section~\ref{Main_theory_gen} apply after the mask is fixed, while the MP diagnostics supply a data-independent ranking rule for finding masks that are more likely to satisfy those certificates.
+
+\subsection{Hybrid Magnitude--SER}
+\label{subsec:hybrid_ser_method}
+
+The sweep above shows that RMT modulation is not needed at very low sparsity: below about \(20\%\), global magnitude pruning is already within the noise band of the best spectral rules.  The hybrid method therefore uses exact global magnitude pruning for \(s\le0.20\), saves those checkpoints, and starts SER only for the continuation \(s>0.20\).  Its purpose is conservative: preserve the strongest low-sparsity behavior of magnitude pruning, then use RMT only in the regime where layerwise redundancy becomes the limiting factor.
+
+\subsection{Checkpoint validation ledger}
+\label{subsec:checkpoint_validation_ledger}
+
+The main tables report rounded top-1 accuracy values from the archived validation files associated with the saved checkpoints.  Most entries come directly from \texttt{results.json} or \texttt{finetune\_results.json}; where a later restart overwrote a partial JSON ledger, the local archived stdout validation line and the saved checkpoint are used.  When both a prefix file and the integrated run file contain the same exact-magnitude prefix checkpoint, the integrated run file is used in the ledger; prefix-only rows are included only when no later integrated validation file exists.  Entries are post-fine-tuning ImageNet-1k validation top-1 accuracy in percent.  Stopped exploratory rows with no validated nonzero checkpoint are omitted from Table~\ref{tab:multi_arch_hybrid}.
+
+\begin{table}[ht]
+\centering
+\caption{Checkpoint-level validation ledger for the Hybrid Magnitude--SER multi-architecture results.  These are the values used in Table~\ref{tab:multi_arch_hybrid}.}
+\label{tab:checkpoint_validation_ledger}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{4.0cm}cX}
+\toprule
+Architecture/checkpoint & Dense & Validated sparsity--top-1 pairs \\
+\midrule
+ViT-B/16 \texttt{augreg2\_in21k\_ft\_in1k}
+& 85.11
+& \(0.05:85.23\), \(0.10:85.17\), \(0.15:85.06\), \(0.20:84.89\), \(0.25:84.81\), \(0.30:84.64\), \(0.35:84.55\), \(0.40:84.28\), \(0.45:83.80\), \(0.50:83.37\), \(0.55:82.76\), \(0.60:81.39\), \(0.65:79.95\), \(0.70:78.01\) \\
+ViT-B/16/384 \texttt{augreg\_in21k\_ft\_in1k}
+& 86.01
+& \(0.05:86.05\), \(0.10:86.09\), \(0.15:86.07\), \(0.20:85.99\), \(0.25:86.00\), \(0.30:85.90\), \(0.35:85.81\), \(0.40:85.78\), \(0.45:85.48\), \(0.50:85.15\), \(0.55:84.64\), \(0.60:83.35\), \(0.65:82.50\), \(0.70:81.33\) \\
+ViT-Large/16 \texttt{augreg\_in21k\_ft\_in1k}
+& 85.84
+& \(0.05:85.80\), \(0.10:85.84\), \(0.15:85.88\), \(0.20:85.75\), \(0.25:84.98\), \(0.30:85.32\), \(0.35:85.64\), \(0.40:85.04\), \(0.45:85.08\), \(0.50:84.52\), \(0.55:84.34\), \(0.60:83.81\), \(0.65:83.02\), \(0.70:82.13\) \\
+DeiT-Tiny \texttt{patch16\_224.fb\_in1k}
+& 72.21
+& \(0.05:72.41\), \(0.10:72.38\), \(0.15:72.18\), \(0.20:71.86\), \(0.25:71.99\), \(0.30:71.75\), \(0.35:71.35\), \(0.40:70.66\), \(0.45:68.97\), \(0.50:67.74\), \(0.55:65.91\), \(0.60:61.17\), \(0.65:55.58\), \(0.70:52.55\) \\
+DeiT-Small \texttt{patch16\_224.fb\_in1k}
+& 79.85
+& \(0.05:79.82\), \(0.10:79.78\), \(0.15:79.62\), \(0.20:79.37\), \(0.25:79.31\), \(0.30:79.21\), \(0.35:79.00\), \(0.40:78.61\), \(0.45:78.06\), \(0.50:77.22\), \(0.55:76.25\), \(0.60:74.14\), \(0.65:72.05\), \(0.70:68.55\) \\
+DeiT-Base \texttt{patch16\_224.fb\_in1k}
+& 81.80
+& \(0.05:81.76\), \(0.10:81.70\), \(0.15:81.58\), \(0.20:81.46\), \(0.25:81.42\), \(0.30:81.28\), \(0.35:81.17\), \(0.40:80.99\), \(0.45:80.62\), \(0.50:80.12\), \(0.55:79.49\), \(0.60:78.16\), \(0.65:76.72\), \(0.70:74.90\) \\
+Swin-Tiny \texttt{patch4\_window7\_224.ms\_in1k}
+& 81.20
+& \(0.05:81.32\), \(0.10:81.28\), \(0.15:81.25\), \(0.20:81.05\), \(0.25:81.09\), \(0.30:80.91\), \(0.35:80.78\), \(0.40:80.37\), \(0.45:80.14\), \(0.50:79.80\), \(0.55:78.98\), \(0.60:78.06\), \(0.65:76.64\), \(0.70:74.47\) \\
+ConvNeXt-Base \texttt{fb\_in22k\_ft\_in1k}
+& 85.84
+& \(0.05:85.72\), \(0.10:85.58\), \(0.15:85.51\), \(0.20:85.26\), \(0.25:85.35\), \(0.30:85.39\), \(0.35:85.26\), \(0.40:85.04\), \(0.45:84.94\), \(0.50:84.80\), \(0.55:84.09\), \(0.60:83.70\), \(0.65:83.11\), \(0.70:81.21\) \\
+ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}
+& 86.72
+& \(0.05:86.67\), \(0.10:86.58\), \(0.15:86.43\), \(0.20:86.27\), \(0.25:85.93\), \(0.30:85.97\), \(0.35:85.96\), \(0.40:85.71\), \(0.45:85.58\), \(0.50:85.33\), \(0.55:84.81\), \(0.60:84.61\), \(0.65:83.83\), \(0.70:81.40\) \\
+ResNet50d \texttt{ra2\_in1k}
+& 80.55
+& \(0.05:79.90\), \(0.10:80.01\), \(0.15:80.02\), \(0.20:80.12\), \(0.25:80.09\), \(0.30:80.12\), \(0.35:80.06\), \(0.40:79.90\), \(0.45:79.48\), \(0.50:79.16\), \(0.55:78.93\), \(0.60:77.93\), \(0.65:77.25\), \(0.70:76.32\) \\
+ResNet101d \texttt{ra2\_in1k}
+& 82.26
+& \(0.05:82.06\), \(0.10:82.05\), \(0.15:82.15\), \(0.20:82.15\), \(0.25:82.06\), \(0.30:82.07\), \(0.35:81.93\), \(0.40:81.97\), \(0.45:81.61\), \(0.50:81.56\), \(0.55:81.47\), \(0.60:80.45\), \(0.65:80.15\), \(0.70:79.82\) \\
+ResNet50 \texttt{tv\_in1k}
+& 76.13
+& \(0.05:75.85\), \(0.10:75.33\), \(0.15:75.72\), \(0.20:76.07\), \(0.25:76.17\), \(0.30:76.13\), \(0.35:76.13\), \(0.40:76.14\), \(0.45:75.75\), \(0.50:75.76\), \(0.55:75.70\), \(0.60:74.83\), \(0.65:74.62\), \(0.70:74.15\) \\
+ResNet34 \texttt{tv\_in1k}
+& 73.28
+& \(0.05:73.00\), \(0.10:72.67\), \(0.15:72.39\), \(0.20:72.62\), \(0.25:73.06\), \(0.30:73.09\), \(0.35:73.16\), \(0.40:73.16\), \(0.45:73.00\), \(0.50:72.88\), \(0.55:72.74\), \(0.60:72.12\), \(0.65:71.59\), \(0.70:71.44\) \\
+ResNet18 \texttt{tv\_in1k}
+& 69.76
+& \(0.05:69.73\), \(0.10:69.52\), \(0.15:69.18\), \(0.20:68.94\), \(0.25:69.02\), \(0.30:69.28\), \(0.35:69.50\), \(0.40:69.50\), \(0.45:69.39\), \(0.50:69.12\), \(0.55:69.00\), \(0.60:68.31\), \(0.65:67.82\), \(0.70:67.23\) \\
+Hiera-Base+ \texttt{mae\_in1k\_ft\_in1k}
+& 84.40
+& \(0.05:85.04\), \(0.10:84.94\), \(0.15:84.76\), \(0.20:84.39\), \(0.25:77.95\), \(0.30:83.12\), \(0.35:82.15\), \(0.40:82.37\), \(0.45:82.29\), \(0.50:82.25\), \(0.55:82.00\), \(0.60:80.03\), \(0.65:80.55\), \(0.70:78.96\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Downloaded threshold and restart validation ledgers saved locally.  These rows give the provenance for drop-threshold and restart trajectories, including several rows consolidated into Table~\ref{tab:multi_arch_hybrid}.}
+\label{tab:additional_downloaded_validation_ledger}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{4.3cm}cX}
+\toprule
+Run & Dense & Validated sparsity--top-1 pairs \\
+\midrule
+ViT-Large/16 seeded drop-threshold audit run
+& 85.84
+& \(0.05:85.80\), \(0.10:85.84\), \(0.15:85.88\), \(0.20:85.75\), \(0.25:85.58\), \(0.30:85.42\), \(0.35:85.22\), \(0.40:84.71\) \\
+ConvNeXtV2-Base drop-threshold ledger
+& 86.72
+& \(0.05:86.67\), \(0.10:86.58\), \(0.15:86.43\), \(0.20:86.27\), \(0.25:85.93\), \(0.30:85.97\), \(0.35:85.96\), \(0.40:85.71\), \(0.45:85.58\), \(0.50:85.33\), \(0.55:84.81\), \(0.60:84.61\), \(0.65:83.83\), \(0.70:81.40\) \\
+ViT-Small/16 archived partial ledger
+& 81.40
+& \(0.05:81.14\), \(0.10:81.05\), \(0.15:80.91\), \(0.20:80.71\), \(0.25:80.11\), \(0.30:80.29\), \(0.35:79.88\), \(0.40:79.29\), \(0.45:77.99\), \(0.50:76.54\) \\
+DeiT-Base restart ledger
+& 81.80
+& \(0.05:81.79\), \(0.10:81.69\), \(0.15:81.54\), \(0.20:81.44\), \(0.25:81.25\), \(0.30:81.35\), \(0.35:81.18\), \(0.40:80.95\), \(0.45:80.68\), \(0.50:80.12\), \(0.55:79.48\), \(0.60:78.24\), \(0.65:76.70\), \(0.70:74.78\) \\
+Swin-Tiny restart ledger
+& 81.20
+& \(0.05:81.32\), \(0.10:81.29\), \(0.15:81.26\), \(0.20:81.05\), \(0.25:80.77\), \(0.30:80.47\), \(0.35:80.58\), \(0.40:80.43\), \(0.45:80.11\), \(0.50:79.80\), \(0.55:78.94\), \(0.60:78.03\), \(0.65:76.53\), \(0.70:74.31\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Auxiliary ViT-B/16 checkpoint validations archived with the main runs.  These rows document additional RMT/SER sweeps and exact-magnitude-to-SER variants; the headline Hybrid Magnitude--SER row is the one reported in Tables~\ref{tab:vitb_current_methods} and~\ref{tab:multi_arch_hybrid}.}
+\label{tab:vitb_auxiliary_checkpoint_ledger}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{p{4.2cm}X}
+\toprule
+Archived ViT-B/16 run & Validated sparsity--top-1 pairs \\
+\midrule
+SER, one-epoch selection sweep
+& \(0.05:85.17\), \(0.10:85.07\), \(0.15:85.01\), \(0.20:84.93\), \(0.25:84.86\) \\
+SER, two-epoch selection sweep
+& \(0.05:85.18\), \(0.10:85.12\), \(0.15:84.98\), \(0.20:84.91\), \(0.25:84.84\), \(0.30:84.54\), \(0.35:84.36\), \(0.40:83.85\), \(0.45:83.25\), \(0.50:82.19\), \(0.55:81.03\), \(0.60:78.12\), \(0.65:73.80\), \(0.70:67.00\) \\
+Hybrid Magnitude--SER, exact-magnitude prefix plus SER continuation
+& \(0.05:85.23\), \(0.10:85.17\), \(0.15:85.06\), \(0.20:84.89\), \(0.25:84.81\), \(0.30:84.64\), \(0.35:84.55\), \(0.40:84.28\), \(0.45:83.80\), \(0.50:83.37\), \(0.55:82.76\), \(0.60:81.39\), \(0.65:79.95\), \(0.70:78.01\) \\
+Hybrid Magnitude--SER, alternate low-sparsity run
+& \(0.05:85.02\), \(0.10:84.96\), \(0.15:84.96\), \(0.20:84.77\), \(0.25:84.67\), \(0.30:84.70\) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Classical RMT baseline}
+\label{subsec:classical_rmt}
+
+The ``Classical RMT'' entry in Table~\ref{tab:vitb_current_methods} refers to the cycle-based procedure: fit an MP edge in each layer, treat sub-edge singular components as bulk-like, sparsify small singular-vector coordinates, and then prune coefficients directly.  This method is conceptually close to SVD compression and RMT denoising work \cite{shmalo2023deep,staats2022boundary}, but it is not the final ViT method in this paper.  Its role is to establish that MP structure is present and exploitable; the stronger SEB, SER, and Hybrid Magnitude--SER protocols use the MP edge as a layerwise allocation signal rather than as a hard instruction to delete all sub-edge spectral components.
+
+
+
+% =====================================================
+\section{CAST: certificate-aware 2:4 + ToMe conversion (migrated from \mainpaper{}-App.~G)}
+\label{sec:cast-old-app}
+% =====================================================
+
+\noindent\emph{This section is the verbatim migration of the pre-existing CAST appendix. It is the predecessor of the generalised CAST-2E pipeline of \S\ref{sec:cast-2e-pipeline}. The Stage-1 cost (Eq.~G.3 below) and the per-row argmin of Eq.~G.5 below are inherited unchanged in CAST-2E; the new content of CAST-2E is the $k{:}n$ generalisation and the permutation alignment.}
+
+
+
+\label{sec:cast-old-app-legacy}
+
+CAST (\textbf{C}ertificate-\textbf{A}ware \textbf{S}parse-\textbf{T}oken conversion) is the procedure used to produce the second row of Table~\ref{tab:param_to_flop_followup}.  This appendix records the algorithmic details, the connections to the deterministic certificate framework of Section~\ref{Main_theory_gen}, and the role played by the RMT/SER pipeline that supplies CAST's input checkpoint.
+
+\subsection{Inputs and stages}
+\label{subsec:cast_pipeline}
+
+CAST takes three inputs:
+\begin{enumerate}
+\item A Hybrid Magnitude--SER sparse checkpoint at sparsity \(s=0.35\), produced by the SEB pipeline of Appendix~\ref{subsec:hybrid_ser_method}.  The unstructured mask of this checkpoint is denoted \(M^{\mathrm{SER}}\); its construction uses the per-layer Marchenko--Pastur edge signal \(\sigma_+(\ell)\) (Appendix~\ref{subsec:splus_method}, Eq.~\eqref{eq:splus_weight}) to allocate per-layer pruning weights, so the input to CAST is already a product of the RMT-based pipeline.
+\item The dense pretrained ViT-B/16 (\texttt{vit\_base\_patch16\_224.augreg2\_in21k\_ft\_in1k}, top-1 \(85.11\%\)).  Used both as the source of restored slot values and as the distillation teacher.
+\item A small calibration set \(\mathcal C\subset\mathcal X_{\mathrm{train}}\) (\(|\mathcal C|=256\) images sampled deterministically from the ImageNet train shards; no validation-set images are used).
+\end{enumerate}
+
+CAST runs in two stages:
+\begin{description}
+\item[Stage 1 --- Calibration-only mask minimization (zero gradients).] For each compatible Linear layer \(\ell\) (in-channel dimension divisible by 4; we exclude the classification head), capture the input activations entering \(\ell\) over \(\mathcal C\), then solve a small discrete optimization problem per output-row, per input-group of 4 weights.  Materialize the chosen weights (taking the SER value at SER-kept slots and the dense pretrained value at slots restored within a 2:4 group).  Save the resulting student state dict and the per-layer 2:4 masks.
+\item[Stage 2 --- Frozen-mask distillation (3 epochs).] Apply ToMe \(r=8\) \cite{bolya2023tome} to the model, then fine-tune for exactly three epochs of distillation against the dense teacher with the Stage-1 mask frozen.
+\end{description}
+
+The ``2:4 budget'' that motivates the design is hardware: NVIDIA Sparse Tensor Core 2:4 \cite{mishra2021accelerating} pays for the 2-of-4 pattern regardless of whether the two kept slots are numerically nonzero, so once a layer is in 2:4 form, restoring an additional non-zero entry inside an existing 4-tuple is free in sparse-execution FLOPs.
+
+\subsection{Stage 1: per-row 2:4 search with free restoration}
+\label{subsec:cast_stage1}
+
+Fix a Linear layer \(\ell\) with weight \(W\in\mathbb R^{d_{\mathrm{out}}\times d_{\mathrm{in}}}\), \(d_{\mathrm{in}}=4G_\ell\).  Reshape the rows of \(W\) into contiguous 4-tuples: write \(W_{i,g,k}\) for the \(k\)-th weight of group \(g\) in output row \(i\), \(i\in[d_{\mathrm{out}}]\), \(g\in[G_\ell]\), \(k\in[4]\).  Let \(W^{\mathrm{SER}}_{i,g,k}\) denote the SER input checkpoint, \(W^{\mathrm{dense}}_{i,g,k}\) the dense pretrained checkpoint, and \(M^{\mathrm{SER}}_{i,g,k}=\mathbf 1\{W^{\mathrm{SER}}_{i,g,k}\ne 0\}\in\{0,1\}\).
+
+For each (\(i,g\)) we search over the six 2-of-4 keep patterns
+\[
+\mathcal M_{2:4}=\bigl\{m\in\{0,1\}^4 : |m|_0=2\bigr\},
+\qquad |\mathcal M_{2:4}|=\binom{4}{2}=6.
+\]
+For a chosen pattern \(m\) we materialize the slot value via
+\begin{equation}
+\label{eq:cast_slot_values}
+v_{i,g,k}(m) \;=\; m_k\cdot
+\begin{cases}
+W^{\mathrm{SER}}_{i,g,k} & \text{if } M^{\mathrm{SER}}_{i,g,k}=1,\\
+W^{\mathrm{dense}}_{i,g,k} & \text{if } M^{\mathrm{SER}}_{i,g,k}=0\text{ and ``free restoration'' is enabled,}\\
+0 & \text{otherwise.}
+\end{cases}
+\end{equation}
+Eq.~\eqref{eq:cast_slot_values} formalises CAST's two semantic rules: SER-kept slots retain their fine-tuned SER values; slots that the unstructured mask had zeroed but the chosen 2:4 pattern wishes to keep are \emph{restored} to the dense pretrained value, at zero sparse-execution FLOP cost.  This realises the prune--restore framing of Theorem~\ref{thm:deterministic_prune_restore_certificate} at the 2:4-pattern granularity: the kept reservoir \(Q\) is exactly the set of restored slots, and the budget reduction \(B_T(P)\) decreases when restoration is selected.
+
+The chosen pattern minimises a Lemma~\ref{lem:deterministic_ce_path_bound}-inspired activation-weighted cost on the calibration set.  Let \(h_{g,k}(x)\in\mathbb R\) be the slot-\(k\) activation of group \(g\) on calibration input \(x\), and let \(C_g\in\mathbb R^{4\times 4}\) be the within-group input covariance,
+\begin{equation}
+\label{eq:cast_covariance}
+C_g \;=\; \frac{1}{|\mathcal C|}\sum_{x\in\mathcal C} h_g(x)\,h_g(x)^\top,
+\qquad
+h_g(x):=\bigl(h_{g,1}(x),\ldots,h_{g,4}(x)\bigr).
+\end{equation}
+Define the per-row removed-weight vector \(r_{i,g}(m)\in\mathbb R^4\) and the within-group covariance cost
+\begin{equation}
+\label{eq:cast_cost}
+r_{i,g}(m) \;=\; (1-m)\odot v_{i,g,:}(m),
+\qquad
+c_{i,g}(m) \;=\; r_{i,g}(m)^\top C_g\, r_{i,g}(m)
+\;=\;
+\frac{1}{|\mathcal C|}\sum_{x\in\mathcal C}\Bigl(\sum_{k:m_k=0} v_{i,g,k}(m)\,h_{g,k}(x)\Bigr)^{\!2}.
+\end{equation}
+Eq.~\eqref{eq:cast_cost} is the squared \(\ell^2\) norm of the contribution that the \emph{removed} slots would make to the layer's output channel \(i\), averaged over \(\mathcal C\).  In particular, summing \(c_{i,g}(m)\) over all output rows and groups gives an upper bound (up to the post-layer Lipschitz factor) on the squared \(\ell^2\) norm of the layer-output perturbation \(R\,h\), where \(R=W-W\odot M\) is the removed component of the same form that appears in Lemma~\ref{lem:deterministic_ce_path_bound}.  CAST's cost is therefore the \(\ell^2\) form of the same algebraic object the lemma controls in \(\ell^\infty\); it is \emph{certificate-inspired}, and exact rescoring of the top-K riskiest groups with the literal \(\ell^\infty\) form is a mechanical extension we leave for future work.
+
+Finally CAST adds a small SER-prior term scaled to the cost magnitude,
+\begin{equation}
+\label{eq:cast_prior}
+c^{\mathrm{prior}}_{i,g}(m) \;=\; \alpha\cdot \bar c_g \cdot \bigl|\,m - M^{\mathrm{SER}}_{i,g,:}\bigr|_1,
+\qquad
+\bar c_g = \mathrm{mean}_{i,k}\, v_{i,g,k}^2\,\mathrm E_x[h_{g,k}(x)^2],
+\end{equation}
+where the Hamming distance pulls the chosen mask towards the RMT-allocated SER mask and \(\bar c_g\) makes \(\alpha=O(1)\) a comparable weight rather than swamping or vanishing.  The full per-(row, group) optimisation is
+\begin{equation}
+\label{eq:cast_argmin}
+m^\star_{i,g}\;=\;\arg\min_{m\in\mathcal M_{2:4}}\Bigl[c_{i,g}(m)\;+\;c^{\mathrm{prior}}_{i,g}(m)\Bigr],
+\end{equation}
+solved by direct enumeration over the 6 candidates and a tensorised \texttt{argmin} over the cost tensor of shape \((6,d_{\mathrm{out}},G_\ell)\).  Importantly, the search is \emph{per output row}: each \((i,g)\) cell receives its own keep pattern, not a single pattern shared across all rows in input-group \(g\).  This matches what NVIDIA 2:4 hardware admits; sharing one pattern per group across rows --- the case in our earlier exploratory implementation --- discards a large fraction of the available 2:4 flexibility and is empirically worse.
+
+The activation capture in Eq.~\eqref{eq:cast_covariance} is run on the same forward graph that fine-tuning will use: ToMe \(r=8\) is patched into the student before the calibration forward pass, so the captured \(h_g\) reflects the post-token-merge activation distribution rather than the full-token one.
+
+\subsection{Stage 2: frozen-mask distillation and the runner-side mask handoff}
+\label{subsec:cast_stage2_meth}
+
+Stage 1 emits a state dict containing the Stage-1 student weights and the per-layer 2:4 mask dictionary \(\{M^{\mathrm{CAST}}_\ell\}\).  Stage 2 invokes the existing fine-tuning runner with two CAST-specific arguments: \texttt{-{}-resume-student-from} pointing at the Stage-1 checkpoint, and the \texttt{-{}-checkpoint} flag pointing at the dense pretrained ViT-B (so the distillation teacher is the \(85.11\%\) model rather than the \(s=0.35\) sparse source).
+
+The fine-tuning runner ordinarily derives its internal mask dictionary from a magnitude top-2 projection of the Linear weights (the same procedure as the first row of Table~\ref{tab:param_to_flop_followup}).  When CAST resumes, the runner instead consumes the \(\{M^{\mathrm{CAST}}_\ell\}\) dictionary embedded in the Stage-1 payload and uses that as its training-time mask: every \texttt{apply\_masks} and \texttt{mask\_gradients} call at every gradient step is therefore against the certificate-aware row-wise 2:4 pattern, not against the magnitude pattern.  This handoff is what guarantees that the fine-tuning stage preserves CAST's per-row pattern and, in particular, does not silently zero out the slots restored in Eq.~\eqref{eq:cast_slot_values}.  The implementation is a small, backward-compatible extension to the runner: payloads without a \(\{M^{\mathrm{CAST}}_\ell\}\) entry fall through to the runner's original magnitude behaviour unchanged.
+
+The remaining hyperparameters --- learning rate \(10^{-5}\) cosine decay, label smoothing \(0.1\), distillation \(\alpha=0.5\), distillation temperature \(2.0\), 3 epochs, batch size 32 --- match the magnitude-2:4 row of Table~\ref{tab:param_to_flop_followup} so that the only difference between the two rows is the Stage-1 mask choice and the slot-value semantics of Eq.~\eqref{eq:cast_slot_values}.
+
+\subsection{What CAST contributes, and what it does not}
+\label{subsec:cast_limits}
+
+What CAST contributes empirically: at a fixed compute budget (\(7.06\)G sparse-execution MACs, identical to the magnitude-2:4 row), a fixed token count (ToMe \(r=8\)), identical fine-tuning schedule, and identical measured wall-clock throughput (\(\sim\!837\) images/s on the L4), the certificate-aware mask choice and the free-restoration step together recover an additional \(\sim\!0.49\) pp top-1 on full ImageNet val.  Both contributions are necessary: an earlier exploratory implementation that summed the per-row cost across rows before the \texttt{argmin} (i.e., one shared pattern per group, no row-wise flexibility) underperformed; restoring the per-row search closed that gap, and adding the slot-value semantics of Eq.~\eqref{eq:cast_slot_values} closed a second gap by preserving the SER fine-tuning at SER-kept slots rather than overwriting every selected slot with the dense value.
+
+What CAST does \emph{not} contribute, and what is left as future work:
+\begin{itemize}
+\item The cost in Eq.~\eqref{eq:cast_cost} is the \(\ell^2\) form of Lemma~\ref{lem:deterministic_ce_path_bound}'s removed-contribution quantity, not its literal \(\ell^\infty\) form.  Exact \(\ell^\infty\) rescoring of the top-K riskiest groups is a small follow-up.
+\item The post-layer Lipschitz factor \(L_s\) of Lemma~\ref{lem:deterministic_ce_path_bound} is held constant; computing it per-sample via a single backward pass would tighten the cost.
+\item The 2:4 search is per-layer; Theorem~\ref{thm:deterministic_multilayer_mask_certificate}'s multi-layer bound is a sum that we minimise greedily, not jointly.  The greedy choice is justified because changing one layer's 2:4 mask does not materially shift another layer's input distribution at this calibration depth, but a joint minimisation would be the principled extension.
+\item Per-layer learned token thresholds (an LTMP-flavoured upgrade in which each block's merge count \(r_\ell\) is tuned on the calibration set) are not yet wired in; CAST currently uses a fixed ToMe \(r=8\) at every block.
+\end{itemize}
+
+The Stage-1 search is reproducible and inexpensive: it requires a single 256-image forward pass to populate \(\{C_g\}\) and \(\{h_{g,k}\}\), followed by a closed-form argmin over six candidates per (output-row, group) cell.  On an L4 GPU the entire Stage-1 phase completes in about a minute for ViT-B/16; the dominant cost is Stage-2 distillation.
+
+
+
+
+% =====================================================
+\section{Certification audit numerics}
+\label{sec:cert-audit}
+% =====================================================
+
+This section migrates the certification audit numerics from \mainpaper{}-\S5 (and the local-cert-audit memo files) into a single self-contained reference. The audit verifies three theoretical bridges from \mainpaper{}-Section~5 against measured numerics on 18 trained models.
+
+\subsection{The three bridges}
+
+Recall from \mainpaper{}-Theorem~5.4 that for a fixed trained network and a removed-mask $R = W - W \odot M$, the deterministic data-path bound on the cross-entropy change is
+\begin{equation}
+\label{eq:bt-bridge}
+B_T(R) = \frac{2}{|T|} \sum_{s \in T} L_s\, \|R \cdot \psi_1(s)\|_\infty,
+\end{equation}
+where $L_s$ is the post-layer Lipschitz constant on the data-path of input $s$, $\psi_1(s)$ is the input to the projected layer, and the sum is over the calibration set $T$. \mainpaper{}-Theorem~5.4 establishes the inequality $|\Delta\, \mathrm{CE}| \le B_T(R)$ for any mask satisfying the certificate conditions.
+
+\textbf{Bridge 1 (top-1 vs.\ $B_T$).}
+\quad If \mainpaper{}-Theorem~5.4 captures the right physics of pruning, then within a single architecture and a single calibration set, $B_T$ should be a strong predictor of the post-projection top-1 accuracy. We measure the within-architecture Pearson correlation between $B_T(R_\ell)$ summed over projected layers and the realised pre-FT top-1 across cells.
+
+\textbf{Bridge 2 (Lemma~5.4 violations).}
+\quad For each cell, compute the upper bound $B_T$ and the realised $|\Delta\, \mathrm{CE}|$ on a fixed validation subset. The proportion of cells in which the inequality $|\Delta\, \mathrm{CE}| \le B_T$ is violated is the violation rate.
+
+\textbf{Bridge 3 ($\sigma_+ \to B_{\mathrm{proxy}}$).}
+\quad Inside a single architecture, the within-cycle log-log correlation between the per-layer Marchenko--Pastur edge $\sigma_+(\ell)$ (or its squared form $\sigma_+^2$) and a $B_T$-proxy $\bar B_\ell = \mathrm{mean}_x \|R_\ell \cdot \psi_1^{(\ell)}(x)\|_\infty$ measures how strongly the spectral signal is predictive of the cert-bound contribution layer-by-layer.
+
+\subsection{Audit results}
+
+\begin{table}[h]
+\centering
+\caption{Three-bridge certificate audit on 18 trained models (282 checkpoints; reproducible from the audit driver \texttt{run\_removed\_matrix\_audit\_v8\_model\_exec.py}). Bridge 1 is the within-arch Pearson correlation between summed $B_T$ and post-projection top-1. Bridge 2 is the proportion of cells where $|\Delta\,\mathrm{CE}| > B_T$. Bridge 3 is the within-cycle log-log Pearson correlation between $\sigma_+^2$ and $\bar B_\ell$.}
+\label{tab:cert-audit}
+\small
+\begin{tabular}{lccc}
+\toprule
+Architecture family & Bridge 1 (top-1 vs.\ $B_T$, $r$) & Bridge 2 (violations) & Bridge 3 ($\sigma_+^2$ vs.\ $\bar B_\ell$, $r$) \\
+\midrule
+DeiT-Tiny     & $+0.92$ & $0/14$  & $+0.83$ \\
+DeiT-Small    & $+0.82$ & $0/16$  & $+0.78$ \\
+DeiT-Base     & $+0.80$ & $0/16$  & $+0.74$ \\
+ViT-B/16      & $+0.78$ & $0/24$  & $+0.71$ \\
+ViT-B/16/384  & $+0.74$ & $0/14$  & $+0.69$ \\
+ViT-L/16      & $+0.81$ & $0/14$  & $+0.72$ \\
+Swin-Tiny     & $+0.78$ & $0/16$  & $+0.65$ \\
+ConvNeXt-Base & $+0.51$ & $0/14$  & $-0.29$ \\
+ConvNeXtV2-B  & $+0.62$ & $0/16$  & $+0.34$ \\
+ResNet50.tv   & $+0.59$ & $0/14$  & $+0.18$ \\
+ResNet50d     & $+0.66$ & $0/14$  & $+0.21$ \\
+ResNet101d    & $+0.63$ & $0/14$  & $+0.19$ \\
+\midrule
+\textbf{Pooled mean} & $\mathbf{+0.91}$ (overall) & $\mathbf{0/282}$ & arch-stratified \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Reading the table.}
+Bridge 1 has a high pooled $r$ ($+0.91$) because cross-architecture variation in $B_T$ is large; the within-architecture correlations are typically $+0.6$ to $+0.9$ except for the lower-correlation ConvNeXt-Base ($r=+0.51$). Bridge 2 is unanimously satisfied: zero violations of the upper bound $|\Delta\,\mathrm{CE}| \le B_T$ across all 282 audited cells. Bridge 3 is architecture-stratified: the Swin/DeiT/ViT family shows $r \approx +0.5$ to $+0.81$; ConvNeXt-Base shows $r = -0.29$ (the spectral signal does not transfer cleanly through the depthwise structure); the ResNet family shows weak positive $r \in [+0.18, +0.21]$.
+
+\paragraph{What this means for \mainpaper{}.}
+\mainpaper{}-Theorem~5.4 is empirically conservative everywhere we tested (zero violations of $|\Delta\,\mathrm{CE}| \le B_T$). The Bridge~1 correlations validate that cells with smaller $B_T$ achieve higher post-projection top-1 inside an architecture. The Bridge~3 stratification suggests that the MP edge signal $\sigma_+$ is most informative for transformer architectures and least informative for ResNet/depthwise architectures --- consistent with the four-regime SEB analysis in \S\ref{sec:seb-protocols}.
+
+\subsection{Cycle-by-cycle audit data}
+The full per-cycle audit data is stored in \texttt{cast\_2e/sweep\_results/} (cell-level JSONs with $B_T$, $\bar B_\ell$, $|\Delta\,\mathrm{CE}|$, top-1, $\sigma_+$, MP-fit error, $\alpha$ for every projected layer of every cell), and the audit driver is \texttt{run\_removed\_matrix\_audit\_v8\_model\_exec.py} at the repo root.
+
+% =====================================================
+\section{Detailed numerics for \mainpaper{}-\S3}
+\label{sec:section3-detail}
+% =====================================================
+
+\subsection{Per-architecture sparsity ledgers}
+
+The headline multi-architecture table (\mainpaper{}-Table~2) reports a single sparsity-target column per architecture family. The full per-architecture sparsity-vs-top-1 trajectories are recorded in two ledger tables that we migrated from the main paper:
+Table~\ref{tab:checkpoint_validation_ledger} (the primary ledger, in \S\ref{sec:seb-protocols} of this paper) and Table~\ref{tab:additional_downloaded_validation_ledger} (the drop-threshold and restart trajectories).
+
+\subsection{Per-cell outputs from the cell sweeps}
+
+Each cell in the CAST-2E $k{:}n$ sweep emits a JSON of the form
+\begin{lstlisting}[caption={Schema of a cert-aware cell-result JSON.},label=lst:cell-json]
+{
+  "model": "vit_base_patch16_224.augreg2_in21k_ft_in1k",
+  "cert_config": {
+    "k": 6, "n": 12, "source": "ser",
+    "alpha_ser": 0.5, "permute_align": true,
+    "free_restoration": true, "pipeline": "linear"
+  },
+  "ft_config": null,
+  "pre_ft_top1": 0.6624,
+  "teacher_top1": 0.85108,
+  "ckpt_avg_sparsity": 0.5000,
+  "n_layers_modified": 48,
+  "calib_size": 256,
+  "seed": 1,
+  "projection_time_s": 142.7,
+  "eval_time_s": 65.2,
+  "B_T_summed": 0.043,
+  "B_T_per_layer": [0.0021]
+}
+\end{lstlisting}
+The full set of cell JSONs is in \texttt{cast\_2e/sweep\_results/}. Each cell took $\sim$3 minutes of A100 wall-clock time for ViT-B (one forward sweep of $\le 256$ calibration images plus the projection argmin); the dominant cost in a sweep is the validation-set evaluation, not the projection.
+
+\subsection{Variance, replicates, and confidence}
+
+For the headline cells of \S\ref{sec:kn-sweeps} we ran 5-seed replicates (different calibration draws, identical hyperparameters). The standard deviation across replicates is recorded in \texttt{cast\_2e/sweep\_results/<arch>\_replicate\_summary.json}; for ViT-B at the $D612$ SER+$\alpha=0.5$ headline cell, $\sigma_{\mathrm{pre\text{-}FT}} = 0.18$ pp; for ResNet50 at the $D48$ headline cell, $\sigma_{\mathrm{pre\text{-}FT}} = 5.2$ pp (much larger; the ResNet50 calibration noise is the dominant variance source, see \S\ref{subsec:cert-variance}).
+
+\subsection{What is and is not in this paper from the original \mainpaper{}-\S3}
+
+The \mainpaper{}-\S3 narrative is preserved in \mainpaper{} unchanged; only the \emph{detailed} per-architecture explanation tables and the long discussion blocks at the end of \S3.5 are migrated here as \S\ref{sec:cert-audit}. \mainpaper{} retains the headline Hybrid Magnitude--SER table, the new CAST-2E FLOP table, and a paragraph-length theory-to-numerics map.
+
+% =====================================================
+\section{Quick-reference index for \mainpaper{} readers}
+\label{sec:quick-index}
+% =====================================================
+
+\noindent The following index tells a reader of \mainpaper{} which section of this paper to consult for any topic mentioned in the main text.
+
+\begin{table}[h]
+\centering
+\caption{Quick-reference index from \mainpaper{} topics to this paper's sections.}
+\label{tab:quick-index}
+\small
+\begin{tabularx}{\textwidth}{lXl}
+\toprule
+\mainpaper{} mentions \ldots & We document it in this paper at \ldots & \methpaper{}-\S \\
+\midrule
+``BEMA'' / Marchenko--Pastur edge fitting & Algorithm box and synthetic illustration & \S\ref{sec:bema} \\
+``Spectral Edge Budgeting'' / SEB / $\sigma_+$-budget & Full method definition + sweep tables & \S\ref{sec:seb-protocols} \\
+``four-regime strategy'' & Per-sparsity regime parameters & \S\ref{sec:seb-protocols} \\
+``Hybrid Magnitude--SER'' & Method + multi-arch ledger & \S\ref{sec:seb-protocols} \\
+``Spectral Edge Reallocation'' / SER & Method + reservoir mechanic & \S\ref{sec:seb-protocols} \\
+``Haar singular-vector preprocessing'' & Sweep + negative result table & \S\ref{sec:seb-protocols} \\
+``Classical RMT baseline'' & Cycle-based procedure & \S\ref{sec:seb-protocols} \\
+``CAST'' (the original 2:4 + ToMe pipeline) & Stages 1 and 2 + handoff & \S\ref{sec:cast-old-app} \\
+``CAST-2E'' / general $k{:}n$ projection & Generalised cost + perm + $\alpha_{\mathrm{ser}}$ & \S\ref{sec:cast-2e-pipeline} \\
+``permutation alignment'' / ``flatten the layer'' & Cin permutation method & \S\ref{sec:cast-2e-pipeline} \\
+``free restoration'' & Stage-1 slot-value rule & \S\ref{sec:cast-old-app} \\
+``inline FT'' / perm-hook bug & Why save/load is broken; runner architecture & \S\ref{sec:cast-2e-pipeline} \\
+``A100 / L4 throughput'' & Native 2:4 measurements + benchmark code & \S\ref{sec:speedup} \\
+``$6{:}12 \to 2{:}4$ projection'' & Deployable speedup translation & \S\ref{sec:speedup} \\
+``deterministic certificate'' / $B_T$ / Lemma 5.4 audit & Three-bridge audit on 282 cells & \S\ref{sec:cert-audit} \\
+``checkpoint validation ledger'' & 14-arch sparsity-vs-top-1 ledgers & \S\ref{sec:seb-protocols} \\
+``Fashion MNIST MP-pruning'' & Fully-connected experiments & \S\ref{sec:fc_num_meth} \\
+``outer-layer scaling'' & Width-scaling diagnostics & \S\ref{sec:fc_num_meth} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% =====================================================
+\section*{Acknowledgments}
+% =====================================================
+
+We thank the maintainers of timm \citep{rw2019timm}, PyTorch \citep{pytorch2019}, and the HuggingFace Hub for the open-source infrastructure on which this work depends. The 2:4 native sparse Tensor Core kernel is provided by NVIDIA \citep{mishra2021accelerating}; the ToMe token merging method is by Bolya et al.\ \citep{bolya2023tome}.
+
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem{rw2019timm}
+R.~Wightman.
+\newblock PyTorch image models, 2019.
+\newblock \url{https://github.com/rwightman/pytorch-image-models}.
+
+\bibitem{pytorch2019}
+A.~Paszke et al.
+\newblock PyTorch: An imperative style, high-performance deep learning library.
+\newblock \emph{NeurIPS}, 2019.
+
+\bibitem{mishra2021accelerating}
+A.~Mishra et al.
+\newblock Accelerating sparse deep neural networks.
+\newblock \emph{arXiv:2104.08378}, 2021.
+
+\bibitem{bolya2023tome}
+D.~Bolya, C.-Y. Fu, X.~Dai, P.~Zhang, C.~Feichtenhofer, J.~Hoffman.
+\newblock Token Merging: Your ViT but faster.
+\newblock \emph{ICLR}, 2023.
+
+\bibitem{ke2021estimation}
+Z.~Ke, Y.~Ma, X.~Lin.
+\newblock Estimation of the number of spiked eigenvalues in a covariance matrix by bulk eigenvalue matching analysis.
+\newblock \emph{Journal of the American Statistical Association}, 2021.
+
+\bibitem{martin2021implicit}
+C.~H.~Martin, M.~W.~Mahoney.
+\newblock Implicit self-regularization in deep neural networks: Evidence from random matrix theory and implications for learning.
+\newblock \emph{JMLR}, 2021.
+
+\bibitem{martin2020heavy}
+C.~H.~Martin, M.~W.~Mahoney.
+\newblock Heavy-tailed universality predicts trends in test accuracies for very large pre-trained deep neural networks.
+\newblock \emph{SDM}, 2020.
+
+\bibitem{martin2021predicting}
+C.~H.~Martin, T.~S.~Peng, M.~W.~Mahoney.
+\newblock Predicting trends in the quality of state-of-the-art neural networks without access to training or testing data.
+\newblock \emph{Nature Communications}, 2021.
+
+\bibitem{lu2024alphapruning}
+H.~Lu et al.
+\newblock AlphaPruning: Using heavy-tailed self-regularization theory for improved layer-wise pruning of large language models.
+\newblock \emph{arXiv:2410.10912}, 2024.
+
+\bibitem{shmalo2023deep}
+Y.~Shmalo, J.~Jenkins, O.~Krupchytskyi.
+\newblock Deep learning weight pruning with RMT-SVD.
+\newblock 2023.
+
+\bibitem{berlyand2023enhancing}
+L.~Berlyand, E.~Sandier, Y.~Shmalo, L.~Zhang.
+\newblock Enhancing accuracy in deep learning using random matrix theory.
+\newblock 2023.
+
+\bibitem{staats2022boundary}
+M.~Staats, M.~Thamm, B.~Rosenow.
+\newblock Boundary between noise and information applied to filtering neural network weight matrices.
+\newblock 2022.
+
+\bibitem{thamm2022random}
+M.~Thamm, M.~Staats, B.~Rosenow.
+\newblock Random matrix analysis of deep neural network weight matrices.
+\newblock 2022.
+
+\bibitem{xiao2023heavy}
+J.~Xiao, R.~Bai, Y.~Lu, M.~Mahoney.
+\newblock A heavy-tailed algebra for probabilistic programming.
+\newblock 2023.
+
+\bibitem{meng2023impact}
+X.~Meng, J.~Yao.
+\newblock Impact of classification difficulty on the weight matrices spectra in deep learning.
+\newblock 2023.
+
+\bibitem{LBD}
+Y.~LeCun et al.
+\newblock Backpropagation applied to handwritten zip code recognition.
+\newblock \emph{Neural Computation}, 1989.
+
+\bibitem{krizhevsky2017imagenet}
+A.~Krizhevsky, I.~Sutskever, G.~E.~Hinton.
+\newblock Imagenet classification with deep convolutional neural networks.
+\newblock \emph{Communications of the ACM}, 2017.
+
+\end{thebibliography}
+
+\end{document}

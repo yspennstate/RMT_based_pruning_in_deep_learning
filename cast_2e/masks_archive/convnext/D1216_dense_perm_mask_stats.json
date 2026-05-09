@@ -1,0 +1,1099 @@
+{
+  "stem.0": {
+    "shape": [
+      128,
+      3,
+      4,
+      4
+    ],
+    "sparsity": 0.0,
+    "nnz": 6144,
+    "params": 6144
+  },
+  "stages.0.blocks.0.conv_dw": {
+    "shape": [
+      128,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 6272,
+    "params": 6272
+  },
+  "stages.0.blocks.0.mlp.fc1": {
+    "shape": [
+      512,
+      128
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.0.blocks.0.mlp.fc2": {
+    "shape": [
+      128,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.0.blocks.1.conv_dw": {
+    "shape": [
+      128,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 6272,
+    "params": 6272
+  },
+  "stages.0.blocks.1.mlp.fc1": {
+    "shape": [
+      512,
+      128
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.0.blocks.1.mlp.fc2": {
+    "shape": [
+      128,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.0.blocks.2.conv_dw": {
+    "shape": [
+      128,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 6272,
+    "params": 6272
+  },
+  "stages.0.blocks.2.mlp.fc1": {
+    "shape": [
+      512,
+      128
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.0.blocks.2.mlp.fc2": {
+    "shape": [
+      128,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "stages.1.downsample.1": {
+    "shape": [
+      256,
+      128,
+      2,
+      2
+    ],
+    "sparsity": 0.0,
+    "nnz": 131072,
+    "params": 131072
+  },
+  "stages.1.blocks.0.conv_dw": {
+    "shape": [
+      256,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 12544,
+    "params": 12544
+  },
+  "stages.1.blocks.0.mlp.fc1": {
+    "shape": [
+      1024,
+      256
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.1.blocks.0.mlp.fc2": {
+    "shape": [
+      256,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.1.blocks.1.conv_dw": {
+    "shape": [
+      256,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 12544,
+    "params": 12544
+  },
+  "stages.1.blocks.1.mlp.fc1": {
+    "shape": [
+      1024,
+      256
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.1.blocks.1.mlp.fc2": {
+    "shape": [
+      256,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.1.blocks.2.conv_dw": {
+    "shape": [
+      256,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 12544,
+    "params": 12544
+  },
+  "stages.1.blocks.2.mlp.fc1": {
+    "shape": [
+      1024,
+      256
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.1.blocks.2.mlp.fc2": {
+    "shape": [
+      256,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "stages.2.downsample.1": {
+    "shape": [
+      512,
+      256,
+      2,
+      2
+    ],
+    "sparsity": 0.0,
+    "nnz": 524288,
+    "params": 524288
+  },
+  "stages.2.blocks.0.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.0.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.0.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.1.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.1.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.1.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.2.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.2.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.2.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.3.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.3.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.3.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.4.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.4.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.4.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.5.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.5.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.5.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.6.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.6.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.6.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.7.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.7.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.7.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.8.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.8.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.8.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.9.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.9.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.9.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.10.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.10.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.10.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.11.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.11.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.11.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.12.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.12.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.12.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.13.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.13.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.13.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.14.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.14.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.14.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.15.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.15.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.15.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.16.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.16.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.16.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.17.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.17.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.17.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.18.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.18.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.18.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.19.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.19.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.19.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.20.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.20.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.20.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.21.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.21.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.21.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.22.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.22.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.22.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.23.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.23.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.23.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.24.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.24.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.24.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.25.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.25.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.25.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.26.conv_dw": {
+    "shape": [
+      512,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 25088,
+    "params": 25088
+  },
+  "stages.2.blocks.26.mlp.fc1": {
+    "shape": [
+      2048,
+      512
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.2.blocks.26.mlp.fc2": {
+    "shape": [
+      512,
+      2048
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "stages.3.downsample.1": {
+    "shape": [
+      1024,
+      512,
+      2,
+      2
+    ],
+    "sparsity": 0.0,
+    "nnz": 2097152,
+    "params": 2097152
+  },
+  "stages.3.blocks.0.conv_dw": {
+    "shape": [
+      1024,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 50176,
+    "params": 50176
+  },
+  "stages.3.blocks.0.mlp.fc1": {
+    "shape": [
+      4096,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "stages.3.blocks.0.mlp.fc2": {
+    "shape": [
+      1024,
+      4096
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "stages.3.blocks.1.conv_dw": {
+    "shape": [
+      1024,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 50176,
+    "params": 50176
+  },
+  "stages.3.blocks.1.mlp.fc1": {
+    "shape": [
+      4096,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "stages.3.blocks.1.mlp.fc2": {
+    "shape": [
+      1024,
+      4096
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "stages.3.blocks.2.conv_dw": {
+    "shape": [
+      1024,
+      1,
+      7,
+      7
+    ],
+    "sparsity": 0.0,
+    "nnz": 50176,
+    "params": 50176
+  },
+  "stages.3.blocks.2.mlp.fc1": {
+    "shape": [
+      4096,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "stages.3.blocks.2.mlp.fc2": {
+    "shape": [
+      1024,
+      4096
+    ],
+    "sparsity": 0.25,
+    "nnz": 3145728,
+    "params": 4194304
+  },
+  "head.fc": {
+    "shape": [
+      1000,
+      1024
+    ],
+    "sparsity": 0.25,
+    "nnz": 768000,
+    "params": 1024000
+  }
+}

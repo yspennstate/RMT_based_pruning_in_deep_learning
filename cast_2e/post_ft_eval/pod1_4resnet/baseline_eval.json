@@ -1,0 +1,6 @@
+{
+  "dense_teacher_top1": 0.82856,
+  "ser_source_top1": 0.82298,
+  "ser_load_coverage_fraction": 1.0,
+  "ts": "2026-05-08T10:43:42.439142+00:00"
+}

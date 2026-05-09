@@ -1,0 +1,18 @@
+{
+  "model": "resnet152d.ra2_in1k",
+  "method": "cert_aware",
+  "epochs": 3,
+  "include_3x3_convs": true,
+  "free_restoration": true,
+  "skip_head": true,
+  "dense_teacher_top1": 0.82856,
+  "ser_source_top1": 0.82298,
+  "pre_ft_top1": 0.24004,
+  "post_ft_top1": 0.8133,
+  "delta_vs_dense": -0.01525999999999994,
+  "delta_vs_ser": -0.009680000000000022,
+  "delta_vs_pre_ft": 0.57326,
+  "two_four_sparsity": 0.5,
+  "ser_load_coverage_fraction": 1.0,
+  "ts": "2026-05-08T16:02:33.240681+00:00"
+}

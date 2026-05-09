@@ -1,0 +1,62 @@
+{
+  "model": "vit_base_patch16_224.augreg2_in21k_ft_in1k",
+  "dense_top1": 0.85104,
+  "ser_source_top1": 0.8369,
+  "cells": [
+    {
+      "label": "D48_dense_perm",
+      "k": 4,
+      "n": 8,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.73532,
+      "n_layers_modified": 49,
+      "elapsed_s": 125.08737087249756
+    },
+    {
+      "label": "D612_ser_a05",
+      "k": 6,
+      "n": 12,
+      "source": "ser",
+      "perm": true,
+      "alpha_ser_prior": 0.5,
+      "pre_ft_top1": 0.78018,
+      "n_layers_modified": 49,
+      "elapsed_s": 132.09000396728516
+    },
+    {
+      "label": "D612_dense_perm",
+      "k": 6,
+      "n": 12,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.75104,
+      "n_layers_modified": 49,
+      "elapsed_s": 130.6000530719757
+    },
+    {
+      "label": "D816_dense_perm",
+      "k": 8,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.7578,
+      "n_layers_modified": 49,
+      "elapsed_s": 205.8949031829834
+    },
+    {
+      "label": "S1216_ser_a05",
+      "k": 12,
+      "n": 16,
+      "source": "ser",
+      "perm": true,
+      "alpha_ser_prior": 0.5,
+      "pre_ft_top1": 0.84744,
+      "n_layers_modified": 49,
+      "elapsed_s": 138.33198809623718
+    }
+  ]
+}

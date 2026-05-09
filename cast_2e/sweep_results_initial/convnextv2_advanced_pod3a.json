@@ -1,0 +1,378 @@
+{
+  "model": "convnextv2_base.fcmae_ft_in22k_in1k",
+  "dense_top1": 0.86744,
+  "ser_source_top1": 0.86672,
+  "cells": [
+    {
+      "label": "k24_dense_perm",
+      "source": "dense",
+      "method": "kn",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.0
+      },
+      "pre_ft_top1": 0.70402,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 3,
+        "permute_align_enabled": true,
+        "free_restoration_count": 0,
+        "alpha_ser_prior": 0.0,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 194.85032868385315
+    },
+    {
+      "label": "k24_ser_perm_a05",
+      "source": "ser",
+      "method": "kn",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.70466,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 3,
+        "permute_align_enabled": true,
+        "free_restoration_count": 963378,
+        "alpha_ser_prior": 0.5,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 178.8326461315155
+    },
+    {
+      "label": "k48_ser_perm_a05",
+      "source": "ser",
+      "method": "kn",
+      "kwargs": {
+        "n": 8,
+        "k": 4,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.85974,
+      "stats": {
+        "n": 8,
+        "k": 4,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 3,
+        "permute_align_enabled": true,
+        "free_restoration_count": 963378,
+        "alpha_ser_prior": 0.5,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 176.78865027427673
+    },
+    {
+      "label": "mixed_d50_dense",
+      "source": "dense",
+      "method": "mixed",
+      "kwargs": {
+        "target_density": 0.5,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.05002,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.5,
+        "final_density": 0.44047619047619047,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 169.95493984222412
+    },
+    {
+      "label": "mixed_d50_ser",
+      "source": "ser",
+      "method": "mixed",
+      "kwargs": {
+        "target_density": 0.5,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.05242,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.5,
+        "final_density": 0.44047619047619047,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 178.22659540176392
+    },
+    {
+      "label": "mixed_d40_ser",
+      "source": "ser",
+      "method": "mixed",
+      "kwargs": {
+        "target_density": 0.4,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.04604,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.4,
+        "final_density": 0.25,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 177.108553647995
+    },
+    {
+      "label": "mixed_d30_ser",
+      "source": "ser",
+      "method": "mixed",
+      "kwargs": {
+        "target_density": 0.3,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.04604,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.3,
+        "final_density": 0.25,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 177.43813395500183
+    },
+    {
+      "label": "iter2_24_ser_a05",
+      "source": "ser",
+      "method": "iter",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "n_rounds": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.70466,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 0,
+        "permute_align_enabled": false,
+        "free_restoration_count": 0,
+        "alpha_ser_prior": 0.0,
+        "groups_with_more_than_2_nonzero_after": 0,
+        "method": "iterative_cert",
+        "n_rounds": 2
+      },
+      "elapsed_s": 178.20748233795166
+    },
+    {
+      "label": "iter3_24_ser_a05",
+      "source": "ser",
+      "method": "iter",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "n_rounds": 3,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.70466,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 0,
+        "permute_align_enabled": false,
+        "free_restoration_count": 0,
+        "alpha_ser_prior": 0.0,
+        "groups_with_more_than_2_nonzero_after": 0,
+        "method": "iterative_cert",
+        "n_rounds": 3
+      },
+      "elapsed_s": 186.03708124160767
+    },
+    {
+      "label": "iter2_48_ser_a05",
+      "source": "ser",
+      "method": "iter",
+      "kwargs": {
+        "n": 8,
+        "k": 4,
+        "n_rounds": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.85974,
+      "stats": {
+        "n": 8,
+        "k": 4,
+        "n_layers_modified": 3,
+        "permuted_layer_count": 0,
+        "permute_align_enabled": false,
+        "free_restoration_count": 0,
+        "alpha_ser_prior": 0.0,
+        "groups_with_more_than_2_nonzero_after": 0,
+        "method": "iterative_cert",
+        "n_rounds": 2
+      },
+      "elapsed_s": 187.64557433128357
+    },
+    {
+      "label": "robust_p95_ser",
+      "source": "ser",
+      "method": "robust",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "percentile": 95,
+        "permute_align": true
+      },
+      "pre_ft_top1": 0.70416,
+      "stats": {
+        "method": "robust_linf",
+        "percentile": 95,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 175.46760749816895
+    },
+    {
+      "label": "robust_p90_ser",
+      "source": "ser",
+      "method": "robust",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "percentile": 90,
+        "permute_align": true
+      },
+      "pre_ft_top1": 0.70318,
+      "stats": {
+        "method": "robust_linf",
+        "percentile": 90,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 176.27818775177002
+    },
+    {
+      "label": "robust_p75_ser",
+      "source": "ser",
+      "method": "robust",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "percentile": 75,
+        "permute_align": true
+      },
+      "pre_ft_top1": 0.7026,
+      "stats": {
+        "method": "robust_linf",
+        "percentile": 75,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 193.13441944122314
+    },
+    {
+      "label": "mixed_d50_ser_iter2",
+      "source": "ser",
+      "method": "mixed_iter",
+      "kwargs": {
+        "target_density": 0.5,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            3
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.85832,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.5,
+        "final_density": 0.5,
+        "n_layers_modified": 3,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 173.910138130188
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "model": "resnet50.tv_in1k",
+  "dense_top1": 0.76146,
+  "ser_source_top1": 0.74958,
+  "cells": [
+    {
+      "label": "k24_dense_perm",
+      "source": "dense",
+      "method": "kn",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.0
+      },
+      "pre_ft_top1": 0.40974,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 52,
+        "permuted_layer_count": 52,
+        "permute_align_enabled": true,
+        "free_restoration_count": 0,
+        "alpha_ser_prior": 0.0,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 207.51586532592773
+    },
+    {
+      "label": "k24_ser_perm_a05",
+      "source": "ser",
+      "method": "kn",
+      "kwargs": {
+        "n": 4,
+        "k": 2,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.36148,
+      "stats": {
+        "n": 4,
+        "k": 2,
+        "n_layers_modified": 52,
+        "permuted_layer_count": 52,
+        "permute_align_enabled": true,
+        "free_restoration_count": 8205901,
+        "alpha_ser_prior": 0.5,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 201.86454319953918
+    },
+    {
+      "label": "k48_ser_perm_a05",
+      "source": "ser",
+      "method": "kn",
+      "kwargs": {
+        "n": 8,
+        "k": 4,
+        "permute_align": true,
+        "alpha_ser_prior": 0.5
+      },
+      "pre_ft_top1": 0.58698,
+      "stats": {
+        "n": 8,
+        "k": 4,
+        "n_layers_modified": 52,
+        "permuted_layer_count": 52,
+        "permute_align_enabled": true,
+        "free_restoration_count": 8205901,
+        "alpha_ser_prior": 0.5,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 206.65235781669617
+    },
+    {
+      "label": "mixed_d50_dense",
+      "source": "dense",
+      "method": "mixed",
+      "kwargs": {
+        "target_density": 0.5,
+        "candidates": [
+          [
+            4,
+            2
+          ],
+          [
+            8,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            1
+          ]
+        ]
+      },
+      "pre_ft_top1": 0.574,
+      "stats": {
+        "method": "mixed_sparsity_cert",
+        "target_density": 0.5,
+        "final_density": 0.4973794549266247,
+        "n_layers_modified": 39,
+        "groups_with_more_than_2_nonzero_after": 0
+      },
+      "elapsed_s": 213.81158232688904
+    }
+  ]
+}

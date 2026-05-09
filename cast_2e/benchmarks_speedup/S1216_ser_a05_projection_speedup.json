@@ -1,0 +1,44 @@
+{
+  "model": "vit_base_patch16_224.augreg2_in21k_ft_in1k",
+  "student_ckpt": "/workspace/run_outputs/ckpts_all/vitb/S1216_ser_a05.pt",
+  "original_cell": "S1216_ser_a05",
+  "original_k_n": [
+    12,
+    16
+  ],
+  "original_source": "ser",
+  "original_alpha_ser": 0.5,
+  "original_pre_ft_top1": 0.84774,
+  "image_size": 224,
+  "batch": 128,
+  "dense_throughput": {
+    "median_s": 0.6106715202331543,
+    "images_per_s": 209.60532096065265
+  },
+  "original_ckpt_nnz_stats": {
+    "params": 86292480,
+    "nnz": 64866816,
+    "sparsity": 0.2482912068351727
+  },
+  "original_ckpt_throughput_dense_kernel": {
+    "median_s": 0.6117138862609863,
+    "images_per_s": 209.24815158665385
+  },
+  "projected_2_4_nnz_stats": {
+    "params": 86292480,
+    "nnz": 42656812,
+    "sparsity": 0.505671734083897
+  },
+  "projected_2_4_projection_stats": {
+    "n_projected": 49,
+    "n_skipped_cin_not_div_16": 0
+  },
+  "projected_2_4_throughput_sparse_kernel": null,
+  "projected_2_4_speedup_vs_dense": null,
+  "_2_4_kernel_apply": {
+    "supported": true,
+    "tried": 49,
+    "converted": 0
+  },
+  "_note": "The original ckpt (e.g. 6:12 cert-aware) gets dense-kernel throughput since PyTorch native only supports 2:4. We then project it down to 2:4 within each 4-block (top-2 magnitude per 4-tuple \u2014 a strict refinement of the original N:M pattern at 50%) and re-benchmark with PyTorch's to_sparse_semi_structured. The result is a directly-measured hardware speedup at 50% N:M structured sparsity, applicable to any 4:8/6:12/8:16 ckpt as a published lower bound."
+}

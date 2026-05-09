@@ -1,0 +1,179 @@
+{
+  "model": "vit_base_patch16_224.augreg2_in21k_ft_in1k",
+  "dense_throughput": {
+    "batch": 128,
+    "image_size": 224,
+    "median_s": 0.276108980178833,
+    "images_per_s": 463.5850667265356
+  },
+  "dense_total_params": 86567656,
+  "image_size": 224,
+  "batch": 128,
+  "cells": [
+    {
+      "label": "D48_dense_perm",
+      "ckpt": "/workspace/run_outputs/best_pod1/ckpts/vitb/D48_dense_perm.pt",
+      "k": 4,
+      "n": 8,
+      "source": "dense",
+      "alpha_ser": 0.0,
+      "cell_pre_ft_top1": 0.73532,
+      "nnz_stats": {
+        "total_params": 86292480,
+        "total_nnz": 43441152,
+        "global_sparsity": 0.4965824136703453,
+        "eligible_params": 85702656,
+        "eligible_nnz": 42851328,
+        "eligible_sparsity": 0.5,
+        "n_layers": 50
+      },
+      "theoretical_flop_reduction_eligible": 0.5,
+      "throughput_dense_kernel": {
+        "batch": 128,
+        "image_size": 224,
+        "median_s": 0.2735273838043213,
+        "images_per_s": 467.96045872895087
+      },
+      "throughput_2_4_kernel": null,
+      "kernel_speedup_2_4_vs_dense": null,
+      "_2_4_conversion": null,
+      "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction."
+    },
+    {
+      "label": "D48_dense_perm",
+      "error": "'NoneType' object is not subscriptable"
+    },
+    {
+      "label": "D612_dense_perm",
+      "ckpt": "/workspace/run_outputs/best_pod1/ckpts/vitb/D612_dense_perm.pt",
+      "k": 6,
+      "n": 12,
+      "source": "dense",
+      "alpha_ser": 0.0,
+      "cell_pre_ft_top1": 0.75104,
+      "nnz_stats": {
+        "total_params": 86292480,
+        "total_nnz": 43441152,
+        "global_sparsity": 0.4965824136703453,
+        "eligible_params": 85702656,
+        "eligible_nnz": 42851328,
+        "eligible_sparsity": 0.5,
+        "n_layers": 50
+      },
+      "theoretical_flop_reduction_eligible": 0.5,
+      "throughput_dense_kernel": {
+        "batch": 128,
+        "image_size": 224,
+        "median_s": 0.2735576629638672,
+        "images_per_s": 467.9086617906473
+      },
+      "throughput_2_4_kernel": null,
+      "kernel_speedup_2_4_vs_dense": null,
+      "_2_4_conversion": null,
+      "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction."
+    },
+    {
+      "label": "D612_dense_perm",
+      "error": "'NoneType' object is not subscriptable"
+    },
+    {
+      "label": "D612_ser_a05",
+      "ckpt": "/workspace/run_outputs/best_pod1/ckpts/vitb/D612_ser_a05.pt",
+      "k": 6,
+      "n": 12,
+      "source": "ser",
+      "alpha_ser": 0.5,
+      "cell_pre_ft_top1": 0.78018,
+      "nnz_stats": {
+        "total_params": 86292480,
+        "total_nnz": 43441152,
+        "global_sparsity": 0.4965824136703453,
+        "eligible_params": 85702656,
+        "eligible_nnz": 42851328,
+        "eligible_sparsity": 0.5,
+        "n_layers": 50
+      },
+      "theoretical_flop_reduction_eligible": 0.5,
+      "throughput_dense_kernel": {
+        "batch": 128,
+        "image_size": 224,
+        "median_s": 0.2737390995025635,
+        "images_per_s": 467.5985280604802
+      },
+      "throughput_2_4_kernel": null,
+      "kernel_speedup_2_4_vs_dense": null,
+      "_2_4_conversion": null,
+      "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction."
+    },
+    {
+      "label": "D612_ser_a05",
+      "error": "'NoneType' object is not subscriptable"
+    },
+    {
+      "label": "D816_dense_perm",
+      "ckpt": "/workspace/run_outputs/best_pod1/ckpts/vitb/D816_dense_perm.pt",
+      "k": 8,
+      "n": 16,
+      "source": "dense",
+      "alpha_ser": 0.0,
+      "cell_pre_ft_top1": 0.7578,
+      "nnz_stats": {
+        "total_params": 86292480,
+        "total_nnz": 43441152,
+        "global_sparsity": 0.4965824136703453,
+        "eligible_params": 85702656,
+        "eligible_nnz": 42851328,
+        "eligible_sparsity": 0.5,
+        "n_layers": 50
+      },
+      "theoretical_flop_reduction_eligible": 0.5,
+      "throughput_dense_kernel": {
+        "batch": 128,
+        "image_size": 224,
+        "median_s": 0.27362966537475586,
+        "images_per_s": 467.78553715911846
+      },
+      "throughput_2_4_kernel": null,
+      "kernel_speedup_2_4_vs_dense": null,
+      "_2_4_conversion": null,
+      "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction."
+    },
+    {
+      "label": "D816_dense_perm",
+      "error": "'NoneType' object is not subscriptable"
+    },
+    {
+      "label": "S1216_ser_a05",
+      "ckpt": "/workspace/run_outputs/best_pod1/ckpts/vitb/S1216_ser_a05.pt",
+      "k": 12,
+      "n": 16,
+      "source": "ser",
+      "alpha_ser": 0.5,
+      "cell_pre_ft_top1": 0.84744,
+      "nnz_stats": {
+        "total_params": 86292480,
+        "total_nnz": 64866816,
+        "global_sparsity": 0.2482912068351727,
+        "eligible_params": 85702656,
+        "eligible_nnz": 64276992,
+        "eligible_sparsity": 0.25,
+        "n_layers": 50
+      },
+      "theoretical_flop_reduction_eligible": 0.25,
+      "throughput_dense_kernel": {
+        "batch": 128,
+        "image_size": 224,
+        "median_s": 0.27525782585144043,
+        "images_per_s": 465.0185679701
+      },
+      "throughput_2_4_kernel": null,
+      "kernel_speedup_2_4_vs_dense": null,
+      "_2_4_conversion": null,
+      "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction."
+    },
+    {
+      "label": "S1216_ser_a05",
+      "error": "'NoneType' object is not subscriptable"
+    }
+  ]
+}

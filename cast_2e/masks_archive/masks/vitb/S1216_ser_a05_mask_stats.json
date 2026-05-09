@@ -1,0 +1,454 @@
+{
+  "patch_embed.proj": {
+    "shape": [
+      768,
+      3,
+      16,
+      16
+    ],
+    "sparsity": 0.0,
+    "nnz": 589824,
+    "params": 589824
+  },
+  "blocks.0.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.0.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.0.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.0.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.1.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.1.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.1.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.1.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.2.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.2.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.2.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.2.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.3.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.3.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.3.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.3.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.4.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.4.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.4.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.4.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.5.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.5.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.5.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.5.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.6.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.6.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.6.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.6.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.7.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.7.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.7.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.7.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.8.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.8.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.8.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.8.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.9.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.9.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.9.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.9.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.10.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.10.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.10.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.10.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.11.attn.qkv": {
+    "shape": [
+      2304,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1327104,
+    "params": 1769472
+  },
+  "blocks.11.attn.proj": {
+    "shape": [
+      768,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "blocks.11.mlp.fc1": {
+    "shape": [
+      3072,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "blocks.11.mlp.fc2": {
+    "shape": [
+      768,
+      3072
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "head": {
+    "shape": [
+      1000,
+      768
+    ],
+    "sparsity": 0.25,
+    "nnz": 576000,
+    "params": 768000
+  }
+}

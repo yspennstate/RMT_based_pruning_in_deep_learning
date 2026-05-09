@@ -1,0 +1,62 @@
+{
+  "model": "resnet50.tv_in1k",
+  "dense_top1": 0.76146,
+  "ser_source_top1": 0.76146,
+  "cells": [
+    {
+      "label": "D816_dense_perm",
+      "k": 8,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.61452,
+      "n_layers_modified": 52,
+      "elapsed_s": 163.22883415222168
+    },
+    {
+      "label": "D1016_dense_perm",
+      "k": 10,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.7305,
+      "n_layers_modified": 52,
+      "elapsed_s": 137.57631182670593
+    },
+    {
+      "label": "D1216_dense_perm",
+      "k": 12,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.75474,
+      "n_layers_modified": 52,
+      "elapsed_s": 105.88830280303955
+    },
+    {
+      "label": "S1216_ser_a05",
+      "k": 12,
+      "n": 16,
+      "source": "ser",
+      "perm": true,
+      "alpha_ser_prior": 0.5,
+      "pre_ft_top1": 0.75602,
+      "n_layers_modified": 52,
+      "elapsed_s": 106.9135069847107
+    },
+    {
+      "label": "S1016_ser_a05",
+      "k": 10,
+      "n": 16,
+      "source": "ser",
+      "perm": true,
+      "alpha_ser_prior": 0.5,
+      "pre_ft_top1": -1.0,
+      "n_layers_modified": -1,
+      "elapsed_s": 40.639585971832275
+    }
+  ]
+}

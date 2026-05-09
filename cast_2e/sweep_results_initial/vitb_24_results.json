@@ -1,0 +1,18 @@
+{
+  "model": "vit_base_patch16_224.augreg2_in21k_ft_in1k",
+  "dense_top1": 0.85104,
+  "ser_source_top1": 0.8369,
+  "cells": [
+    {
+      "label": "D24_dense_perm",
+      "k": 2,
+      "n": 4,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.65726,
+      "n_layers_modified": 49,
+      "elapsed_s": 125.43851447105408
+    }
+  ]
+}

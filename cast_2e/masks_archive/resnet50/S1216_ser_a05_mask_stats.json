@@ -1,0 +1,594 @@
+{
+  "conv1": {
+    "shape": [
+      64,
+      3,
+      7,
+      7
+    ],
+    "sparsity": 0.19302719831466675,
+    "nnz": 7592,
+    "params": 9408
+  },
+  "layer1.0.conv1": {
+    "shape": [
+      64,
+      64,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 3072,
+    "params": 4096
+  },
+  "layer1.0.conv2": {
+    "shape": [
+      64,
+      64,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 27648,
+    "params": 36864
+  },
+  "layer1.0.conv3": {
+    "shape": [
+      256,
+      64,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer1.0.downsample.0": {
+    "shape": [
+      256,
+      64,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer1.1.conv1": {
+    "shape": [
+      64,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer1.1.conv2": {
+    "shape": [
+      64,
+      64,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 27648,
+    "params": 36864
+  },
+  "layer1.1.conv3": {
+    "shape": [
+      256,
+      64,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer1.2.conv1": {
+    "shape": [
+      64,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer1.2.conv2": {
+    "shape": [
+      64,
+      64,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 27648,
+    "params": 36864
+  },
+  "layer1.2.conv3": {
+    "shape": [
+      256,
+      64,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 12288,
+    "params": 16384
+  },
+  "layer2.0.conv1": {
+    "shape": [
+      128,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 24576,
+    "params": 32768
+  },
+  "layer2.0.conv2": {
+    "shape": [
+      128,
+      128,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 110592,
+    "params": 147456
+  },
+  "layer2.0.conv3": {
+    "shape": [
+      512,
+      128,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.0.downsample.0": {
+    "shape": [
+      512,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 98304,
+    "params": 131072
+  },
+  "layer2.1.conv1": {
+    "shape": [
+      128,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.1.conv2": {
+    "shape": [
+      128,
+      128,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 110592,
+    "params": 147456
+  },
+  "layer2.1.conv3": {
+    "shape": [
+      512,
+      128,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.2.conv1": {
+    "shape": [
+      128,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.2.conv2": {
+    "shape": [
+      128,
+      128,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 110592,
+    "params": 147456
+  },
+  "layer2.2.conv3": {
+    "shape": [
+      512,
+      128,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.3.conv1": {
+    "shape": [
+      128,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer2.3.conv2": {
+    "shape": [
+      128,
+      128,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 110592,
+    "params": 147456
+  },
+  "layer2.3.conv3": {
+    "shape": [
+      512,
+      128,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 49152,
+    "params": 65536
+  },
+  "layer3.0.conv1": {
+    "shape": [
+      256,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 98304,
+    "params": 131072
+  },
+  "layer3.0.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.0.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.0.downsample.0": {
+    "shape": [
+      1024,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 393216,
+    "params": 524288
+  },
+  "layer3.1.conv1": {
+    "shape": [
+      256,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.1.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.1.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.2.conv1": {
+    "shape": [
+      256,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.2.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.2.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.3.conv1": {
+    "shape": [
+      256,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.3.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.3.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.4.conv1": {
+    "shape": [
+      256,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.4.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.4.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.5.conv1": {
+    "shape": [
+      256,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer3.5.conv2": {
+    "shape": [
+      256,
+      256,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 442368,
+    "params": 589824
+  },
+  "layer3.5.conv3": {
+    "shape": [
+      1024,
+      256,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 196608,
+    "params": 262144
+  },
+  "layer4.0.conv1": {
+    "shape": [
+      512,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 393216,
+    "params": 524288
+  },
+  "layer4.0.conv2": {
+    "shape": [
+      512,
+      512,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "layer4.0.conv3": {
+    "shape": [
+      2048,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "layer4.0.downsample.0": {
+    "shape": [
+      2048,
+      1024,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 1572864,
+    "params": 2097152
+  },
+  "layer4.1.conv1": {
+    "shape": [
+      512,
+      2048,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "layer4.1.conv2": {
+    "shape": [
+      512,
+      512,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "layer4.1.conv3": {
+    "shape": [
+      2048,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "layer4.2.conv1": {
+    "shape": [
+      512,
+      2048,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "layer4.2.conv2": {
+    "shape": [
+      512,
+      512,
+      3,
+      3
+    ],
+    "sparsity": 0.25,
+    "nnz": 1769472,
+    "params": 2359296
+  },
+  "layer4.2.conv3": {
+    "shape": [
+      2048,
+      512,
+      1,
+      1
+    ],
+    "sparsity": 0.25,
+    "nnz": 786432,
+    "params": 1048576
+  },
+  "fc": {
+    "shape": [
+      1000,
+      2048
+    ],
+    "sparsity": 0.28715038299560547,
+    "nnz": 1459916,
+    "params": 2048000
+  }
+}

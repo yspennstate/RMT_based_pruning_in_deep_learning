@@ -1,0 +1,51 @@
+{
+  "model": "convnext_base.fb_in22k_ft_in1k",
+  "dense_top1": 0.85812,
+  "ser_source_top1": 0.85256,
+  "cells": [
+    {
+      "label": "D816_dense_perm",
+      "k": 8,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.81844,
+      "n_layers_modified": 73,
+      "elapsed_s": 254.26141691207886
+    },
+    {
+      "label": "D1016_dense_perm",
+      "k": 10,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.8461,
+      "n_layers_modified": 73,
+      "elapsed_s": 210.55010533332825
+    },
+    {
+      "label": "D1216_dense_perm",
+      "k": 12,
+      "n": 16,
+      "source": "dense",
+      "perm": true,
+      "alpha_ser_prior": 0.0,
+      "pre_ft_top1": 0.8553,
+      "n_layers_modified": 73,
+      "elapsed_s": 163.8920431137085
+    },
+    {
+      "label": "S1216_ser_a05",
+      "k": 12,
+      "n": 16,
+      "source": "ser",
+      "perm": true,
+      "alpha_ser_prior": 0.5,
+      "pre_ft_top1": -1.0,
+      "n_layers_modified": -1,
+      "elapsed_s": 24.872721910476685
+    }
+  ]
+}
