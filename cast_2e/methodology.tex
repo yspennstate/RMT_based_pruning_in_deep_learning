@@ -91,6 +91,8 @@
 }
 \date{}
 
+% Cross-paper reference: points to a label in the main paper.
+\newcommand{\mainref}[1]{the main paper}
 \begin{document}
 \maketitle
 
@@ -223,7 +225,7 @@ BEMA edge fitting &
 \texttt{adaptive\_rmt/bema.py} (and equivalents) & \S\ref{sec:bema} \\
 $\alpha$ power-law signal &
 \texttt{adaptive\_rmt/alpha.py},
-\texttt{haar\_optuna*.py} & \S\ref{sec:seb-protocols}.\ref{subsec:alpha_signal_meth} \\
+\texttt{haar\_optuna*.py} & \S\ref{sec:seb-protocols}.\mainref{subsec:alpha_signal_meth} \\
 A100 throughput benchmark (2:4) &
 \texttt{cast\_2e/code/benchmark\_sparse\_throughput.py} & \S\ref{sec:speedup} \\
 $6{:}12 \to 2{:}4$ projection speedup &
@@ -576,7 +578,7 @@ a_N^{\mathrm{th}}(s)
 :=
 \|W_3\|_\infty\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}},
 \]
-which is the quantity denoted \(a(N,s)\) in Assumption~\ref{as1}. In the numerical plots below we also report the auxiliary empirical diagnostic
+which is the quantity denoted \(a(N,s)\) in Assumption~\mainref{as1}. In the numerical plots below we also report the auxiliary empirical diagnostic
 \[
 a_N^{\mathrm{emp}}(s)
 :=
@@ -639,7 +641,7 @@ Figure~\ref{fig:outer_layer_scaling_panels} summarizes these width-scaling numer
 
 \begin{ex}
 \label{adding_noise}
-We train a fully connected Fashion MNIST DNN using the MP-based pruning procedure of Example~\ref{higher_acc_MP_based_training} to achieve approximately \(90.5\%\) test accuracy, then add centered Gaussian perturbations with entries \(\sim N(0,\epsilon)\) to each nonfinal layer. Numerically, when \(\epsilon\sim 1/N\), the cross-entropy and accuracy change little, consistent with the perturbative regime of Lemma~\ref{lem:remove_R}. The \(L_2\)-regularized loss increases monotonically, illustrating the loss-reduction mechanism of Theorem~\ref{theorem_reduction_of_loss}. Figure~\ref{fig:noise_panels} collects these diagnostics: panel~\subref{fig:noise_acc} shows the accuracy, while panels~\subref{fig:noise_loss_noreg} and \subref{fig:noise_loss_l2} show the losses without and with \(L_2\) regularization.
+We train a fully connected Fashion MNIST DNN using the MP-based pruning procedure of Example~\ref{higher_acc_MP_based_training} to achieve approximately \(90.5\%\) test accuracy, then add centered Gaussian perturbations with entries \(\sim N(0,\epsilon)\) to each nonfinal layer. Numerically, when \(\epsilon\sim 1/N\), the cross-entropy and accuracy change little, consistent with the perturbative regime of Lemma~\mainref{lem:remove_R}. The \(L_2\)-regularized loss increases monotonically, illustrating the loss-reduction mechanism of Theorem~\mainref{theorem_reduction_of_loss}. Figure~\ref{fig:noise_panels} collects these diagnostics: panel~\subref{fig:noise_acc} shows the accuracy, while panels~\subref{fig:noise_loss_noreg} and \subref{fig:noise_loss_l2} show the losses without and with \(L_2\) regularization.
 \end{ex}
 
 \begin{figure}[h]
@@ -950,7 +952,7 @@ Even though ViTs generalize well on ImageNet, their layer ESDs do \emph{not} alw
 
 \label{sec:seb-protocols-legacy}
 
-This appendix records the operational RMT pruning protocols used in Section~\ref{sec:pruning_VITs}.  The central method is \emph{Spectral Edge Budgeting} (SEB): the fitted Marchenko--Pastur upper edge \(\sigma_+(\ell)\) guides the \emph{per-layer pruning budget} inside an otherwise standard global magnitude framework.  We also define \emph{Spectral Edge Reallocation} (SER), the practical prune--restore method that over-prunes, ranks a reservoir of removed weights using the same RMT diagnostics, reinserts a fixed budget, and then fine-tunes with the zero mask frozen.  Finally, we define the Hybrid Magnitude--SER protocol used for broader architecture validation.
+This appendix records the operational RMT pruning protocols used in Section~\mainref{sec:pruning_VITs}.  The central method is \emph{Spectral Edge Budgeting} (SEB): the fitted Marchenko--Pastur upper edge \(\sigma_+(\ell)\) guides the \emph{per-layer pruning budget} inside an otherwise standard global magnitude framework.  We also define \emph{Spectral Edge Reallocation} (SER), the practical prune--restore method that over-prunes, ranks a reservoir of removed weights using the same RMT diagnostics, reinserts a fixed budget, and then fine-tunes with the zero mask frozen.  Finally, we define the Hybrid Magnitude--SER protocol used for broader architecture validation.
 
 The cycle-based classical RMT procedure should be read as a diagnostic baseline, not as the final ViT pruning method.  It demonstrates that MP-bulk structure is visible in trained ViT layers, but direct singular-vector or singular-value pruning is brittle in modern transformer checkpoints.  The final methods use the MP fit to decide \emph{where} magnitude pruning and restoration should occur.
 
@@ -1233,7 +1235,7 @@ SEB is a one-shot budget allocation method.  SER turns the same spectral signal 
 \]
 where \(\rho_\ell(s)\) is the RMT restoration multiplier obtained from the same layerwise spectral weights used for pruning.  Thus entries that move strongly during the selection phase and belong to spectrally protected layers receive higher restoration priority, while entries from layers with larger MP-bulk pruning capacity are less likely to be restored.  A fixed restoration budget is reinserted, and the final mask is adjusted so that the realized post-reinsertion sparsity is exactly \(s\).  The surviving weights are then fine-tuned for a short schedule with the zero mask frozen.
 
-The connection to the theory is the same as for SEB, but applied twice.  The pruning stage uses MP information to allocate perturbation budget across layers; the reallocation stage uses the same information to choose which removed perturbations were too costly and should be restored.  The deterministic certificates of Section~\ref{Main_theory_gen} apply after the mask is fixed, while the MP diagnostics supply a data-independent ranking rule for finding masks that are more likely to satisfy those certificates.
+The connection to the theory is the same as for SEB, but applied twice.  The pruning stage uses MP information to allocate perturbation budget across layers; the reallocation stage uses the same information to choose which removed perturbations were too costly and should be restored.  The deterministic certificates of Section~\mainref{Main_theory_gen} apply after the mask is fixed, while the MP diagnostics supply a data-independent ranking rule for finding masks that are more likely to satisfy those certificates.
 
 \subsection{Hybrid Magnitude--SER}
 \label{subsec:hybrid_ser_method}
@@ -1243,11 +1245,11 @@ The sweep above shows that RMT modulation is not needed at very low sparsity: be
 \subsection{Checkpoint validation ledger}
 \label{subsec:checkpoint_validation_ledger}
 
-The main tables report rounded top-1 accuracy values from the archived validation files associated with the saved checkpoints.  Most entries come directly from \texttt{results.json} or \texttt{finetune\_results.json}; where a later restart overwrote a partial JSON ledger, the local archived stdout validation line and the saved checkpoint are used.  When both a prefix file and the integrated run file contain the same exact-magnitude prefix checkpoint, the integrated run file is used in the ledger; prefix-only rows are included only when no later integrated validation file exists.  Entries are post-fine-tuning ImageNet-1k validation top-1 accuracy in percent.  Stopped exploratory rows with no validated nonzero checkpoint are omitted from Table~\ref{tab:multi_arch_hybrid}.
+The main tables report rounded top-1 accuracy values from the archived validation files associated with the saved checkpoints.  Most entries come directly from \texttt{results.json} or \texttt{finetune\_results.json}; where a later restart overwrote a partial JSON ledger, the local archived stdout validation line and the saved checkpoint are used.  When both a prefix file and the integrated run file contain the same exact-magnitude prefix checkpoint, the integrated run file is used in the ledger; prefix-only rows are included only when no later integrated validation file exists.  Entries are post-fine-tuning ImageNet-1k validation top-1 accuracy in percent.  Stopped exploratory rows with no validated nonzero checkpoint are omitted from Table~\mainref{tab:multi_arch_hybrid}.
 
 \begin{table}[ht]
 \centering
-\caption{Checkpoint-level validation ledger for the Hybrid Magnitude--SER multi-architecture results.  These are the values used in Table~\ref{tab:multi_arch_hybrid}.}
+\caption{Checkpoint-level validation ledger for the Hybrid Magnitude--SER multi-architecture results.  These are the values used in Table~\mainref{tab:multi_arch_hybrid}.}
 \label{tab:checkpoint_validation_ledger}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -1306,7 +1308,7 @@ Hiera-Base+ \texttt{mae\_in1k\_ft\_in1k}
 
 \begin{table}[ht]
 \centering
-\caption{Downloaded threshold and restart validation ledgers saved locally.  These rows give the provenance for drop-threshold and restart trajectories, including several rows consolidated into Table~\ref{tab:multi_arch_hybrid}.}
+\caption{Downloaded threshold and restart validation ledgers saved locally.  These rows give the provenance for drop-threshold and restart trajectories, including several rows consolidated into Table~\mainref{tab:multi_arch_hybrid}.}
 \label{tab:additional_downloaded_validation_ledger}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -1335,7 +1337,7 @@ Swin-Tiny restart ledger
 
 \begin{table}[ht]
 \centering
-\caption{Auxiliary ViT-B/16 checkpoint validations archived with the main runs.  These rows document additional RMT/SER sweeps and exact-magnitude-to-SER variants; the headline Hybrid Magnitude--SER row is the one reported in Tables~\ref{tab:vitb_current_methods} and~\ref{tab:multi_arch_hybrid}.}
+\caption{Auxiliary ViT-B/16 checkpoint validations archived with the main runs.  These rows document additional RMT/SER sweeps and exact-magnitude-to-SER variants; the headline Hybrid Magnitude--SER row is the one reported in Tables~\mainref{tab:vitb_current_methods} and~\mainref{tab:multi_arch_hybrid}.}
 \label{tab:vitb_auxiliary_checkpoint_ledger}
 \scriptsize
 \setlength{\tabcolsep}{3pt}
@@ -1358,7 +1360,7 @@ Hybrid Magnitude--SER, alternate low-sparsity run
 \subsection{Classical RMT baseline}
 \label{subsec:classical_rmt}
 
-The ``Classical RMT'' entry in Table~\ref{tab:vitb_current_methods} refers to the cycle-based procedure: fit an MP edge in each layer, treat sub-edge singular components as bulk-like, sparsify small singular-vector coordinates, and then prune coefficients directly.  This method is conceptually close to SVD compression and RMT denoising work \cite{shmalo2023deep,staats2022boundary}, but it is not the final ViT method in this paper.  Its role is to establish that MP structure is present and exploitable; the stronger SEB, SER, and Hybrid Magnitude--SER protocols use the MP edge as a layerwise allocation signal rather than as a hard instruction to delete all sub-edge spectral components.
+The ``Classical RMT'' entry in Table~\mainref{tab:vitb_current_methods} refers to the cycle-based procedure: fit an MP edge in each layer, treat sub-edge singular components as bulk-like, sparsify small singular-vector coordinates, and then prune coefficients directly.  This method is conceptually close to SVD compression and RMT denoising work \cite{shmalo2023deep,staats2022boundary}, but it is not the final ViT method in this paper.  Its role is to establish that MP structure is present and exploitable; the stronger SEB, SER, and Hybrid Magnitude--SER protocols use the MP edge as a layerwise allocation signal rather than as a hard instruction to delete all sub-edge spectral components.
 
 
 
@@ -1373,7 +1375,7 @@ The ``Classical RMT'' entry in Table~\ref{tab:vitb_current_methods} refers to th
 
 \label{sec:cast-old-app-legacy}
 
-CAST (\textbf{C}ertificate-\textbf{A}ware \textbf{S}parse-\textbf{T}oken conversion) is the procedure used to produce the second row of Table~\ref{tab:param_to_flop_followup}.  This appendix records the algorithmic details, the connections to the deterministic certificate framework of Section~\ref{Main_theory_gen}, and the role played by the RMT/SER pipeline that supplies CAST's input checkpoint.
+CAST (\textbf{C}ertificate-\textbf{A}ware \textbf{S}parse-\textbf{T}oken conversion) is the procedure used to produce the second row of Table~\mainref{tab:param_to_flop_followup}.  This appendix records the algorithmic details, the connections to the deterministic certificate framework of Section~\mainref{Main_theory_gen}, and the role played by the RMT/SER pipeline that supplies CAST's input checkpoint.
 
 \subsection{Inputs and stages}
 \label{subsec:cast_pipeline}
@@ -1413,9 +1415,9 @@ W^{\mathrm{dense}}_{i,g,k} & \text{if } M^{\mathrm{SER}}_{i,g,k}=0\text{ and ``f
 0 & \text{otherwise.}
 \end{cases}
 \end{equation}
-Eq.~\eqref{eq:cast_slot_values} formalises CAST's two semantic rules: SER-kept slots retain their fine-tuned SER values; slots that the unstructured mask had zeroed but the chosen 2:4 pattern wishes to keep are \emph{restored} to the dense pretrained value, at zero sparse-execution FLOP cost.  This realises the prune--restore framing of Theorem~\ref{thm:deterministic_prune_restore_certificate} at the 2:4-pattern granularity: the kept reservoir \(Q\) is exactly the set of restored slots, and the budget reduction \(B_T(P)\) decreases when restoration is selected.
+Eq.~\eqref{eq:cast_slot_values} formalises CAST's two semantic rules: SER-kept slots retain their fine-tuned SER values; slots that the unstructured mask had zeroed but the chosen 2:4 pattern wishes to keep are \emph{restored} to the dense pretrained value, at zero sparse-execution FLOP cost.  This realises the prune--restore framing of Theorem~\mainref{thm:deterministic_prune_restore_certificate} at the 2:4-pattern granularity: the kept reservoir \(Q\) is exactly the set of restored slots, and the budget reduction \(B_T(P)\) decreases when restoration is selected.
 
-The chosen pattern minimises a Lemma~\ref{lem:deterministic_ce_path_bound}-inspired activation-weighted cost on the calibration set.  Let \(h_{g,k}(x)\in\mathbb R\) be the slot-\(k\) activation of group \(g\) on calibration input \(x\), and let \(C_g\in\mathbb R^{4\times 4}\) be the within-group input covariance,
+The chosen pattern minimises a Lemma~\mainref{lem:deterministic_ce_path_bound}-inspired activation-weighted cost on the calibration set.  Let \(h_{g,k}(x)\in\mathbb R\) be the slot-\(k\) activation of group \(g\) on calibration input \(x\), and let \(C_g\in\mathbb R^{4\times 4}\) be the within-group input covariance,
 \begin{equation}
 \label{eq:cast_covariance}
 C_g \;=\; \frac{1}{|\mathcal C|}\sum_{x\in\mathcal C} h_g(x)\,h_g(x)^\top,
@@ -1431,7 +1433,7 @@ c_{i,g}(m) \;=\; r_{i,g}(m)^\top C_g\, r_{i,g}(m)
 \;=\;
 \frac{1}{|\mathcal C|}\sum_{x\in\mathcal C}\Bigl(\sum_{k:m_k=0} v_{i,g,k}(m)\,h_{g,k}(x)\Bigr)^{\!2}.
 \end{equation}
-Eq.~\eqref{eq:cast_cost} is the squared \(\ell^2\) norm of the contribution that the \emph{removed} slots would make to the layer's output channel \(i\), averaged over \(\mathcal C\).  In particular, summing \(c_{i,g}(m)\) over all output rows and groups gives an upper bound (up to the post-layer Lipschitz factor) on the squared \(\ell^2\) norm of the layer-output perturbation \(R\,h\), where \(R=W-W\odot M\) is the removed component of the same form that appears in Lemma~\ref{lem:deterministic_ce_path_bound}.  CAST's cost is therefore the \(\ell^2\) form of the same algebraic object the lemma controls in \(\ell^\infty\); it is \emph{certificate-inspired}, and exact rescoring of the top-K riskiest groups with the literal \(\ell^\infty\) form is a mechanical extension we leave for future work.
+Eq.~\eqref{eq:cast_cost} is the squared \(\ell^2\) norm of the contribution that the \emph{removed} slots would make to the layer's output channel \(i\), averaged over \(\mathcal C\).  In particular, summing \(c_{i,g}(m)\) over all output rows and groups gives an upper bound (up to the post-layer Lipschitz factor) on the squared \(\ell^2\) norm of the layer-output perturbation \(R\,h\), where \(R=W-W\odot M\) is the removed component of the same form that appears in Lemma~\mainref{lem:deterministic_ce_path_bound}.  CAST's cost is therefore the \(\ell^2\) form of the same algebraic object the lemma controls in \(\ell^\infty\); it is \emph{certificate-inspired}, and exact rescoring of the top-K riskiest groups with the literal \(\ell^\infty\) form is a mechanical extension we leave for future work.
 
 Finally CAST adds a small SER-prior term scaled to the cost magnitude,
 \begin{equation}
@@ -1454,9 +1456,9 @@ The activation capture in Eq.~\eqref{eq:cast_covariance} is run on the same forw
 
 Stage 1 emits a state dict containing the Stage-1 student weights and the per-layer 2:4 mask dictionary \(\{M^{\mathrm{CAST}}_\ell\}\).  Stage 2 invokes the existing fine-tuning runner with two CAST-specific arguments: \texttt{-{}-resume-student-from} pointing at the Stage-1 checkpoint, and the \texttt{-{}-checkpoint} flag pointing at the dense pretrained ViT-B (so the distillation teacher is the \(85.11\%\) model rather than the \(s=0.35\) sparse source).
 
-The fine-tuning runner ordinarily derives its internal mask dictionary from a magnitude top-2 projection of the Linear weights (the same procedure as the first row of Table~\ref{tab:param_to_flop_followup}).  When CAST resumes, the runner instead consumes the \(\{M^{\mathrm{CAST}}_\ell\}\) dictionary embedded in the Stage-1 payload and uses that as its training-time mask: every \texttt{apply\_masks} and \texttt{mask\_gradients} call at every gradient step is therefore against the certificate-aware row-wise 2:4 pattern, not against the magnitude pattern.  This handoff is what guarantees that the fine-tuning stage preserves CAST's per-row pattern and, in particular, does not silently zero out the slots restored in Eq.~\eqref{eq:cast_slot_values}.  The implementation is a small, backward-compatible extension to the runner: payloads without a \(\{M^{\mathrm{CAST}}_\ell\}\) entry fall through to the runner's original magnitude behaviour unchanged.
+The fine-tuning runner ordinarily derives its internal mask dictionary from a magnitude top-2 projection of the Linear weights (the same procedure as the first row of Table~\mainref{tab:param_to_flop_followup}).  When CAST resumes, the runner instead consumes the \(\{M^{\mathrm{CAST}}_\ell\}\) dictionary embedded in the Stage-1 payload and uses that as its training-time mask: every \texttt{apply\_masks} and \texttt{mask\_gradients} call at every gradient step is therefore against the certificate-aware row-wise 2:4 pattern, not against the magnitude pattern.  This handoff is what guarantees that the fine-tuning stage preserves CAST's per-row pattern and, in particular, does not silently zero out the slots restored in Eq.~\eqref{eq:cast_slot_values}.  The implementation is a small, backward-compatible extension to the runner: payloads without a \(\{M^{\mathrm{CAST}}_\ell\}\) entry fall through to the runner's original magnitude behaviour unchanged.
 
-The remaining hyperparameters --- learning rate \(10^{-5}\) cosine decay, label smoothing \(0.1\), distillation \(\alpha=0.5\), distillation temperature \(2.0\), 3 epochs, batch size 32 --- match the magnitude-2:4 row of Table~\ref{tab:param_to_flop_followup} so that the only difference between the two rows is the Stage-1 mask choice and the slot-value semantics of Eq.~\eqref{eq:cast_slot_values}.
+The remaining hyperparameters --- learning rate \(10^{-5}\) cosine decay, label smoothing \(0.1\), distillation \(\alpha=0.5\), distillation temperature \(2.0\), 3 epochs, batch size 32 --- match the magnitude-2:4 row of Table~\mainref{tab:param_to_flop_followup} so that the only difference between the two rows is the Stage-1 mask choice and the slot-value semantics of Eq.~\eqref{eq:cast_slot_values}.
 
 \subsection{What CAST contributes, and what it does not}
 \label{subsec:cast_limits}
@@ -1465,9 +1467,9 @@ What CAST contributes empirically: at a fixed compute budget (\(7.06\)G sparse-e
 
 What CAST does \emph{not} contribute, and what is left as future work:
 \begin{itemize}
-\item The cost in Eq.~\eqref{eq:cast_cost} is the \(\ell^2\) form of Lemma~\ref{lem:deterministic_ce_path_bound}'s removed-contribution quantity, not its literal \(\ell^\infty\) form.  Exact \(\ell^\infty\) rescoring of the top-K riskiest groups is a small follow-up.
-\item The post-layer Lipschitz factor \(L_s\) of Lemma~\ref{lem:deterministic_ce_path_bound} is held constant; computing it per-sample via a single backward pass would tighten the cost.
-\item The 2:4 search is per-layer; Theorem~\ref{thm:deterministic_multilayer_mask_certificate}'s multi-layer bound is a sum that we minimise greedily, not jointly.  The greedy choice is justified because changing one layer's 2:4 mask does not materially shift another layer's input distribution at this calibration depth, but a joint minimisation would be the principled extension.
+\item The cost in Eq.~\eqref{eq:cast_cost} is the \(\ell^2\) form of Lemma~\mainref{lem:deterministic_ce_path_bound}'s removed-contribution quantity, not its literal \(\ell^\infty\) form.  Exact \(\ell^\infty\) rescoring of the top-K riskiest groups is a small follow-up.
+\item The post-layer Lipschitz factor \(L_s\) of Lemma~\mainref{lem:deterministic_ce_path_bound} is held constant; computing it per-sample via a single backward pass would tighten the cost.
+\item The 2:4 search is per-layer; Theorem~\mainref{thm:deterministic_multilayer_mask_certificate}'s multi-layer bound is a sum that we minimise greedily, not jointly.  The greedy choice is justified because changing one layer's 2:4 mask does not materially shift another layer's input distribution at this calibration depth, but a joint minimisation would be the principled extension.
 \item Per-layer learned token thresholds (an LTMP-flavoured upgrade in which each block's merge count \(r_\ell\) is tuned on the calibration set) are not yet wired in; CAST currently uses a fixed ToMe \(r=8\) at every block.
 \end{itemize}
 
@@ -1622,10 +1624,20 @@ The \mainpaper{}-\S3 narrative is preserved in \mainpaper{} unchanged; only the 
 \end{table}
 
 % =====================================================
+\section*{Declaration of generative AI use}
+% =====================================================
+
+During the preparation of this work, the author(s) used ChatGPT Pro to help refine and polish portions of the writing. After using this tool, the author(s) reviewed and edited the content as needed and take full responsibility for the manuscript.
+
+% =====================================================
 \section*{Acknowledgments}
 % =====================================================
 
-We thank the maintainers of timm \citep{rw2019timm}, PyTorch \citep{pytorch2019}, and the HuggingFace Hub for the open-source infrastructure on which this work depends. The 2:4 native sparse Tensor Core kernel is provided by NVIDIA \citep{mishra2021accelerating}; the ToMe token merging method is by Bolya et al.\ \citep{bolya2023tome}.
+LB, HO and YS acknowledge support from NASA via the AIST program (Kernel Flows: Emulating Complex Models for Massive Data Sets). This work started when LB was on a sabbatical stay at Caltech hosted by H.\ Owhadi. Both LB and YS are grateful for the hospitality during their visit, supported by NASA.
+
+The work of LB was partially supported by NSF grant DMS-2005262 and NSF grant IMPRESS-U 2401227. TB and HO acknowledge support from the Air Force Office of Scientific Research under MURI award number FA9550-20-1-0358 (Machine Learning and Physics-Based Modeling and Simulation), FOA-AFRL-AFOSR-2023-0004 (Mathematics of Digital Twins), and by the Department of Energy under award number DE-SC0023163 (SEA-CROGS: Scalable, Efficient, and Accelerated Causal Reasoning Operators, Graphs and Spikes for Earth and Embedded Systems). Additionally, HO and TB acknowledge support from the DoD Vannevar Bush Faculty Fellowship Program under award number ONR-N000142512035.
+
+We additionally thank the maintainers of timm \citep{rw2019timm}, PyTorch \citep{pytorch2019}, and the HuggingFace Hub for the open-source infrastructure on which the experiments in this paper depend. The 2:4 native sparse Tensor Core kernel is provided by NVIDIA \citep{mishra2021accelerating}; the ToMe token merging method is by Bolya et al.\ \citep{bolya2023tome}.
 
 \bibliographystyle{plainnat}
 \begin{thebibliography}{99}

@@ -1,8 +1,27 @@
 # Pruning Deep Neural Networks via Random Matrix Theory
 
-Reproduction code for the paper of the same title (in the manuscript: *“Pruning Deep Neural Networks via the Marchenko–Pastur Distribution”*).
+Reproduction code, **paper PDFs**, and the **methodology companion paper** for
+the manuscript: *"Pruning Deep Neural Networks via the Marchenko–Pastur
+Distribution"*.
 
-The repository contains every method evaluated in the paper:
+## Papers
+
+| Paper | PDF | TeX source |
+|---|---|---|
+| **Main manuscript** (theory + headline results, ~63 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
+| **Methodology companion** (full methodology + extended numerics + migrated appendices, ~35 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
+
+The main manuscript contains all theoretical statements, proofs, and headline
+empirical results (Table 2, the new FLOP table, the theory↔numerics map). The
+methodology paper contains everything operational: the full RMT protocol stack
+(BEMA, SEB, SER, Hybrid Magnitude–SER), the CAST-2E pipeline (cert-aware $k{:}n$
+projection, permutation alignment, free restoration, frozen-mask distillation),
+A100/L4 throughput measurements, the 282-cell certification audit, and the
+extended fully-connected MP-pruning experiments.
+
+## Methods covered
+
+The repository contains every method evaluated in either paper:
 
 - **Classical magnitude pruning** — global unstructured baseline.
 - **Classical RMT pruning** — Marchenko–Pastur (MP) edge fitting + sub-edge bulk denoising (negative control).
@@ -12,6 +31,8 @@ The repository contains every method evaluated in the paper:
 - **Drop-threshold variant** — stage-1 magnitude continues until post–FT top-1 drops by more than 0.7 percentage points, then stage-2 (SER) begins. Two flavors:
   - **From-scratch**: stage-1 starts from the dense model.
   - **Seeded**: stage-1 starts from the canonical \(s=0.20\) checkpoint and continues magnitude past it.
+- **CAST** — Certificate-Aware Sparse-Token conversion: cert-aware 2:4 mask + ToMe + 3-epoch frozen-mask distillation.
+- **CAST-2E** (NEW; under [`cast_2e/`](cast_2e/)) — generalised cert-aware $k{:}n$ projection (k:n in {2:4, 4:8, 6:12, 8:16, 12:16}), Cin permutation alignment ("flatten the layer"), $\alpha_{\mathrm{ser}}$ Hamming-distance prior to the SER mask, and inline 3-epoch distillation FT. Underlies the new FLOP table in the main paper (ViT-B 83.74%, ViT-L 84.37%, ResNet50 75.67%, ResNet50d 78.00%, ResNet101d 80.59%, ResNet152d 81.33%, ConvNeXtV2 86.35% / 85.85%).
 
 Code currently used to produce the validated checkpoints in the paper is preserved as-is — file names retain their internal ("v8", "until_drop", etc.) lineage, but the table below maps every file to the paper-facing method name.
 
