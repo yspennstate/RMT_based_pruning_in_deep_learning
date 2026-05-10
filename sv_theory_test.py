@@ -14,7 +14,7 @@ Method 2: "Haar test"
     - Entries that look "random" (small z-score) get pruned; entries that are
       unusually large (informative) are kept.
 
-Method 3: "sqrt(NM) power=3" (our previous best, for reference)
+Method 3: "sqrt(NM) power=3" (previous best baseline, for reference)
 
 All followed by magnitude pruning to cycle-8 equivalent (~67% kept).
 """
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         label = f"Haar z={z}"
         configs.append((label, lambda W, sp, z=z: sv_prune_haar(W, sp, z)))
 
-    # Method 3: sqrt(NM) power=3 (previous best)
+    # Method 3: sqrt(NM) power=3 (previous best baseline)
     configs.append(("sqrt(NM) pow=3 (prev best)",
                    lambda W, sp: sv_prune_sqrt_nm(W, sp, 0.00001125, 3)))
 

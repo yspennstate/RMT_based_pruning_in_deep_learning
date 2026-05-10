@@ -1,6 +1,6 @@
 """
-cert_opt_eval_best.py — runs ONLY the winning pre-FT methods identified
-from the broader sweep. Saves everything for FT + benchmark stage.
+cert_opt_eval_best.py - runs selected pre-FT methods identified
+from the broader sweep. Saves artifacts for FT and benchmark stages.
 
 Best methods by architecture (from advanced_v2 + earlier sweeps):
   ResNet50 (Conv pipeline):
@@ -8,15 +8,15 @@ Best methods by architecture (from advanced_v2 + earlier sweeps):
     - 10:16 dense+perm (62.5% dense, 0.7382)
     - 8:16  dense+perm (50% dense, 0.6556)
   ViT-B (Linear pipeline):
-    - 6:12  SER+α=0.5  (50% dense, 0.7871 = best at 50%)
+    - 6:12  SER+α=0.5  (50% dense, 0.7871)
     - 8:16  dense+perm (50% dense, 0.7741)
     - 12:16 SER+α=0.5  (75% dense)
   ConvNeXtV2 (Linear pipeline):
     - 10:16 dense+perm (62.5% dense, 0.8587 = -0.87pp)
     - 8:16  dense+perm (50% dense, 0.8248)
-    - 12:16 dense+perm (75% dense, expected near-dense)
+    - 12:16 dense+perm (75% dense)
 
-Saves: per-cell JSON, mask snapshots, EVERY cell's projected ckpt.
+Saves per-cell JSON, mask snapshots, and projected ckpts for all cells.
 """
 import torch as _t; _t.backends.cudnn.enabled = False
 

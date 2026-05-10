@@ -32,8 +32,7 @@ class ProbeLoaderFactory:
     length: int
 
     def make_loader(self, probe_seed: int) -> DataLoader:
-        # Build a fresh randomized probe loader each time so controller decisions do
-        # not overfit to one frozen slice of the training set.
+        # Use a fresh randomized probe slice for each controller decision.
         probe_ds = DirectParquetIterableDataset(
             self.files,
             self.transform,

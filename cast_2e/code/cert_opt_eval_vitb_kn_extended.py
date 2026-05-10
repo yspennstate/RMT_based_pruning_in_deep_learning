@@ -1,5 +1,5 @@
 """
-cert_opt_eval_vitb_kn_extended.py — same as cert_opt_eval_kn_extended.py
+cert_opt_eval_vitb_kn_extended.py - same as cert_opt_eval_kn_extended.py
 but Linear pipeline (ViT-S, ViT-B, etc.).
 """
 from __future__ import annotations

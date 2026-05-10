@@ -49,3 +49,10 @@ stderr.log
 *.fdb_latexmk
 *.lof
 *.lot
+
+# Paper review screenshot artifacts (auto-generated)
+paper/_r*_table_pages/
+paper/_table*_pages/
+paper/main_text.txt
+paper/main_layout.txt
+paper/*.synctex.gz

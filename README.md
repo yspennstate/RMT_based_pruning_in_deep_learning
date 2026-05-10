@@ -8,8 +8,8 @@ Distribution"*.
 
 | Paper | PDF | TeX source |
 |---|---|---|
-| **Main manuscript** (theory + headline results, ~63 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
-| **Methodology companion** (full methodology + extended numerics + migrated appendices, ~35 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
+| **Main manuscript** (theory + headline results, 61 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
+| **Methodology companion** (full methodology + extended numerics + migrated appendices, 54 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
 
 The main manuscript contains all theoretical statements, proofs, and headline
 empirical results (Table 2, the new FLOP table, the theory↔numerics map). The
@@ -44,7 +44,7 @@ A predecessor of this code is the public repo **[yspennstate/RMT_pruning_ViT](ht
 2. **What is new.** The protocols studied in the current paper — SER, Hybrid Magnitude–SER, drop-threshold variant (from-scratch and seeded), Spectral Edge Budgeting / S+ with a Haar bulk model, the multi-architecture queue runners, and the layer-aware adaptive RMT controller in `adaptive_rmt/` — are all new. They sit on top of the inherited library; they do not replace any of it.
 3. **What changed in the inherited code.** Hardcoded paths and the prior repo’s baked-in HuggingFace token have been removed and replaced by environment variables (`HF_TOKEN`, `RMT_OPTUNA_RUN`, `RMT_CACHE`). No algorithmic changes.
 
-If you only want to reproduce the original ViT-Base figure, the prior repo is smaller and self-contained. If you want the full multi-architecture protocol-comparison story (Tables 1 and 2 of the new paper), use this repository.
+For reproducing only the original ViT-Base figure, the prior repo is smaller and self-contained. For the full multi-architecture protocol comparison in Tables 1 and 2 of the new paper, use this repository.
 
 ---
 
@@ -60,7 +60,7 @@ If you only want to reproduce the original ViT-Base figure, the prior repo is sm
 | **Drop-threshold variant**, single model | `hybrid_mag_until_drop_then_v8_model.py` | Stops stage-1 when post-FT top-1 drops > 0.7 pp. |
 | **Drop-threshold variant**, queue runner | `hybrid_mag_until_drop_then_v8_model_queue.py` | Multi-arch driver for the variant. |
 | **Multi-arch orchestrator** (calls the queue runners) | `model_queue_runner.py` | Top-level loop that selects the next model from the per-queue config. |
-| **Multi-arch launcher** (interactive entry) | `start_model_queue.py` | Spawns or resumes a queue. |
+| **Multi-arch launcher** (queue control entry point) | `start_model_queue.py` | Spawns or resumes a queue. |
 
 ### Classical magnitude pruning (Appendix “S+ method”)
 
@@ -156,7 +156,7 @@ The six modules in `src/` are used as a library by every new method:
 | `utils.py` | Misc helpers. | Verbatim copy. |
 | `validation.py` | ImageNet validation pass. | Extended with the multi-resolution / mass-validation paths used by the multi-architecture sweep (~ +45 lines). The HuggingFace token, which was hard-coded in the prior repo, is now read from `$HF_TOKEN`. |
 
-`prune.py` and `fine_tune.py` at the repository root are bit-identical with the prior repo (433 and 100 lines respectively). They give you a one-command repro of the **original** ViT-Base figure (the same plot reproduced in the prior repo's README), which serves as the baseline curve in Table 1 of the new paper.
+`prune.py` and `fine_tune.py` at the repository root are bit-identical with the prior repo (433 and 100 lines respectively). They provide a one-command reproduction of the **original** ViT-Base figure (the same plot reproduced in the prior repo's README), which serves as the baseline curve in Table 1 of the new paper.
 
 ### Helpers
 
@@ -263,7 +263,7 @@ A complete s=0.05 → 0.70 schedule (14 cycles, including stage-1 magnitude pref
 
 ## Citation
 
-If you use this code please cite the paper:
+Please cite the paper when using this code:
 
 ```bibtex
 @article{berlyand2026pruning,
@@ -282,4 +282,20 @@ MIT. See `LICENSE`.
 
 This repository is a clean public mirror of the live research code. All HuggingFace tokens, pod IPs, SSH keys, and cluster paths have been stripped. Any path that previously pointed into the pod filesystem (`/workspace/rmt_vit_pruning/optuna_run/...`) now reads from the `$RMT_OPTUNA_RUN` and `$RMT_CACHE` environment variables, with sensible defaults that work in a fresh checkout.
 
-If you discover a leaked secret in the repository history, please open an issue immediately — we will rotate the credential and force-push a sanitized history.
+Report any leaked secret in the repository history immediately. The maintainers will rotate the credential and force-push a sanitized history.
+
+## Data and checkpoint availability
+
+All checkpoints and per-run evidence files supporting the empirical claims in the paper are released via a public Google Drive folder:
+
+**Google Drive folder:** [https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd]
+
+The bundle includes:
+- The 17 Hybrid Magnitude–SER sparsification checkpoints for the multi-architecture sweep (Table 11 of the paper) — per-architecture grids over $s\in[0.05, 0.70]$, ~230 post-FT `.pt` files, ~69 GB. SHA-256 of the source zip: `e965bbf7834a3d2cf9c16e7cd878aeaa7588c66d281f53ffd9de898e8e96eef1`.
+- FLOP-model post-FT checkpoints and `final_eval.json` logs for every CAST headline row (ViT-L 8:16 dense+perm 85.33%, ViT-B 6:12 SER+α=0.5 83.74%, ResNet50/50d/101d 8:16 dense+perm 75.87/78.57/80.92%) — ~6.7 GB.
+- SER source checkpoints at $s\!=\!0.35$ (ViT-B, ViT-L, ConvNeXt-Base, ResNet50/50d/101d/152d).
+- 282-cell certificate-audit results CSV/JSON (the three bridges of Section 3 of the paper).
+- Mask-statistics JSON snapshots and per-run training logs.
+- `release_manifest.json` mapping every paper row → evidence files.
+
+See `data/release_manifest.json` for the machine-readable mapping (manifest also mirrored inside the Drive zip).

@@ -49,8 +49,7 @@ def validate(val_loader, model, criterion, args):
                     progress.display(i + 1)
 
                 # Free per-batch tensors and periodically reclaim allocator slabs.
-                # Required to prevent fragmentation-driven OOM on the 8GB GPU
-                # that took the trading bots down on 2026-04-06.
+                # This prevents fragmentation-driven OOM failures on 8GB GPUs.
                 del images, target, output, loss, acc1, acc5
                 if torch.cuda.is_available() and (i % 50 == 0):
                     torch.cuda.empty_cache()
@@ -257,16 +256,16 @@ def get_val_dataset(preprocess, batch_size=8):
 
     Args:
         preprocess: Preprocessing transformations.
-        batch_size: DataLoader batch size. Smaller = shorter GPU kernels = nicer
-                    to other apps (Chrome, games) when the user is active.
+        batch_size: DataLoader batch size. Smaller values reduce peak GPU memory
+                    and shorten individual GPU kernels.
     """
     global _VAL_DATASET_CACHE
     if _VAL_DATASET_CACHE is None:
         from datasets import load_dataset
         import os, glob
         # HF token must be set externally: `export HF_TOKEN=...` (HuggingFace)
-if "HF_TOKEN" not in os.environ:
-    raise RuntimeError("Set HF_TOKEN env var to download HuggingFace assets.")
+        if "HF_TOKEN" not in os.environ:
+            raise RuntimeError("Set HF_TOKEN env var to download HuggingFace assets.")
         # Linux/Runpod path: load only the locally-downloaded validation parquet shards
         # (avoids triggering a full-repo re-download via load_dataset).
         _LOCAL_VAL_PARQUETS = sorted(glob.glob(
@@ -282,8 +281,8 @@ if "HF_TOKEN" not in os.environ:
         # Use full 50K val set (no subset) for accurate top-1 reporting
         _VAL_DATASET_CACHE = val_dataset
 
-    # num_workers=8 + pin_memory=True: avoids Windows DataLoader-worker leaks
-    # that contributed to the 2026-04-06 hard crash. Slower but stable.
+    # num_workers=8 + pin_memory=True avoids Windows DataLoader-worker leaks
+    # observed during long validation runs.
     return torch.utils.data.DataLoader(_VAL_DATASET_CACHE, batch_size=batch_size,
                                         shuffle=False, num_workers=8,
                                         pin_memory=True)

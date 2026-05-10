@@ -57,7 +57,7 @@ import numpy as np
 import torch
 import timm
 
-# Conservative threading — this will be run alongside trading bots, never alone.
+# Conservative threading for shared-workstation runs.
 os.environ.setdefault("OMP_NUM_THREADS", "4")
 os.environ.setdefault("MKL_NUM_THREADS", "4")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")

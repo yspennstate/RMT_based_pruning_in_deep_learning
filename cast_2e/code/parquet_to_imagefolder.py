@@ -35,7 +35,7 @@ import pyarrow as pa
 # assigned by HF (which itself matches torchvision/timm convention).
 # Source: the HF imagenet-1k dataset_info.json or hardcoded official list.
 def _load_wnids() -> List[str]:
-    # Embedded so we don't need extra files. This list is the canonical
+    # Embedded to avoid extra files. This list is the canonical
     # alphabetic-by-WNID order, matching torchvision ImageFolder + timm.
     raw = (
         "n01440764 n01443537 n01484850 n01491361 n01494475 n01496331 n01498041 n01514668 n01514859 "

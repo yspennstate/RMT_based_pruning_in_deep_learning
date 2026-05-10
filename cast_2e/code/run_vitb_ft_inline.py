@@ -4,8 +4,8 @@ in the same process, so the permutation forward-pre-hooks are never lost.
 
 Use this when the cert projection uses --permute-align=True. The permutation
 information is encoded as a forward-pre-hook on each layer that re-orders
-the input channels — these hooks are NOT serialized in state_dict, so saving
-+ reloading produces a non-functional ckpt (catastrophic accuracy drop).
+the input channels. These hooks are not serialized in state_dict, so saving
++ reloading produces a non-functional ckpt with a substantial accuracy drop.
 
 This script avoids that by doing projection + FT in one process.
 

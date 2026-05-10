@@ -1,27 +1,27 @@
-# CAST-2E for ResNet — verification report (v3, post Codex review)
+# CAST-2E for ResNet — verification report (v3)
 
-Generated 2026-05-06 after applying Codex's 8-issue review.
+Prepared 2026-05-06 after the v3 verification pass.
 
-## What v3 changes vs v2 (per Codex review)
+## Changes from v2 to v3
 
-### Critical (must-fix-before-AWS) — DONE
+### Critical fixes completed before AWS
 
 1. **Mask freezing during FT** — `collect_nonzero_masks()` snapshots the 2:4 pattern after projection; the runner's training loop calls `freeze_grad_at_masked()` BEFORE `optimizer.step()` and `apply_masks()` AFTER. This prevents gradient/momentum/weight-decay from regrowing zeroed entries.
 2. **Covariance-form cert cost** — `_cert_cost_2_of_4` rewritten to use `c_g(m) = r^T · C_g · r` with `C_g = E[h h^T]` (4×4 per group). Includes the cross-terms the per-slot diagonal approximation dropped. Memory: O(G·16 + O·G·6) instead of O(N·O·G·4) — no OOM risk on bottleneck layers.
 3. **Slot-values free restoration** — `cert_aware_2_4_for_conv` builds `slot_values = where(SER kept, W_sparse, W_dense)` BEFORE the pattern search, so the dense-restoration candidates participate in the certificate optimization (not bolted on after).
 4. **Legality assertion** — `assert_2_4_legality()` runs after projection, after each FT epoch, and would catch any drift. Verified to fire correctly when the mask is corrupted.
 
-### Important (should-fix) — DONE
+### Important fixes completed
 
-5. **SER load coverage assertion** — `load_ser_with_coverage_check()` strips `module.` prefixes and asserts ≥95% tensor mass loaded; fails loud if the checkpoint format is wrong.
+5. **SER load coverage assertion** — `load_ser_with_coverage_check()` strips `module.` prefixes and asserts ≥95% tensor mass loaded; it fails with an explicit error if the checkpoint format is wrong.
 6. **timm data_config resolution** — `timm.data.resolve_model_data_config(model)` is read at runtime; `image_size`, `mean`, `std` flow through to the calibration loader, FT loader, and MAC counter. Stops baking a hardcoded 224×224.
-7. **Skip Linear head** (`--skip-head` default True) — head MACs are ~0.1% of eligible compute; skipping cleans the accuracy story without losing meaningful FLOP reduction.
+7. **Skip Linear head** (`--skip-head` default True) — head MACs are ~0.1% of eligible compute; skipping keeps the accuracy comparison focused without losing meaningful FLOP reduction.
 8. **Deterministic calibration loader** — `build_calibration_loader()` is separate from the FT train loader: NO `RandomResizedCrop`, NO horizontal flip, NO shuffle. Cert-aware mask search is now reproducible run-to-run.
 9. **Fixed before/after NNZ stats** — `nnz_before` is now snapshot BEFORE the weight is overwritten in both magnitude and cert-aware paths.
 
-### New (per user request — bigger FLOP reduction)
+### New FLOP-reduction option
 
-10. **`--include-3x3-convs` flag** — extends eligibility to 3×3 convs. Magnitude path supports it via `only_1x1=False`. Default still 1×1-only (clean theory tie-in for main paper row); 3×3 inclusion gives ~50% MAC reduction (paper appendix).
+10. **`--include-3x3-convs` flag** — extends eligibility to 3×3 convs. Magnitude path supports it via `only_1x1=False`. Default still 1×1-only (direct theory connection for the main paper row); 3×3 inclusion gives ~50% MAC reduction (paper appendix).
 
 ## Smoke-test results (CPU, local, 2026-05-06)
 
@@ -62,15 +62,15 @@ The all-eligible mode hits ~50% reduction (the theoretical ceiling for 2:4 on th
 | `mac_*.json` | Per-model MAC reports (both regimes) | |
 | `smoke_*.json` | Smoke test outputs | |
 
-## Throughput caveat (unchanged — still right)
+## Throughput caveat
 
-PyTorch's `torch.sparse.to_sparse_semi_structured` accelerates `nn.Linear` only. For ResNet 2:4-sparse Conv2d weights you get the **FLOP reduction** and **accuracy preservation** but **no measured wall-clock speedup** unless you replace each Conv2d at inference time with `nn.Unfold + nn.Linear + Fold`. Report FLOP-only with this footnote per Codex's recommendation.
+PyTorch's `torch.sparse.to_sparse_semi_structured` accelerates `nn.Linear` only. ResNet 2:4-sparse Conv2d weights provide **FLOP reduction** and **accuracy preservation** but **no measured wall-clock speedup** unless inference replaces each Conv2d with `nn.Unfold + nn.Linear + Fold`. The paper should therefore report FLOP reduction with this limitation, not sparse-kernel wall-clock speedup.
 
-## Recommended paper framing
+## Paper framing
 
 > "For convolutional bottleneck architectures, we extend CAST to 1×1 convolutions by treating each as a per-spatial-location linear map (Section X.Y). For appendix-completeness we also report 3×3-conv inclusion via the im2col-equivalent reshape. Since our current deployment stack does not provide a semi-structured convolution kernel path comparable to the ViT Linear-kernel setup, we report exact analytical 2:4 MAC reductions (computed via a hook-based forward pass at the model's native resolution) and ImageNet top-1 accuracy, but not backend-validated sparse-kernel speedups."
 
-## What still requires GPU (deferred — quota PENDING)
+## Remaining GPU work (quota pending at report time)
 
 - Pre-FT eval (~1-2 min on A10G/L4)
 - Distillation FT 2-3 epochs (~2-5 hours per model on g6.xlarge)
@@ -78,7 +78,7 @@ PyTorch's `torch.sparse.to_sparse_semi_structured` accelerates `nn.Linear` only.
 
 GPU quotas in AWS account `973584726484` (us-east-1) are 0 for all G/P/VT families. **3 quota requests submitted via CLI (PENDING)**: G/VT On-Demand, G/VT Spot, P Spot — all to 4 vCPUs. Approval typical 1-72h.
 
-Once approved: same runner, two recommended invocations per model:
+Once approved, use the same runner with two invocations per model:
 
 ```bash
 # Main paper row (1x1 only, ~25% reduction)

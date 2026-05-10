@@ -65,8 +65,8 @@ cast_2e_resnet_review/
     └── best_pod1/benchmarks/                   # benchmark JSONs
 ```
 
-Then there's `Desktop/RMT_pruning_VITs_Final/main.{tex,pdf}` — the paper itself
-(90 pages, 2.78 MB, last built 00:01 UTC May 9 with today's results filled in).
+Additional archived paper build: `Desktop/RMT_pruning_VITs_Final/main.{tex,pdf}`
+(90 pages, 2.78 MB, built at 00:01 UTC on 2026-05-09 with the latest available results at that time).
 
 ## Sweep results saved (all on Pod 3a + local)
 
@@ -100,10 +100,10 @@ Each JSON contains per-cell: pre_ft_top1, layers_modified, projection_time, eval
 
 ## Risks (data preservation)
 
-If a pod terminates we lose its on-disk state. Critical risks:
-1. **Pod 2 ViT-L canonical (16 GB)** — paper-headline result, needs preservation. JSONs are pulled, but the post-FT ckpt (1.5 GB) is not on local. **Recommend pulling to S3 or local.**
-2. **Pod 2 ConvNeXtV2 canonical** (in flight) — paper-headline result. When ep3 finishes, pull post-FT ckpt + results.json.
-3. **Pod 1 4-ResNet FT chain ckpts** (~3 GB epoch3 ckpts) — paper-headline. JSONs pulled; ckpts only on Pod 1 disk.
-4. **Pod 3a sweep mask snapshots** — need to pull when sweep completes.
+Pod-local state is not durable. Critical preservation items:
+1. **Pod 2 ViT-L canonical (16 GB)** — paper-headline result. JSONs are local; the 1.5 GB post-FT checkpoint remains only on Pod 2. Action: copy to S3 or local storage.
+2. **Pod 2 ConvNeXtV2 canonical** (in flight) — paper-headline result. Action: pull post-FT checkpoint and results.json after ep3 finishes.
+3. **Pod 1 4-ResNet FT chain ckpts** (~3 GB epoch3 ckpts) — paper-headline. JSONs are local; checkpoints remain only on Pod 1 disk.
+4. **Pod 3a sweep mask snapshots** — action: pull after the sweep completes.
 
-Local archive is currently a complete COPY of all small results (JSONs, mask stats, code, paper) but has no large checkpoints (~30 GB total of important checkpoints across 3 pods). For paper rebuild + reviewer verification this is enough; for a public GitHub release with HuggingFace ckpts, we'd upload the post-FT ckpts to HF Hub.
+The local archive contains all small artifacts (JSONs, mask stats, code, and paper sources/builds), but not the large checkpoints (about 30 GB across the 3 pods). It supports manuscript rebuilds and result inspection from saved summaries. The post-FT checkpoints should be published separately, for example on HuggingFace Hub, for full external reproduction.

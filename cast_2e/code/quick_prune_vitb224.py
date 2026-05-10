@@ -1,6 +1,6 @@
 """
 quick_prune_vitb224.py — generate a ViT-B/16 224 augreg2 SER s=0.35 ckpt locally
-when the paper's exact Hybrid-Mag-SER ckpt isn't accessible.
+when the paper's exact Hybrid-Mag-SER ckpt is not available.
 
 Approach: Classical Magnitude prune to s=0.35 (zero out the smallest-by-|w|
 weights in every Linear layer, uniformly to 35% sparsity). This corresponds to

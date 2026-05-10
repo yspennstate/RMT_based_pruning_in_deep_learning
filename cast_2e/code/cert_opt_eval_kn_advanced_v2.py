@@ -1,8 +1,8 @@
 """
-cert_opt_eval_kn_advanced_v2.py — pushes the k:n + cert + RMT idea further.
+cert_opt_eval_kn_advanced_v2.py - extended k:n, certificate, and RMT sweep.
 
 Tests on a model:
-  - Sampled 16:32 cert (n=32, k=16, 10K random patterns) — pushes brute-force ceiling
+  - Sampled 16:32 cert (n=32, k=16, 10K random patterns) for large pattern spaces
   - ConvNeXtV2 Linear pipeline (catches MLP layers Conv-pipeline missed)
   - Broader k:n at n=16: 4:16 (75% sparse), 6:16 (62.5%), 8:16, 10:16 (37.5%), 12:16 (25%)
   - 6:12 dense AND SER (for ViT-B Linear which has in_features=768=12×64)

@@ -1,5 +1,5 @@
 """
-cert_opt_eval_vitb.py — same 5-method pre-FT ablation as cert_opt_eval.py but
+cert_opt_eval_vitb.py - same 5-method pre-FT ablation as cert_opt_eval.py but
 for ViT-B/16 (Linear pipeline). Uses cert_aware_2_4_for_linear.
 
 Cells:
@@ -109,7 +109,7 @@ def main():
     coverage = loaded_numel / max(1, total_numel)
     print(f"  SER load: matched {matched}/{len(model_sd)} keys, coverage={coverage:.4f}")
     if coverage < 0.95:
-        raise RuntimeError(f"SER load coverage {coverage:.4f} < 0.95 — abort")
+        raise RuntimeError(f"SER load coverage {coverage:.4f} < 0.95; abort")
     student_ref.load_state_dict(sd, strict=False)
     student_state = {n: p.detach().clone() for n, p in student_ref.state_dict().items()}
     dense_state = {n: p.detach().clone() for n, p in teacher.state_dict().items()}
@@ -121,7 +121,7 @@ def main():
 
     cells = [
         # (label, n_calib, alpha_kd, perm, cost_form, alpha_ser_prior)
-        # === Pass A: broad 5-method baseline (find rough peak) ===
+        # === Pass A: broad 5-method baseline sweep ===
         ("A1_baseline_l2",            64, 0.0,  False, "l2",   0.0),  # canonical CAST
         ("A2_perm",                   64, 0.0,  True,  "l2",   0.0),
         ("A3_alpha_kd_0p1",           64, 0.1,  True,  "l2",   0.0),
@@ -129,17 +129,17 @@ def main():
         ("A4_linf",                   64, 0.0,  True,  "linf", 0.0),
         ("A5_ser_0p3",                64, 0.0,  True,  "l2",   0.3),
         ("A5b_ser_0p4",               64, 0.0,  True,  "l2",   0.4),
-        ("A5c_ser_0p5",               64, 0.0,  True,  "l2",   0.5),  # likely winner
+        ("A5c_ser_0p5",               64, 0.0,  True,  "l2",   0.5),  # 0.5 candidate
         ("A5d_ser_0p6",               64, 0.0,  True,  "l2",   0.6),
         ("A5e_ser_0p7",               64, 0.0,  True,  "l2",   0.7),
         ("A6_combo_kd05_ser05",       64, 0.5,  True,  "l2",   0.5),
         ("A6b_combo_kd01_ser05",      64, 0.1,  True,  "l2",   0.5),
-        # === Pass B: fine sub-sweep (assumes 0.5 is peak) ===
+        # === Pass B: fine sub-sweep around alpha_ser=0.5 ===
         ("B1_ser_0p45",               64, 0.0,  True,  "l2",   0.45),
         ("B2_ser_0p48",               64, 0.0,  True,  "l2",   0.48),
         ("B3_ser_0p52",               64, 0.0,  True,  "l2",   0.52),
         ("B4_ser_0p55",               64, 0.0,  True,  "l2",   0.55),
-        # === Pass C: tiny α_kd corrections to 0.5 ===
+        # === Pass C: small alpha_kd corrections to 0.5 ===
         ("C1_ser_0p5_kd_0p01",        64, 0.01, True,  "l2",   0.50),
         ("C2_ser_0p5_kd_0p02",        64, 0.02, True,  "l2",   0.50),
         ("C3_ser_0p5_kd_0p05",        64, 0.05, True,  "l2",   0.50),

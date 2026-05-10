@@ -128,10 +128,10 @@ def cert_aware_kn_for_conv(
         Apply Cin-permutation alignment ("flatten the layer", variant B).
     alpha_ser_prior : float
         Weight on the Hamming prior toward the SER (source) keep mask.
-        SER mask is read from the CURRENT student weights (which we assume is
-        the SER-pruned ckpt at this point in the pipeline).
+        SER mask is read from the current student weights, expected to be the
+        SER-pruned checkpoint at this point in the pipeline.
     """
-    # Reuse project_conv_2_4 helpers (only the activation capture; perm we do here).
+    # Reuse project_conv_2_4 helpers for activation capture; handle permutation here.
     import sys, pathlib
     sys.path.insert(0, str(pathlib.Path(__file__).parent))
     from project_conv_2_4 import _capture_unfolded_inputs
@@ -240,8 +240,7 @@ def cert_aware_kn_for_conv(
             topk = mag_g.topk(k, dim=-1).indices
             mask_flat = torch.zeros_like(mag_g)
             mask_flat.scatter_(-1, topk, 1.0)
-            Wm = (mag_g.sign() * mag_g.abs() * mask_flat).reshape(Cout, cols_used)  # noop, signs preserved via slot_values
-            # Use slot_values not mag for actual data; redo cleanly:
+            # Apply the magnitude-derived mask to slot_values, preserving restored values.
             Wg = slot_values.reshape(Cout, n_groups_tmp, n)
             Wm = (Wg * mask_flat).reshape(Cout, cols_used)
             mask2d = mask_flat.reshape(Cout, cols_used)

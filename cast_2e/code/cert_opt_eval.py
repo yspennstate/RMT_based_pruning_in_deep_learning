@@ -1,12 +1,12 @@
 """
-cert_opt_eval.py — sweep over CAST-conv certificate-cost knobs on resnet50,
-report the **pre-FT top-1** for each cell on ImageNet val. No FT — projection
+cert_opt_eval.py - sweep over CAST-conv certificate-cost knobs on resnet50,
+report the **pre-FT top-1** for each cell on ImageNet val. No FT; projection
 + eval only, ~3 min per cell on A100.
 
 Cells:
-  baseline   :  calib=64, alpha_kd=0, perm=off  (matches the original M1 we ran)
+  baseline   :  calib=64, alpha_kd=0, perm=off  (original M1 cell)
   +perm      :  calib=64, alpha_kd=0, perm=on   (matches M1pa)
-  +alpha     :  calib=64, alpha_kd=0.1, perm=on (proposal's #2 with Fisher approx)
+  +alpha     :  calib=64, alpha_kd=0.1, perm=on (Fisher approximation)
   +alpha-hi  :  calib=64, alpha_kd=0.5, perm=on
   +calib     :  calib=256, alpha_kd=0, perm=on  (more activation samples)
   +calib+alpha: calib=256, alpha_kd=0.1, perm=on (combined)
@@ -37,8 +37,8 @@ from project_conv_2_4 import cert_aware_2_4_for_conv
 
 
 def build_loaders(args, image_size, mean, std, crop_pct=0.875, interpolation="bilinear"):
-    # Use crop_pct + interpolation from timm data_config — important for ViT-B/384
-    # which uses crop_pct=1.0 (no resize-then-crop, just resize-to-image-size).
+    # Use crop_pct + interpolation from timm data_config for ViT-B/384,
+    # where crop_pct=1.0 means resize directly to image_size.
     interp_map = {"bilinear": T.InterpolationMode.BILINEAR,
                   "bicubic": T.InterpolationMode.BICUBIC,
                   "nearest": T.InterpolationMode.NEAREST}
@@ -111,11 +111,11 @@ def main():
 
     calib_loader, val_loader = build_loaders(args, image_size, mean, std, crop_pct=crop_pct, interpolation=interp)
 
-    # Pre-eval the SER source ONCE (same for all cells).
-    # Use the SAME load mechanism as run_resnet_cast_aws.py:
-    # - try `model_state_dict` THEN `state_dict` THEN raw dict
+    # Pre-evaluate the SER source once; it is shared by all cells.
+    # Use the same load mechanism as run_resnet_cast_aws.py:
+    # - try `model_state_dict`, then `state_dict`, then raw dict
     # - strip a `module.` prefix if present
-    # - assert >=95% tensor-mass coverage so we error loudly on mismatched keys
+    # - assert >=95% tensor-mass coverage to catch mismatched keys
     print(f"[cert_opt_eval] loading SER ckpt: {args.ser_checkpoint}")
     student_ref = timm.create_model(args.timm_name, pretrained=False).to(device).eval()
     raw = torch.load(args.ser_checkpoint, map_location="cpu", weights_only=False)
@@ -135,7 +135,7 @@ def main():
     coverage = loaded_numel / max(1, total_numel)
     print(f"  SER load: matched {matched}/{len(model_sd)} keys, coverage={coverage:.4f}")
     if coverage < 0.95:
-        raise RuntimeError(f"SER load coverage {coverage:.4f} < 0.95 — abort")
+        raise RuntimeError(f"SER load coverage {coverage:.4f} < 0.95; abort")
     student_ref.load_state_dict(sd, strict=False)
     student_state = {n: p.detach().clone() for n, p in student_ref.state_dict().items()}
     dense_state = {n: p.detach().clone() for n, p in teacher.state_dict().items()}
@@ -167,7 +167,7 @@ def main():
         ("V3_ser_0p5_kd_0p01",        64, 0.01, True, "l2",   0.50),
         ("V3_ser_0p5_kd_0p02",        64, 0.02, True, "l2",   0.50),
         ("V3_ser_0p5_kd_0p05",        64, 0.05, True, "l2",   0.50),
-        # Calib variants between 64 and 1024 (B7 was 0.4061 — surprisingly worse)
+        # Calibration variants between 64 and 1024 (B7 was 0.4061 in a prior run)
         ("V3_ser_0p5_calib_128",     128, 0.0,  True, "l2",   0.50),
         ("V3_ser_0p5_calib_256",     256, 0.0,  True, "l2",   0.50),
         ("V3_ser_0p5_calib_512",     512, 0.0,  True, "l2",   0.50),

@@ -121,7 +121,7 @@ def build_loaders(preprocess_train, preprocess_val):
         "/workspace/hf_cache/hub/datasets--ILSVRC--imagenet-1k/snapshots/*/data/validation-*.parquet"
     ))
     log(f"Train parquet files: {len(train_files)}, val parquet files: {len(val_files)}")
-    assert len(train_files) > 0, "Train parquets not found — did the download finish?"
+    assert len(train_files) > 0, "Train parquet files not found. Run the download step first."
     assert len(val_files) > 0, "Val parquets not found"
 
     train_hf = load_dataset("parquet", data_files=train_files, split="train")
@@ -149,7 +149,7 @@ def build_loaders(preprocess_train, preprocess_val):
 
 def apply_sv_preprocessing(model, signals):
     """Apply Haar SV sparsification (z=0.5, p=3) to all target layers in-place.
-    Only at cycle 1 — denoise the baseline before iterative pruning begins.
+    Runs only at cycle 1 to denoise the baseline before iterative pruning begins.
     """
     alphas = [signals[n].get("alpha") for n in signals if signals[n].get("alpha") is not None]
     alpha_mean = float(np.mean(alphas)) if alphas else None

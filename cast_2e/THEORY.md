@@ -1,116 +1,106 @@
-# Theory grounding — what's paper-aligned and what isn't
+# Theory grounding for ResNet CAST-2E
 
-This document is the explicit "what is theoretical, what is empirical" map for
-the ResNet CAST-2E experiments. It's separate from `SIMULATION_PLAN.md` so
-reviewers can audit the theory claims without wading through experiment logistics.
+This document records which parts of the ResNet CAST-2E experiments follow
+from the paper's certificate, which parts are convolutional extensions, and
+which parts are empirical protocols or implementation controls. It is separate
+from `SIMULATION_PLAN.md` because it defines claim boundaries rather than
+experiment logistics.
 
-## The headline claim we are willing to defend in the paper
+## Claim boundary
 
-> "We extend CAST-2E to convolutional bottleneck architectures by treating each
->  1×1 convolution as a per-spatial-location linear map and each 3×3 convolution
->  as its im2col equivalent. The certificate cost from §5 (Lemma 5.4 / Cor 5.5)
->  ports to both via the per-layer covariance C_g of the relevant input vector.
->  We report exact analytical 2:4 MAC reductions and ImageNet top-1 accuracy.
->  We do not claim measured sparse-kernel speedup for Conv2d."
+The manuscript can state the following:
 
-That's it. Everything else is engineering.
+> CAST-2E extends to convolutional bottleneck architectures by treating each
+> 1x1 convolution as a per-spatial-location linear map and each 3x3 convolution
+> through its im2col representation. The certificate cost from Section 5
+> (Lemma 5.4 / Corollary 5.5) applies through the per-layer covariance `C_g`
+> of the input vector used by that representation. Reported ResNet results give
+> analytical 2:4 MAC reductions and ImageNet top-1 accuracy. They do not report
+> measured sparse-kernel speedup for Conv2d.
 
-## The full theory grounding ladder
+All other items in this file are implementation controls, ablation definitions,
+or limitations on the interpretation of the experiments.
 
-### Tier 1 — Direct paper consequence (no new derivation needed)
+## Claim categories
 
-| Component | Why it's tier-1 |
+### Direct consequences of the paper
+
+| Component | Grounding |
 |---|---|
-| **SER s=0.35 source checkpoint** | This IS the paper's RMT-based sparsification gate. It's the input, not something we re-justify. Paper §3 / §5. |
-| **1×1 conv → Linear identity** | `y_{h,w} = W · x_{h,w}` with `W ∈ R^{Cout × Cin}`. The certificate cost is identical to the Linear case in §5 with `h_g(x) = x_{h,w}` for the chosen spatial position `(h,w)`. No new theorem. |
-| **Cor 5.5 covariance form** | `c_g(m) = r^T(m) · C_g · r(m)` where `r(m) = (1−m) ⊙ W_g` and `C_g = E_x[h_g h_g^T]` is the per-group 4×4 input covariance. This is what the paper proves controls the per-layer reconstruction error. v3 code implements exactly this (was diagonal approximation in v1/v2). |
-| **Hard 2:4 enumeration (6 patterns)** | The paper's optimization is over 4-tuple masks with `|m|_0 = 2`. There are exactly `C(4,2) = 6` such masks. We enumerate. No relaxation, no Gumbel, no STE. The result is the certificate-optimal mask under the calibration distribution. |
+| **SER s=0.35 source checkpoint** | The checkpoint is produced by the paper's RMT-based sparsification gate and is used as the input to CAST-2E. |
+| **1x1 conv as a linear map** | For each spatial position, `y_{h,w} = W x_{h,w}` with `W in R^{Cout x Cin}`. The certificate cost is the Section 5 linear-layer cost with `h_g(x) = x_{h,w}`. |
+| **Corollary 5.5 covariance form** | The per-group cost is `c_g(m) = r^T(m) C_g r(m)`, where `r(m) = (1 - m) o W_g` and `C_g = E_x[h_g h_g^T]`. The current code uses this covariance form rather than the earlier diagonal approximation. |
+| **Hard 2:4 enumeration** | The optimization enumerates the `C(4, 2) = 6` masks with exactly two nonzero entries in each 4-tuple. The selected mask is optimal for the stated per-layer certificate objective under the calibration distribution. |
 
-### Tier 2 — Clean extension with one explicit caveat
+### Convolutional extensions and caveats
 
-| Component | Caveat |
+| Component | Scope |
 |---|---|
-| **3×3 conv via im2col** | The receptive field at one spatial position is a length `Cin·kH·kW = 9·Cin` vector. The certificate cost on this unfolded form is well-defined: `C_g = E_x[h_unfold · h_unfold^T]`. **Caveat:** the 4-tuple partition runs along the unfolded axis, so adjacent slots may correspond to different `(spatial, channel)` positions. The covariance correctly captures the resulting correlation, but the partition no longer has the clean "4 input channels at one position" interpretation that the 1×1 case has. We say this in the footnote. |
-| **Free 2:4 restoration via slot_values** | When SER zeroed >2 of 4 slots, the dense pretrained weight is the natural fill (it's what was there before SER pruned). The certificate cost is computed on `slot_values = where(SER kept, W_sparse, W_dense)`, so restoration is part of the optimization, not a heuristic post-fill. **The math is fine.** The caveat is only that the dense weight is "out of distribution" for the SER-pruned model, but since SER is a *prior* (not a hard constraint), this is consistent with the paper's framing. |
+| **3x3 conv through im2col** | The receptive field at one spatial position is a length `Cin * kH * kW = 9 * Cin` vector. The certificate cost on this unfolded form is `C_g = E_x[h_unfold h_unfold^T]`. The 4-tuple partition runs along the unfolded axis, so adjacent slots may represent different spatial and channel positions. |
+| **Free 2:4 restoration through `slot_values`** | When SER zeroes more than two of four slots, the dense pretrained weight supplies the candidate restored value. The certificate cost is computed on `slot_values = where(SER kept, W_sparse, W_dense)`, so restoration is part of the mask search rather than a post-processing fill. This treats SER as a prior instead of a hard support constraint. |
 
-### Tier 3 — Engineering correctness (must be right; not theory)
+### Implementation controls
 
-| Component | What could break if wrong |
+| Control | Reason |
 |---|---|
-| **Mask freezing during FT** | Without `freeze_grad_at_masked` + `apply_masks` after `optimizer.step()`, gradient/momentum/weight-decay regrows zeroed entries within ~10 steps. The 2:4 structure dies, all reported reductions become wrong. v3 has this. Tested by `assert_2_4_legality()` after every epoch. |
-| **SER load coverage check** | `strict=False` with `module.` prefix mismatch silently loads ~0% of weights. Without coverage assertion, you train an un-pre-trained model thinking it's SER-pruned. v3 enforces ≥95% coverage or the run aborts. |
-| **Exact hook-based MAC counting** | The prior "generic non-ViT fallback" reported `tome_dense = sparse_exec` (no reduction at all) for ResNet50 in the original GCP runs. v3's hook-based counter at native resolution gives the real numbers. |
-| **Deterministic calibration** | `RandomResizedCrop` on the calibration loader makes the cert-aware mask search non-reproducible. v3 uses a separate deterministic loader for calibration only. |
+| **Mask freezing during fine-tuning** | `freeze_grad_at_masked` and `apply_masks` after `optimizer.step()` prevent gradient, momentum, and weight decay from regrowing zeroed entries. `assert_2_4_legality()` checks the structure after every epoch. |
+| **SER load coverage check** | Prefix mismatches under `strict=False` can silently load few or no checkpoint weights. The run aborts unless load coverage is at least 95%. |
+| **Hook-based MAC counting** | The hook-based counter evaluates ResNet layers at native resolution and avoids the earlier generic non-ViT fallback that reported no sparse-execution reduction. |
+| **Deterministic calibration** | The calibration loader avoids random crops so that the certificate-aware mask search is reproducible. |
 
-### Tier 4 — Empirical recovery (no theory claim, just standard practice)
+### Empirical protocols and ablations
 
-| Component | Justification |
+| Item | Purpose |
 |---|---|
-| **3-epoch distill FT** | Mirrors the prior ViT GCP runs for direct table-row comparability. The paper makes no claim about FT schedules. (Earlier doc drafts said "2-epoch"; canonical is 3.) |
-| **Distill loss `α·KL(T) + (1−α)·CE`** | Standard knowledge distillation. `α=0.5`, `T=2`, label smoothing 0.1. Off-the-shelf. |
-| **AdamW + cosine schedule** | Default for image classification recovery. Not theory. |
+| **3-epoch distillation fine-tuning** | Matches the prior ViT CAST runs for direct row-level comparability. The paper does not make a theory claim about this schedule. |
+| **Distillation loss** | Uses `alpha * KL(T) + (1 - alpha) * CE` with `alpha = 0.5`, `T = 2`, and label smoothing 0.1. |
+| **AdamW with cosine schedule** | Recovery optimizer and schedule for the empirical runs. |
+| **Magnitude-only 2:4 ablation** | Replaces the certificate objective with `argmax_2(|W|)` within each 4-tuple to measure the value of the certificate. |
+| **No-free-restore ablation** | Disables dense-weight restoration through `slot_values` to isolate the contribution of that mechanism. |
+| **1x1-only ablation** | Restricts the convolutional extension to the clean 1x1 case and compares it with the 1x1+3x3 setting. |
 
-### Tier 5 — Ablation baselines (NOT theory, used only to quantify what theory buys)
+## Non-claims
 
-| Component | What ablation is for |
-|---|---|
-| **Magnitude-only 2:4 (run A2)** | "What if we don't use the certificate at all and just pick `argmax_2(|W|)` per 4-tuple?" Quantifies the certificate's empirical value. |
-| **No-free-restore (run A3)** | "What does slot_values restoration buy?" Quantifies that mechanism's contribution. |
-| **1×1-only (run A1)** | "What's the gap between the cleanest theory case (1×1, tier-1) and the fuller 1×1+3×3 case (tier-2)?" |
+- The ResNet experiments do not claim Conv2d sparse-kernel wall-clock speedup.
+  PyTorch `to_sparse_semi_structured` is Linear-only; the reported ResNet
+  reduction is analytical MAC reduction.
+- The selected 2:4 mask is optimal only for the stated per-layer certificate
+  objective. It is not claimed to be globally optimal for all loss-aware or
+  cross-layer objectives.
+- The ResNet and ViT rows do not establish a theorem transferring one
+  architecture's proof to the other. They use the same per-position linear or
+  im2col primitive and are reported as separate empirical cases.
+- Three epochs of fine-tuning are not directly comparable with structured
+  pruning methods that use much longer schedules, such as NViT or HRank-style
+  channel pruning. Comparisons should state the fine-tuning budget.
 
-## Things we will NOT claim in the paper
+## Limitations and scope boundaries
 
-- ❌ "Sparse-kernel wall-clock speedup on ResNet". PyTorch `to_sparse_semi_structured`
-  is Linear-only. We get FLOP reduction analytically; throughput is Conv2d-dense.
-- ❌ "Optimal 2:4 mask under any objective". The certificate cost is one objective
-  (per-layer reconstruction error). It's not the *only* one (e.g. cross-layer
-  loss-aware optimization is provably tighter — but expensive). We're explicit
-  that we use the per-layer cert cost.
-- ❌ "ResNet ⇒ ViT generalization". Our framing is "the same primitive applies
-  to both via per-position Linear / im2col equivalence", NOT "the proof for
-  one transfers to the other". Each gets its own table row.
-- ❌ "Beats published structured-pruning specialists at long schedules". 3 epochs
-  of FT is not directly comparable to NViT (~50 epochs) or HRank-style channel
-  pruning (~80 epochs). We say "at 3-epoch budget" everywhere.
+- The 4-tuple partition for unfolded convolutional inputs is hardware-aligned
+  and fixed. The implementation does not optimize the partition itself.
+- The mask search is layerwise. It does not jointly optimize correlations
+  between a classifier head and feature-extracting convolutional layers; the
+  ResNet runs skip the head because it contributes a negligible share of MACs.
+- Batch normalization is not sparsified. The 2:4 pattern is applied to
+  convolution weights, while BN parameters remain dense or are folded according
+  to the inference configuration.
+- Depthwise and grouped convolutions are excluded by
+  `is_eligible_conv(allow_grouped=False)`. This exclusion is irrelevant for
+  ResNet but affects architectures with extensive grouped or depthwise layers.
 
-## What a reviewer should pin us on
+These limitations constrain how the ResNet experiments should be interpreted;
+they do not expand or weaken the claim boundary stated above.
 
-If a reviewer wanted to find a weakness in our theory grounding for ResNet,
-the legitimate angle is:
-
-1. **"The 4-tuple partition along the unfolded axis is arbitrary"** — yes,
-   it is. We'd defend this by noting that any partition would give *some*
-   certificate; we use the row-major partition for hardware compatibility.
-   A future improvement is partition optimization (which is the v3 future
-   work in `MaskLLM`-style learned masks), but we explicitly defer.
-
-2. **"Why not joint Linear+Conv cert-aware optimization?"** — currently we
-   run them independently. A joint formulation tracks correlations between
-   the FC head's column-wise certificate and a feature-extracting conv's
-   row-wise certificate. We'd argue: the head is 0.1% of MACs and we skip
-   it for ResNet anyway, so the joint problem reduces to the conv-only
-   problem we solve.
-
-3. **"How are batch normalizations handled?"** — BN folds into adjacent
-   convs (or stays separate, depending on inference mode). Our 2:4 pattern
-   is on the conv weight; BN is unaffected. We don't sparsify BN.
-
-4. **"What about depthwise / grouped convs?"** — explicitly skipped (v3
-   `is_eligible_conv(allow_grouped=False)`). For ResNet there are none.
-   For ConvNeXt there are many, which is one reason we defer ConvNeXt.
-
-These are honest answers. None of them invalidate the headline claim.
-
-## Reproducibility checklist (for the paper supplement)
+## Reproducibility checklist
 
 - [ ] `git_commit` SHA in every `manifest.yaml`
 - [ ] `engine_version` in every manifest
 - [ ] `data_inputs.checksum_sha256` for SER ckpt + ImageNet val + train
-- [ ] `n_calib_imgs = 256`, `seed = 42` (deterministic calibration)
+- [ ] `n_calib_imgs = 256`, `seed = 42` with deterministic calibration
 - [ ] `parameters.{method, include_3x3_convs, free_restoration, epochs, lr, ...}`
 - [ ] `two_four_legality_check_after_each_epoch == PASS` for every epoch
-- [ ] `bad_groups_after == 0` post-projection AND post-FT
-- [ ] Per-layer sparsity table preserved (in `two_four_stats.json`)
-- [ ] Pre-FT and Post-FT top-1 both reported
+- [ ] `bad_groups_after == 0` post-projection and post-FT
+- [ ] Per-layer sparsity table preserved in `two_four_stats.json`
+- [ ] Pre-FT and post-FT top-1 both reported
 
-A run that fails any item in the checklist is *not* counted in Table 5.
+A run that fails any item in the checklist is not counted in Table 5.

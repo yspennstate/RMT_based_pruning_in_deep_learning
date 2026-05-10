@@ -3,15 +3,15 @@ Pruning method comparison sweep.
 
 Compares multiple pruning methods (magnitude baseline + RMT-grounded variants)
 across a sweep of target sparsities. Designed to run unattended for ~4 hours on 1× A40
-with maximum crash safety:
+with crash-resilient behavior:
 
   * Atomic incremental saves (write .tmp, os.replace) after every cell.
   * Resume-from-checkpoint: if `pruning_method_comparison_results.json` exists, any
-    (method, sparsity) cell already filled is skipped — so a crash plus
-    relaunch picks up exactly where it left off, no work lost.
+    (method, sparsity) cell already filled is skipped, allowing relaunch
+    to continue from the last completed cell.
   * Per-cell try/except so a bad cell logs its error and the sweep continues.
-  * Conservative threading + BelowNormal priority + 8-core affinity to leave
-    the trading bots alone.
+  * Conservative threading + BelowNormal priority + 8-core affinity to
+    reduce interference with other workloads.
   * Per-cell progress line with sparsity, top1, and Δ vs baseline.
 
 Methods compared (rows of the grid):
@@ -97,7 +97,7 @@ DEFAULT_METHODS = [
     "layer_adaptive_sm",
     "per_weight_random",
 
-    # NEW: focused sweep around bulk_entry_haar — z and cut variations
+    # Focused sweep around bulk_entry_haar: z and cut variations.
     "haar_z0.05",
     "haar_z0.10",
     "haar_z0.20",
@@ -106,7 +106,7 @@ DEFAULT_METHODS = [
     "haar_cut0.60",
     "haar_cut0.85",
 
-    # NEW: structural variants of bulk_entry_haar
+    # Structural variants of bulk_entry_haar.
     "haar_iter2",      # apply 2× iterations of haar+magnitude
     "haar_soft50",     # shrink bulk entries by 50% instead of zeroing
     "haar_deep_only",  # apply Haar only to blocks 6-11
@@ -157,8 +157,7 @@ def apply_per_weight_random_target(model, target_sparsity, alpha_init=0.5):
 
 
 def apply_random_then_magnitude(model, target_sparsity):
-    """Same as apply_per_weight_random_target — kept as a separate name for
-    the results table."""
+    """Alias for apply_per_weight_random_target used by the results table."""
     apply_per_weight_random_target(model, target_sparsity, alpha_init=0.5)
 
 
@@ -193,8 +192,8 @@ def _spike_only_reconstruction(W2):
 def apply_spike_magnitude(model, target_sparsity):
     """Per-entry score = |W*_ij| where W* is the spike-only reconstruction.
     Removes entries where the SIGNAL contribution at that position is small.
-    This is the RMT-grounded version of magnitude pruning — instead of using
-    raw |W| (which conflates signal and noise), use |signal at position|."""
+    This RMT-grounded magnitude variant uses |signal at position| instead
+    of raw |W|, which conflates signal and noise."""
     # Per-layer compute scores, then global threshold to hit target sparsity
     all_scores = []
     layer_meta = []
@@ -226,8 +225,8 @@ def apply_spike_magnitude(model, target_sparsity):
 def apply_hybrid_score(model, target_sparsity):
     """Per-entry score = |W_ij| * |W*_ij| (geometric mean of magnitude and
     spike contribution). Removes entries that are simultaneously small in
-    raw magnitude AND have small spike contribution.
-    Hypothesis: this catches the worst of both worlds — small AND noise-like."""
+    raw magnitude AND have small spike contribution. This targets entries
+    that are both low-magnitude and weakly represented by the spike model."""
     all_scores = []
     layer_meta = []
     for name, mod in iter_target_layers_modules(model):
@@ -302,14 +301,14 @@ def _haar_clean_layer(W2, z, cut, shrink=0.0):
 
 
 def apply_bulk_entry_haar(model, target_sparsity, z=0.1407, cut=0.76):
-    """Cached SV-pruned baseline (the same Haar z+bulk we already have on disk),
-    then magnitude top-up to exact target sparsity."""
+    """Cached SV-pruned baseline with Haar z+bulk, then magnitude top-up to
+    exact target sparsity."""
     sv_path = HERE / "rmt_cache" / "sv_pruned_baseline_state.pt"
     if sv_path.exists():
         sv_state = torch.load(sv_path, map_location="cpu", weights_only=False)
         # Map cached "layer1" keys back to fresh model
         # The cached state was built on a SplittableLayer-wrapped model.
-        # For a fresh ViT-B without wrapping, we need to do the SV prune fresh.
+        # For a fresh ViT-B without wrapping, compute SV pruning directly.
         # Fall back to fresh computation:
         pass
 

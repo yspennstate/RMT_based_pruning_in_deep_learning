@@ -3,15 +3,15 @@ mac_counter.py — Exact hook-based per-layer MAC counting for any timm model.
 
 For ResNet (and other Conv-heavy models), the existing CAST runner used a
 "generic non-ViT fallback" that flat-counted Linear+Conv2d weight MACs with a
-fixed 7×7 spatial assumption. That's fine as a log diagnostic, NOT for paper
-numbers. This module hooks the actual forward pass at 224×224 and computes
-exact per-layer MACs from real output shapes.
+fixed 7×7 spatial assumption. That approximation is acceptable as a log
+diagnostic, but paper tables should use actual forward shapes. This module
+hooks the forward pass at 224×224 and computes exact per-layer MACs.
 
 Conventions (same as the ViT path):
   - 1 MAC = 1 multiply-add
   - Conv2d MACs = Cout × Hout × Wout × (Cin/groups) × kH × kW
   - Linear MACs = Cin × Cout (per token, summed over batch=1)
-  - BatchNorm / activations / pooling MACs are not counted (they're trivial)
+  - BatchNorm / activations / pooling MACs are not counted by convention
 
 Usage:
     from mac_counter import count_macs, sparse_exec_mac_estimate

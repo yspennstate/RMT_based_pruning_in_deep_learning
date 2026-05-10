@@ -1,5 +1,5 @@
 """
-cert_opt_eval_kn_extended.py — round-2 deep ablation.
+cert_opt_eval_kn_extended.py - round-2 ablation.
 ~50 cells per arch covering:
   - 4 sparsity patterns: 2:4, 4:8, 1:4, 3:4
   - 2 sources: dense, SER s=0.35
@@ -86,18 +86,18 @@ def build_cells():
         # No-perm baselines
         cells.append((f"{label_pre}_noperm_a000", 2, 4, source, False, 0.0, 64, 0))
         cells.append((f"{label_pre}_noperm_a050", 2, 4, source, False, 0.5, 64, 0))
-    # === Pass B: 4:8 — same comparison at relaxed pattern ===
+    # === Pass B: 4:8, same comparison at relaxed pattern ===
     for label_pre, source in [("D48", "dense"), ("S48", "ser")]:
         for alpha_ser in [0.0, 0.1, 0.3, 0.5, 0.7, 1.0]:
             cells.append((f"{label_pre}_perm_a{int(alpha_ser*100):03d}",
                           4, 8, source, True, alpha_ser, 64, 0))
         cells.append((f"{label_pre}_noperm_a000", 4, 8, source, False, 0.0, 64, 0))
-    # === Pass C: 1:4 — 75% sparse ===
+    # === Pass C: 1:4, 75% sparse ===
     for label_pre, source in [("D14", "dense"), ("S14", "ser")]:
         for alpha_ser in [0.0, 0.3, 0.5]:
             cells.append((f"{label_pre}_perm_a{int(alpha_ser*100):03d}",
                           1, 4, source, True, alpha_ser, 64, 0))
-    # === Pass D: 3:4 — 25% sparse ceiling ===
+    # === Pass D: 3:4, 25% sparse ceiling ===
     for label_pre, source in [("D34", "dense"), ("S34", "ser")]:
         cells.append((f"{label_pre}_perm_a000", 3, 4, source, True, 0.0, 64, 0))
         cells.append((f"{label_pre}_perm_a050", 3, 4, source, True, 0.5, 64, 0))

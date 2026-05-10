@@ -1,9 +1,9 @@
 """
-cert_opt_eval_kn.py — k:n sparsity ablation (Conv2d / ResNet pipeline).
+cert_opt_eval_kn.py - k:n sparsity ablation (Conv2d / ResNet pipeline).
 
 Sweeps:
   - sparsity pattern (k:n): {2:4, 4:8, 1:4, 3:4}
-  - source: {dense pretrained, SER s=0.35} ← THE LOAD-BEARING ABLATION
+  - source: {dense pretrained, SER s=0.35}
   - perm_align: {off, on}
   - α_ser_prior: {0, 0.5}
 
@@ -135,15 +135,15 @@ def main():
         ("S24_ser_perm_ser0p5",      2, 4, "ser",   True,  0.5),  # canonical paper recipe
         ("S24_ser_perm_no_ser",      2, 4, "ser",   True,  0.0),  # SER source w/o prior
         ("S24_ser_no_perm_no_ser",   2, 4, "ser",   False, 0.0),  # SER source naive
-        # === 4:8 — same 50% rate, more flexibility ===
+        # === 4:8, same 50% rate with more flexibility ===
         ("D48_dense_perm",           4, 8, "dense", True,  0.0),
         ("S48_ser_perm_ser0p5",      4, 8, "ser",   True,  0.5),
         ("S48_ser_perm_no_ser",      4, 8, "ser",   True,  0.0),
         ("S48_ser_no_perm",          4, 8, "ser",   False, 0.0),
-        # === 1:4 — 75% sparse, 4× theoretical speedup ===
+        # === 1:4, 75% sparse, 4× theoretical speedup ===
         ("D14_dense_perm",           1, 4, "dense", True,  0.0),
         ("S14_ser_perm_ser0p5",      1, 4, "ser",   True,  0.5),
-        # === 3:4 — 25% sparse, very mild (sanity check ceiling) ===
+        # === 3:4, 25% sparse ceiling ===
         ("D34_dense_perm",           3, 4, "dense", True,  0.0),
         ("S34_ser_perm_ser0p5",      3, 4, "ser",   True,  0.5),
     ]

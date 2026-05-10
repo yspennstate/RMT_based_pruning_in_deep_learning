@@ -105,7 +105,7 @@ def cool_gpu_if_hot(cool_below=68, max_wait=300):
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# RMT layer statistics — compute once, cache to disk forever.
+# RMT layer statistics: compute once and reuse from disk.
 # ──────────────────────────────────────────────────────────────────────────────
 def compute_layer_stats(W2, k_hill=20):
     """Per-layer RMT statistics. W2 is a 2D weight matrix."""
@@ -416,7 +416,7 @@ def main():
     model = timm.create_model("vit_base_patch16_224", pretrained=True)
     base_state = deepcopy(model.state_dict())
 
-    # RMT stats — computed on the BASELINE matrix (the honest signature)
+    # RMT stats computed on the baseline matrix before pruning.
     stats = get_layer_stats(model)
 
     from validation import get_val_dataset

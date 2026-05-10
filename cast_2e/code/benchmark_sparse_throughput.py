@@ -1,15 +1,15 @@
 """
-benchmark_sparse_throughput.py — measure ACTUAL wall-clock throughput for
+benchmark_sparse_throughput.py - measure wall-clock throughput for
 each best-cell ckpt. Reports:
   - dense images/s
   - 2:4 sparse images/s (PyTorch to_sparse_semi_structured)
   - 1.xx× speedup ratio
-  - effective NNZ % (counts SER pre-zeros that survive 2:4 — the user's point)
+  - effective NNZ % (counts SER pre-zeros that survive 2:4)
 
 For 4:8 and 8:16: PyTorch only supports 2:4 hardware kernels via
-to_sparse_semi_structured. We report THEORETICAL MAC reduction and dense
-kernel throughput as a comparison endpoint, but 4:8/8:16 don't get hardware
-speedup at the moment (would need cuSparseLt direct integration).
+to_sparse_semi_structured. The script reports theoretical MAC reduction and
+dense-kernel throughput as comparison endpoints; 4:8/8:16 require direct
+cuSparseLt integration for hardware speedup.
 
 Outputs: JSON with throughput numbers + actual NNZ ratios.
 

@@ -1,5 +1,5 @@
 """
-benchmark_all_ckpts.py — benchmark a DIRECTORY of projected-student ckpts.
+benchmark_all_ckpts.py - benchmark a directory of projected-student ckpts.
 
 For each ckpt in --ckpts-dir:
   1. NNZ count (true effective sparsity, including SER pre-zeros if free_restore=False)
@@ -7,7 +7,7 @@ For each ckpt in --ckpts-dir:
   3. Dense-kernel throughput (running sparse weights through standard GEMM)
   4. PyTorch 2:4 sparse-kernel throughput (where applicable; only pure-2:4 layers)
   5. cuSparseLt note: 4:8/8:16 hardware speedup not measurable through PyTorch
-     native; we report theoretical speedup based on NNZ ratio.
+     native; reports theoretical speedup based on NNZ ratio.
 
 Usage:
     python benchmark_all_ckpts.py \\
@@ -184,7 +184,7 @@ def main():
                 "throughput_2_4_kernel": thru_24,
                 "kernel_speedup_2_4_vs_dense": speedup_24,
                 "_2_4_conversion": apply_24,
-                "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; need cuSparseLt for hardware speedup. We report dense-kernel throughput + theoretical FLOP reduction.",
+                "_note_4_8_8_16": "PyTorch native does not support 4:8/8:16 sparse kernels; cuSparseLt is required for hardware speedup. This benchmark reports dense-kernel throughput and theoretical FLOP reduction.",
             }
             out["cells"].append(cell_record)
             Path(args.output).parent.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 """
-cert_opt_eval_vitb_kn.py — k:n sparsity ablation (Linear / ViT pipeline).
+cert_opt_eval_vitb_kn.py - k:n sparsity ablation (Linear / ViT pipeline).
 
 Same cell layout as cert_opt_eval_kn.py but for nn.Linear and ViT-B/16 224.
 
@@ -124,16 +124,16 @@ def main():
         ("S24_ser_perm_ser0p6",     2, 4, "ser",   True,  0.6),  # ViT-B's pre-FT winner
         ("S24_ser_perm_no_ser",     2, 4, "ser",   True,  0.0),
         ("S24_ser_no_perm",         2, 4, "ser",   False, 0.0),
-        # 4:8 — same 50% rate, more flexibility
+        # 4:8, same 50% rate with more flexibility
         ("D48_dense_perm",          4, 8, "dense", True,  0.0),
         ("S48_ser_perm_ser0p5",     4, 8, "ser",   True,  0.5),
         ("S48_ser_perm_ser0p6",     4, 8, "ser",   True,  0.6),
         ("S48_ser_perm_no_ser",     4, 8, "ser",   True,  0.0),
         ("S48_ser_no_perm",         4, 8, "ser",   False, 0.0),
-        # 1:4 — 75% sparse
+        # 1:4, 75% sparse
         ("D14_dense_perm",          1, 4, "dense", True,  0.0),
         ("S14_ser_perm_ser0p5",     1, 4, "ser",   True,  0.5),
-        # 3:4 — 25% sparse (mild ceiling)
+        # 3:4, 25% sparse ceiling
         ("D34_dense_perm",          3, 4, "dense", True,  0.0),
         ("S34_ser_perm_ser0p5",     3, 4, "ser",   True,  0.5),
     ]

@@ -1,13 +1,13 @@
 """
-cert_opt_eval_advanced.py — sweep over the advanced cert methods (NOT just k:n).
+cert_opt_eval_advanced.py - sweep over advanced certificate methods beyond k:n.
 
 Methods covered:
   1. Mixed sparsity (per-layer cert-driven allocation)
-  2. Iterative cert refinement (project → recalibrate → project)
+  2. Iterative cert refinement (project -> recalibrate -> project)
   3. Robust ℓ_∞ percentile cost
   4. Standard k:n baseline for comparison
 
-ALSO saves: per-cell projection mask snapshot + per-layer cert cost trace.
+Saves per-cell projection mask snapshots and per-layer certificate cost traces.
 """
 from __future__ import annotations
 
@@ -210,7 +210,7 @@ def main():
                     log=False, device=device,
                     **kwargs,
                 )
-                # Then iterate over each layer's chosen pattern (skipped for time)
+                # Iterative refinement over chosen per-layer patterns is omitted here.
             else:
                 raise ValueError(f"unknown method {method}")
 

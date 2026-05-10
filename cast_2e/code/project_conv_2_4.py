@@ -19,8 +19,8 @@ Two projection variants are exposed:
     cost and keep the argmin. Restoration uses dense weights when the SER mask
     left fewer than 2 NNZ in a tuple.
 
-Both produce in-place changes to `model`. They return a stats dict you can save
-to JSON as the per-layer audit (matches the schema used by the Linear path's
+Both produce in-place changes to `model`. They return a stats dict suitable for
+JSON audit output (matching the schema used by the Linear path's
 `two_four_stats` block).
 
 Skip rules:
@@ -33,14 +33,14 @@ This file is self-contained: no dependency on the v11_pod_debug Linear-path code
 The output schema mirrors `two_four_stats` so downstream (FT runner, eval,
 postsweep) treats Conv layers the same as Linear layers.
 
-Tested mentally for resnet50: ~52 Conv2d layers eligible (all 3×3 and 1×1 in
-the bottleneck blocks). The 7×7 stem is skipped because Cin=3.
+Expected ResNet-50 coverage: approximately 52 eligible Conv2d layers (all 3×3
+and 1×1 layers in the bottleneck blocks). The 7×7 stem is skipped because
+Cin=3.
 
-Author note: PyTorch `torch.sparse.to_sparse_semi_structured` only accelerates
-`nn.Linear` weights. For ResNet you get FLOP reduction and accuracy preservation,
-but no measured wall-clock speedup unless you replace each Conv2d at inference
-time with `nn.Unfold + nn.Linear + Fold` (deferred to future work; report
-FLOP-only for the paper's first ResNet row).
+Acceleration note: PyTorch `torch.sparse.to_sparse_semi_structured` accelerates
+`nn.Linear` weights only. For ResNet, this implementation reports FLOP reduction
+and accuracy preservation; measured Conv2d wall-clock speedup requires a
+separate inference-kernel path such as `nn.Unfold + nn.Linear + Fold`.
 """
 from __future__ import annotations
 
@@ -420,8 +420,7 @@ def magnitude_2_4_for_conv(
                             torch.arange(1, device=Wm.device),
                             indexing="ij",
                         )
-                        # (Cleaner indexed-assignment loop alternative is given below;
-                        # we use a vectorized update with masks for speed.)
+                        # Vectorized update with masks for speed.
                         update_mask = torch.zeros_like(Wg_m_flat, dtype=torch.bool)
                         update_mask.scatter_(-1, slot_unsq, still_short.unsqueeze(-1))
                         Wg_m_flat = torch.where(update_mask, Wd_g, Wg_m_flat)
@@ -575,7 +574,7 @@ def _cert_cost_2_of_4(W_group: torch.Tensor, h_group: torch.Tensor) -> torch.Ten
     diagonal approximation drops — important when h channels are correlated
     (e.g. spatially adjacent unfolded patches).
 
-    Memory: O(G·16 + O·G·6) instead of O(N·O·G·4). No risk of OOM on the big
+    Memory: O(G·16 + O·G·6) instead of O(N·O·G·4), which avoids OOM on large
     bottleneck layers.
 
     W_group: [Cout, G, 4]
@@ -669,14 +668,13 @@ def _cert_cost_2_of_4_linf(
     W_group: torch.Tensor,           # [Cout, G, 4]
     h_group: torch.Tensor,           # [N, G, 4]
 ) -> torch.Tensor:
-    """**Section-5 literal ℓ_∞ form** of the cert cost:
+    """Section-5 ℓ_∞ form of the cert cost:
         c_g(m) = max_n |((1-m) ⊙ W_g) · h_g(n)|^2          (per output row)
 
-    This is the literal `B_T(R) = (2/|T|) Σ_s L_s ‖R ψ_1(s)‖_∞` quantity
-    paper Section 5 (lines 1064-1225, esp. Cor at 1220) calls "the actually
-    controlled object". The current `_cert_cost_2_of_4` uses the ℓ² form
-    `r^T C r`; the paper appendix line 4537 explicitly notes this and says
-    "exact ℓ∞ rescoring of the top-K riskiest groups is a small follow-up."
+    This implements the `B_T(R) = (2/|T|) Σ_s L_s ‖R ψ_1(s)‖_∞` quantity from
+    Section 5. The covariance-form `_cert_cost_2_of_4` remains the default for
+    the main CAST projection; this function is used when literal ℓ_∞ rescoring
+    is requested.
 
     Returns [Cout, G, 6] (lower = better).
     """
@@ -709,10 +707,9 @@ def _ser_hamming_prior(
     between the SER source mask and each candidate 2-of-4 keep pattern.
 
     Lower = more aligned with the SER source. Adding this with a positive
-    coefficient α to the cert cost biases the argmin toward the source mask
-    — the local 2:4 analogue of the elastic-net γ_ij weighting that paper
-    Section 5 calls for (HIGH γ for SER-removable entries, LOW γ for
-    SER-protected entries).
+    coefficient α to the cert cost biases the argmin toward the source mask,
+    matching Section 5's weighted elastic-net form: higher penalty for
+    SER-removable entries and lower penalty for SER-protected entries.
 
     Returns [Cout, G, 6] (lower = better).
     """
@@ -759,10 +756,10 @@ def cert_aware_2_4_for_conv(
     permute_align: bool = False,    # see PERMUTATION_ALIGN_DESIGN.md
     alpha_ser_prior: float = 0.0,   # RMT/SER Hamming prior toward source mask
     ser_prior_layer_scale: bool = True,
-    alpha_kd: float = 0.0,          # NEW — proposal's α·KD term, Fisher approx
+    alpha_kd: float = 0.0,          # KD Fisher term added to the cert cost
     teacher_for_kd: "nn.Module | None" = None,
     distill_temp: float = 2.0,
-    cost_form: str = "l2",          # NEW — "l2" (default, covariance) | "linf" (Section-5 literal)
+    cost_form: str = "l2",          # "l2" (default, covariance) or "linf" (Section-5 literal)
     log: bool = True,
 ) -> dict:
     """In-place: cert-aware 2-of-4 projection on every eligible Conv2d.
@@ -788,7 +785,7 @@ def cert_aware_2_4_for_conv(
         model, calib_loader, layers, n_calib_imgs=n_calib_imgs, device=device,
     )
 
-    # NEW: optional alpha-KD Fisher saliency capture (one fwd+bwd on calib).
+    # Optional alpha-KD Fisher saliency capture (one fwd+bwd on calib).
     grad_W_per_layer: dict[str, torch.Tensor] = {}
     if alpha_kd > 0 and teacher_for_kd is not None:
         if log:
@@ -828,7 +825,7 @@ def cert_aware_2_4_for_conv(
 
         h_all_raw = captures.get(name, torch.zeros(0))
 
-        # ---------- NEW: optional Cin permutation alignment ----------
+        # ---------- Optional Cin permutation alignment ----------
         # Compute permutation from importance, apply to conv (in-place + hook),
         # AND apply the equivalent reorder to captured activations so the cert
         # cost search runs in the post-permutation basis.
@@ -895,7 +892,7 @@ def cert_aware_2_4_for_conv(
                 else:
                     density_scale = 1.0
                 costs = costs + (alpha_ser_prior * density_scale) * scale * hamming
-            # NEW: optional alpha-KD Fisher term added to cert cost.
+            # Optional alpha-KD Fisher term added to cert cost.
             # The Fisher saliency `(g·W)^2` is computed in the ORIGINAL
             # (un-permuted) Cin order, so we must apply the same Cin
             # permutation to grad_W as we did to W.
@@ -988,7 +985,7 @@ def is_eligible_linear(name: str, mod: nn.Module, *, min_in_features: int = 4,
     if require_in_div_4 and mod.in_features % 4 != 0:
         return False
     if skip_classifier and mod.weight.shape[0] == 1000:
-        # Skip the classifier head — paper convention (head MACs are ~0.1%)
+        # Skip the classifier head (head MACs are ~0.1% of eligible MACs).
         return False
     return True
 
@@ -1008,7 +1005,8 @@ def _capture_linear_inputs(
 ) -> dict[str, torch.Tensor]:
     """Capture pre-Linear input activations for each named Linear in `layers`.
     Per-layer downsample inside the hook (memory-safe). For ViT, the Linear
-    sees a flattened [B*tokens, in_features] view — we use that directly.
+    sees a flattened [B*tokens, in_features] view; this function uses that view
+    directly.
     """
     captures: dict[str, list[torch.Tensor]] = {n: [] for n, _ in layers}
     handles = []
@@ -1075,7 +1073,7 @@ def cert_aware_2_4_for_linear(
 
     Supported knobs (all 5 method axes from the experiment):
       - permute_align: importance-balanced Cin permutation alignment
-      - alpha_kd: Fisher KD saliency term (paper proposal #2)
+      - alpha_kd: Fisher KD saliency term
       - cost_form: "l2" (covariance) or "linf" (Section-5 literal)
       - alpha_ser_prior: Hamming prior toward SER mask (Section-5 weighted-elastic-net)
       - free_restoration: dense fill-in when SER kept <2 NNZ in a 4-tuple
@@ -1094,8 +1092,8 @@ def cert_aware_2_4_for_linear(
     if alpha_kd > 0 and teacher_for_kd is not None:
         if log:
             print(f"  alpha-KD: capturing grad_W via KD fwd+bwd")
-        # adapt _capture_kd_grad_W: it expects conv-style layers list, but
-        # internally only uses .weight.requires_grad and .weight.grad — Linear works.
+        # _capture_kd_grad_W only uses .weight.requires_grad and .weight.grad,
+        # so the same helper works for Linear layers.
         grad_W_per_layer = _capture_kd_grad_W(
             model, teacher_for_kd, calib_loader, layers,
             n_calib_imgs=n_calib_imgs, distill_temp=distill_temp, device=device,

@@ -120,7 +120,7 @@ if __name__ == "__main__":
     results_uniform = run_test("UNIFORM", hp_b=0.001, enable_sv=False,
                                model_state=model_state, cached_metrics=cached_metrics,
                                val_loader=val_loader, total_params=total_params)
-    # Note: b=0 would cause 0^0=1 issues, use b=0.001 as effectively zero
+    # b=0 would cause 0^0=1 issues; use b=0.001 as effectively zero.
 
     # Summary
     print(f"\n{'='*60}")

@@ -1,8 +1,9 @@
 """
-cert_opt_eval_8_16.py — quick test of 8:16 sparsity (vs 2:4 and 4:8 baselines).
+cert_opt_eval_8_16.py - test 8:16 sparsity against 2:4 and 4:8 baselines.
 
-C(8,4)=70 patterns → C(16,8)=12,870 patterns. Same 50% sparsity rate, MUCH more
-flexibility for the cert to find a good projection. Tests on ResNet50 and ViT-B.
+C(8,4)=70 patterns -> C(16,8)=12,870 patterns. The sparsity rate remains 50%,
+with a larger candidate set for certificate-based projection. Tests on ResNet50
+and ViT-B.
 
 For Conv2d: layers must have Cin divisible by 16. ResNet50 1x1 + 3x3 layers are
 all multiples of 16, so eligibility is preserved.

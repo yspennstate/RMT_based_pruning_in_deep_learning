@@ -4,14 +4,13 @@ where K grows: 5, 10, 15, ..., then SV prune (Haar z+bulk z=0.14 cut=0.76).
 
 Each iteration starts from baseline-rebuilt model state (no carry-over),
 prunes K% smallest of current dense matrix per layer, then SV prunes.
-Strategy B already done in iter5pct_log.txt — not re-run here.
+Strategy B was run in iter5pct_log.txt and is omitted here.
 """
 
 import sys, os, math, time, copy, gc, ctypes, json
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
-# Force UTF-8 stdout so any non-ASCII chars in log messages don't crash on
-# Windows cp1252. Bit us once already (UnicodeEncodeError on '→').
+# Force UTF-8 stdout on Windows to avoid UnicodeEncodeError in log messages.
 try:
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
@@ -54,8 +53,8 @@ IDLE_BATCH_SIZE   = 8              # full speed (still inside GPU 50% cap)
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-# Half-GPU rule: protect the live IBKR trading bots running on this box.
-# After the 2026-04-06 hard crash, all GPU sims must cap at ~50% VRAM.
+# Half-GPU rule for shared-workstation runs.
+# After the 2026-04-06 hard crash, all GPU simulations cap at ~50% VRAM.
 if torch.cuda.is_available():
     torch.cuda.set_per_process_memory_fraction(0.5, 0)
     torch.backends.cudnn.benchmark = False  # deterministic memory pattern
@@ -66,7 +65,7 @@ PRUNE_LEVELS = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]  # cumulative %
 LOG_FILE = os.path.join(os.path.dirname(__file__), "iter_growing_a_log.txt")
 
 # ───── RMT cache ─────
-# We cache the once-only-needed RMT work for the baseline ViT-B model:
+# Cache baseline ViT-B RMT work:
 #   * `rmt_splus_metrics.json` — per-layer Marchenko–Pastur bulk-edge sigma_+
 #                                values (from compute_splus / BEMA). These are
 #                                the "RMT metrics" of each weight matrix and
@@ -163,7 +162,7 @@ def sv_prune_all_layers(model):
 def get_sv_pruned_baseline(base_state):
     """Return a state_dict for ViT-B with Haar SV pruning already applied to
     every Splittable layer. Built ONCE per (SV_Z, SV_CUT) pair, then cached on
-    disk forever — eliminates ~all CPU SVD work after the first run."""
+    disk, eliminating repeated CPU SVD work after the first run."""
     cache_key = {"model": "vit_base_patch16_224", "SV_Z": SV_Z, "SV_CUT": SV_CUT}
 
     if os.path.exists(SVPRUNED_STATE_FILE) and os.path.exists(SPLUS_CACHE_FILE):
@@ -205,8 +204,8 @@ def build_model(state):
 
 
 def eval_model(model, preprocess, total_params):
-    # Reclaim any leftover allocator slabs from the previous iteration BEFORE
-    # we ship a fresh model to GPU — fragmentation across iterations was the
+    # Reclaim leftover allocator slabs before sending a fresh model to GPU;
+    # fragmentation across iterations was the
     # crash vector on 2026-04-06.
     gc.collect()
     if torch.cuda.is_available():

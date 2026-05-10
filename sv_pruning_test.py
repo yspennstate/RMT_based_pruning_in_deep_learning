@@ -62,7 +62,7 @@ def run_pruning_test(enable_sv_pruning, use_sqrt_nm, n_cycles=N_CYCLES):
         'nonzero': total_params,
     }]
 
-    # Save the zero-mask before SV pruning so we can preserve previously pruned entries
+    # Save the zero-mask before SV pruning to preserve previously pruned entries.
     for cycle in range(1, n_cycles + 1):
         t0 = time.time()
 

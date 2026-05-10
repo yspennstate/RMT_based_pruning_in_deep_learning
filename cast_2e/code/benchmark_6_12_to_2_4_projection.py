@@ -1,10 +1,10 @@
 """
-benchmark_6_12_to_2_4_projection.py — for 6:12 / 4:8 / 8:16 ckpts where PyTorch
+benchmark_6_12_to_2_4_projection.py - for 6:12 / 4:8 / 8:16 ckpts where PyTorch
 has no native sparse kernel, project the mask down to 2:4 within each 4-block
 and re-benchmark with PyTorch's `to_sparse_semi_structured`.
 
-This gives the ACTUAL hardware speedup achievable on existing CUDA kernels
-for any 50% N:M structured ckpt — a paper-quality speedup number.
+This gives the hardware speedup achievable on existing CUDA kernels
+for any 50% N:M structured ckpt.
 
 Mathematically: a 6:12 mask is 50% sparse. We project it to 2:4 by, for each
 12-element group split into 3 sub-blocks of 4: pick the 2 highest-magnitude
@@ -164,7 +164,7 @@ def main():
         print(f"  2:4 sparse-kernel: {thru_24['images_per_s']:.1f} im/s  → SPEEDUP {speedup:.3f}× over dense")
     else:
         thru_24 = None; speedup = None
-        print(f"  WARNING: no 2:4 conversion happened — projection failed")
+        print(f"  WARNING: no 2:4 conversion happened; projection failed")
     del m_24; torch.cuda.empty_cache()
 
     # 4. Save
@@ -188,19 +188,19 @@ def main():
         "_2_4_kernel_apply": apply_24,
         "_note": (
             "The original ckpt (e.g. 6:12 cert-aware) gets dense-kernel throughput "
-            "since PyTorch native only supports 2:4. We then project it down to 2:4 "
-            "within each 4-block (top-2 magnitude per 4-tuple — a strict refinement of "
+            "since PyTorch native only supports 2:4. This script projects it down to 2:4 "
+            "within each 4-block (top-2 magnitude per 4-tuple, a strict refinement of "
             "the original N:M pattern at 50%) and re-benchmark with PyTorch's "
             "to_sparse_semi_structured. The result is a directly-measured hardware "
             "speedup at 50% N:M structured sparsity, applicable to any 4:8/6:12/8:16 "
-            "ckpt as a published lower bound."
+            "ckpt as a lower-bound estimate."
         ),
     }
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     Path(args.output).write_text(json.dumps(out_record, indent=2))
     print(f"\nSaved: {args.output}")
     if speedup:
-        print(f"PAPER NUMBER: {speedup:.3f}× wall-clock speedup at 50% N:M sparsity (PyTorch 2:4 kernel)")
+        print(f"RESULT: {speedup:.3f}× wall-clock speedup at 50% N:M sparsity (PyTorch 2:4 kernel)")
 
 
 if __name__ == "__main__":

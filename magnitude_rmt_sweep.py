@@ -1,5 +1,5 @@
 """
-Magnitude pruning with RMT per-layer budget modulation — NO SVD.
+Magnitude pruning with RMT per-layer budget modulation without SVD.
 
 All methods here are variants of global magnitude pruning where the per-layer
 pruning budget is modulated by a cheap-to-compute per-layer signal derived
@@ -42,7 +42,7 @@ try:
 except (AttributeError, ValueError):
     pass  # stdout doesn't support reconfigure (e.g., already wrapped)
 
-# Redirect stderr to a crash log so we can see CUDA/segfault errors
+# Redirect stderr to a crash log for CUDA and segmentation-fault diagnostics.
 _CRASH_LOG = Path(__file__).parent / "sweep_crash_stderr.log"
 sys.stderr = open(_CRASH_LOG, "a", encoding="utf-8")
 print(f"[{time.strftime('%H:%M:%S')}] stderr redirected to {_CRASH_LOG}", file=sys.stderr, flush=True)
@@ -87,7 +87,7 @@ def log(msg):
         f.write(line + "\n")
 
 
-# ── Per-layer signal computation (NO SVD) ─────────────────────────────────────
+# ── Per-layer signal computation without SVD ──────────────────────────────────
 
 def compute_layer_signals(model):
     """Compute cheap per-layer statistics for all target layers.
@@ -134,7 +134,7 @@ def compute_layer_signals(model):
         kurt = float(scipy_kurtosis(absW, fisher=True))  # excess kurtosis
         n_params = int(W2.size)
 
-        # σ₊ lookup — try exact match, then partial match
+        # sigma_+ lookup: exact match, then partial match.
         sp = None
         for cache_key in splus_data:
             if name in cache_key or cache_key in name:
@@ -143,7 +143,7 @@ def compute_layer_signals(model):
 
         splus_normed = sp / frob if (sp is not None and frob > 1e-12) else None
 
-        # Hill alpha lookup — same partial-match strategy as splus
+        # Hill alpha lookup: same partial-match strategy as splus.
         alpha = None
         for cache_key in alpha_data:
             if name in cache_key or cache_key in name:
@@ -179,8 +179,8 @@ def layer_weights_from_signal(signals, signal_key, beta_max, s_decay,
     The modulation decays toward 1.0 as target_sparsity approaches s_decay.
     decay_power controls the decay curve shape:
       p=1.0  linear (default, backward compatible)
-      p=2.0  quadratic — RMT signal retreats faster as sparsity grows
-      p=3.0  cubic — aggressively magnitude-biased at high sparsity
+      p=2.0  quadratic; RMT signal influence decays faster as sparsity grows
+      p=3.0  cubic; stronger magnitude bias at high sparsity
 
     If beta_attn and beta_mlp are both provided, per-layer β is used based on
     layer type (classify_layer_type). The global z-score is preserved; only
@@ -204,7 +204,7 @@ def layer_weights_from_signal(signals, signal_key, beta_max, s_decay,
         return {n: 1.0 for n in names}
     z = (raw - mu) / sigma
 
-    # Decay factor — shared across layer types
+    # Decay factor shared across layer types.
     linear_decay = max(0.0, 1.0 - target_sparsity / s_decay) if s_decay > 0 else 1.0
     decay = linear_decay ** decay_power
 
@@ -247,7 +247,7 @@ def apply_modulated_magnitude(model, target_sparsity, layer_weights):
         W2 = W.reshape(W.shape[0], -1) if W.ndim == 4 else W
 
         w_l = layer_weights.get(name, 1.0)
-        # Score: |W_ij| / w_l  — higher w_l means lower score means MORE pruning
+        # Score: |W_ij| / w_l; higher w_l lowers the score and increases pruning.
         score = np.abs(W2) / w_l
 
         layer_meta.append((name, mod, W.shape, W2, score))
@@ -283,7 +283,7 @@ def apply_modulated_magnitude(model, target_sparsity, layer_weights):
 def sv_prune_layer(W_np, splus, power=30, theta_base=0.00001125):
     """Original SV sparsification: theta_sv = theta_base*sqrt(NM) * (1-sigma/sigma_+)^power.
 
-    Uses GPU (torch.linalg.svd) when available — ~100× faster than numpy on CPU.
+    Uses GPU (torch.linalg.svd) when available; roughly 100x faster than numpy on CPU.
     """
     M, N = W_np.shape
     theta_scaled = theta_base * np.sqrt(N * M)
@@ -609,7 +609,7 @@ def main():
                         beta_attn=beta_attn, beta_mlp=beta_mlp)
                     achieved_s = apply_modulated_magnitude(model, target_s, lw)
 
-                # Evaluate — inline loop (bypasses validate() which causes TDR crashes)
+                # Evaluate with an inline loop; validate() can trigger TDR crashes.
                 model.to(DEVICE)
                 model.eval()
                 correct = 0
@@ -653,8 +653,8 @@ def main():
                 results.append(entry)
                 done_keys.add(key)
 
-                # Atomic save — MUST happen before any potentially risky log
-                # call so a formatting crash can't lose the cell's result.
+                # Atomic save before logging; a formatting failure cannot lose
+                # the cell's result.
                 tmp = str(OUT_FILE) + ".tmp"
                 with open(tmp, "w") as f:
                     json.dump(results, f, indent=2)
@@ -680,7 +680,7 @@ def main():
                 gc.collect()
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
-                # Let GPU cool between cells — prevents 83°C TDR crashes on laptop
+                # Pause between cells to reduce thermal resets on laptops.
                 log("  cooling 30s...")
                 time.sleep(30)
 

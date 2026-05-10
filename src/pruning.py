@@ -112,13 +112,13 @@ def replace_layers(m, alpha, beta, goodnessOfFitCutoff, depth=0):
             )
 
 
-# Global cache for layer metrics — computed once, reused across all trials and cycles
+# Global cache for layer metrics, computed once and reused across trials and cycles.
 _layer_metrics_cache = None
 
 def compute_layer_metrics_once(model):
     """
     Compute LinfError and percentage_less_than_splus for each splittable layer
-    on the unpruned model. Called once at startup, cached forever.
+    on the unpruned model. Results are cached for subsequent calls.
     """
     global _layer_metrics_cache
     if _layer_metrics_cache is not None:
@@ -183,7 +183,7 @@ def prune_model(model, target_reduction, i, n_prune_cycles, device,
         scale = 1 + i * (end_scale - 1) / n_prune_cycles
 
         if cached_metrics is not None and name in cached_metrics:
-            # Use pre-computed metrics — no SVD needed
+            # Use pre-computed metrics without repeating the SVD.
             LinfError = cached_metrics[name]['LinfError']
             percentage_less_than_splus = cached_metrics[name]['percentage_less_than_splus']
         else:

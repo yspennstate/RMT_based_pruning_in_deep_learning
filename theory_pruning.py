@@ -1,19 +1,19 @@
 """
 Theory-grounded pruning for trained ViTs.
 
-KNOWN EMPIRICAL FACT (from prior experiments, see project_vit_sv_pruning_findings):
+Empirical result from prior experiments (see project_vit_sv_pruning_findings):
     The MP "bulk = noise" assumption DOES NOT hold for trained ViTs.
     Hard bulk zeroing (spike_only) and Gavish-Donoho shrinkage both
-    destroy accuracy on contact. Bulk singular vectors carry structured,
+    severely reduce accuracy. Bulk singular vectors carry structured,
     task-relevant information even when their entries look random in
     aggregate. Any whole-bulk removal method is guaranteed to fail.
 
-This means the "random part" we want to remove is NOT a clean low-frequency
+The removable noise component is not a clean low-frequency
 band of the spectrum. It lives at finer granularity — at the level of
 individual entries within the bulk vectors, conditional on the spike/bulk
 decomposition. Methods in this script must respect that constraint.
 
-WHAT WORKS (in principle, to be tested):
+Candidate modes:
     1. per_weight_random  — entry-level test against the noise model;
                             removes individual entries, not whole SVs
     2. layer_adaptive     — use bulk_test verdict per layer to decide
@@ -21,11 +21,11 @@ WHAT WORKS (in principle, to be tested):
     3. soft_shrink        — multiply each bulk SV by a factor in [0, 1]
                             from a randomness score (gradual, not on/off)
 
-WHAT DOES NOT WORK (kept as labeled negative controls):
-    spike_only            — known to crash accuracy; kept as a sanity check
+Negative controls:
+    spike_only            — known to reduce accuracy; kept as a sanity check
     gavish_donoho         — same; kept to confirm GD is no better than σ_+
 
-The bulk_test diagnostic is the key tool: it tells us per-layer whether the
+The bulk_test diagnostic evaluates per-layer agreement with the
 noise-model assumption is even approximately true. Layers that fail it
 should be left alone by any method that touches their bulk.
 
@@ -41,7 +41,7 @@ should be left alone by any method that touches their bulk.
        Fit MP via BEMA -> sigma^2, sigma_+ (bulk edge)
        W' = sum_{k: s_k > sigma_+} s_k u_k v_k^T
    Crashes accuracy because bulk SVs carry structured info. Kept as a
-   sanity check / negative control. DO NOT use as a real method.
+   sanity check / negative control. Not intended for production pruning.
 
 2. gavish_donoho          KNOWN TO FAIL
    Same as spike_only with the optimal Gavish-Donoho threshold instead.
@@ -58,7 +58,7 @@ should be left alone by any method that touches their bulk.
    of the chi-square null is "more likely random than not").
 
    Bayesian interpretation: each W_ij gets a posterior over {random,
-   structured}; we threshold the posterior.
+   structured}; the method thresholds the posterior.
 
 4. bulk_test              DIAGNOSTIC, no pruning, no hyperparameters
    For each layer, compute R = W - W_spike (the "removed" part) and run
@@ -69,7 +69,7 @@ should be left alone by any method that touches their bulk.
        - Variance ratio: should be ~1 if noise model is right
        - Row pair correlations: should be ~0 if rows are i.i.d.
        - Largest singular value of R: should be ~ sigma_+ by construction
-   Tells us *which layers actually obey the theory*. Layers where R fails
+   Identifies layers that approximately satisfy the theory. Layers where R fails
    the tests have structured "bulk" — the theory's assumption is violated
    there and any spike-based pruning will hurt accuracy.
 
@@ -84,9 +84,8 @@ should be left alone by any method that touches their bulk.
   python theory_pruning.py --mode all --eval               # everything
 
 The --eval flag runs ImageNet validation (10k subset, ~3 min on the GPU).
-Without --eval, the script just records what each mode WOULD remove and
-saves the per-layer statistics — useful for inspecting the theory before
-spending GPU time.
+Without --eval, the script records the entries each mode would remove and
+saves per-layer statistics for pre-evaluation inspection.
 
 Output: optuna_run/rmt_cache/theory_pruning_results.json
 """
@@ -105,7 +104,7 @@ import numpy as np
 import torch
 import timm
 
-# Conservative threading — runs alongside trading bots, never alone.
+# Conservative threading for shared-workstation runs.
 os.environ.setdefault("OMP_NUM_THREADS", "4")
 os.environ.setdefault("MKL_NUM_THREADS", "4")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
@@ -137,8 +136,8 @@ def fit_mp(W):
 
 def gavish_donoho_threshold(splus, M, N):
     """GD optimal hard threshold expressed in terms of sigma_+ (the MP bulk edge
-    in singular value space). Both are in singular-value units, so we can
-    compare them directly to the singular values of W."""
+    in singular value space). Both are in singular-value units and are
+    directly comparable to the singular values of W."""
     p = min(M, N)
     n = max(M, N)
     beta = p / n
@@ -319,7 +318,7 @@ def iter_target_layers(model):
 
 def iter_target_layers_modules(model):
     """Same as iter_target_layers but only yields (name, module). Used when
-    we need module shapes without loading the weight data."""
+    module shapes are needed without loading the weight data."""
     for name, mod in model.named_modules():
         if isinstance(mod, (torch.nn.Linear, torch.nn.Conv2d)):
             yield name, mod
@@ -418,8 +417,8 @@ def main():
     if args.mode in ("spike_only", "all"):
         run_mode("spike_only", spike_only_layer)
         # Spike_only does NOT sparsify (low-rank dense reconstruction). No
-        # matched-sparsity magnitude comparison is meaningful here. We compare
-        # via accuracy alone — known negative control.
+        # matched-sparsity magnitude comparison is meaningful here; use
+        # accuracy alone for this known negative control.
     if args.mode in ("gavish_donoho", "all"):
         run_mode("gavish_donoho", gavish_donoho_layer)
 
@@ -431,7 +430,7 @@ def main():
         for a in alphas:
             tag = f"per_weight_random_a{a}"
             run_mode(tag, lambda W, a=a: per_weight_random_layer(W, alpha=a))
-            # Compute the global achieved sparsity from the layer stats we just stored
+            # Compute global achieved sparsity from the stored layer stats.
             stats_dict = results["modes"][tag]["layer_stats"]
             removed = sum(s.get("n_removed", 0) for s in stats_dict.values())
             total = sum(int(np.prod(s.get("shape", [0]))) if s.get("shape") else 0 for s in stats_dict.values())
@@ -469,7 +468,7 @@ def main():
     save_results()
     print(f"\nFinal save -> {OUT_FILE}", flush=True)
 
-    # Final comparison table if we evaluated
+    # Final comparison table after evaluation.
     if args.eval:
         print("\n=== Accuracy summary (sorted by Δ) ===")
         print(f"  baseline                              {baseline_top1:.2f}%")

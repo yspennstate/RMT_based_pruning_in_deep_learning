@@ -1,5 +1,5 @@
 """
-project_cert_advanced.py — advanced cert-based methods that USE the theory.
+project_cert_advanced.py — certificate-based projection variants.
 
 Beyond k:n parameter sweeps, this implements:
 
@@ -15,12 +15,13 @@ Beyond k:n parameter sweeps, this implements:
 
 3. cert_aware_robust_for_conv(model, calib_loader, n, k, percentile=95)
    Robust ℓ_∞ form: instead of max over calib samples (high-variance),
-   use the 95th percentile. Fixes the −5pp / −18pp ℓ_∞ failure on small calib.
+   use the 95th percentile. Addresses the −5pp / −18pp ℓ_∞ drop observed
+   with small calibration sets.
 
 4. cert_aware_swap_optimization(model, calib_loader, n, k)
    Post-projection cert-aware swap: for each layer, examine the kept-vs-discarded
    boundary; if a discarded position has lower cert cost than a kept one, swap.
-   Squeezes another 0.5-2 pp out of any one-shot projection.
+   Often improves one-shot projection by 0.5-2 pp.
 """
 from __future__ import annotations
 
@@ -268,7 +269,7 @@ def cert_aware_iterative_for_conv(
 
 def _cert_cost_kn_robust_linf(W_group, h_group, n, k, percentile=95):
     """ℓ_∞ form with robust reduction: percentile across calib samples instead
-    of max. Fixes the high-variance failure of vanilla ℓ_∞ at small calib."""
+    of max. This mitigates the high variance of the max form at small calib."""
     Cout, G, _ = W_group.shape
     keep = _all_keep_patterns(n, k).to(W_group.device, W_group.dtype)
     drop = 1.0 - keep

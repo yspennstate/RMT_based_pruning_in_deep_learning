@@ -8,8 +8,8 @@ End-to-end:
   4. Apply Linear 2:4 projection on the FC head (using the existing pattern).
   5. Distill-fine-tune for N epochs with the dense teacher.
   6. Evaluate top-1 on ImageNet val.
-  7. Report sparsity + FLOP-only MAC counts (no Conv2d hardware-kernel speedup
-     yet — that's deferred to a follow-up).
+  7. Report sparsity + FLOP-only MAC counts; Conv2d hardware-kernel speedup is
+     not measured by this driver.
 
 Designed to run on a single g5.xlarge or g6.xlarge spot instance in ~2-4 hours
 per ResNet variant. Total budget for the 3 ResNet rows (resnet50, resnet50d,
@@ -333,7 +333,7 @@ def main():
                          "the 2:4 mask can keep). Free at runtime via a forward pre-hook. "
                          "See PERMUTATION_ALIGN_DESIGN.md.")
     ap.add_argument("--skip-head", action="store_true", default=True,
-                    help="skip 2:4 on the FC head (negligible MACs, default skip per Codex review)")
+                    help="skip 2:4 on the FC head (negligible MACs)")
     ap.add_argument("--num-workers", type=int, default=4)
     ap.add_argument("--s3-backup-bucket", default="")
     ap.add_argument("--s3-backup-every-min", type=int, default=10)
@@ -350,7 +350,7 @@ def main():
     teacher = timm.create_model(args.timm_name, pretrained=True).to(device).eval()
     for p in teacher.parameters():
         p.requires_grad_(False)
-    # Read the model's own data config (image_size, mean, std) — DO NOT hardcode 224
+    # Read the model's own data config (image_size, mean, std); avoid hard-coding 224.
     data_cfg = timm.data.resolve_model_data_config(teacher)
     image_size = data_cfg["input_size"][-1]
     mean = data_cfg["mean"]; std = data_cfg["std"]
@@ -365,10 +365,9 @@ def main():
     torch.save({"state_dict": teacher.state_dict()},
                out_dir / "teacher_dense.pt")
 
-    # ---- Baseline evals BEFORE projection (per Codex review) ----
-    # Need both dense_teacher_top1 and ser_source_top1 so the paper can
-    # claim "post-FT top1 maintained vs DENSE", not just vs the projected
-    # student (which has already lost some accuracy).
+    # ---- Baseline evals before projection ----
+    # Keep both dense_teacher_top1 and ser_source_top1 so downstream reporting
+    # can compare post-FT top-1 against the dense model and the SER source.
     log("Building val loader for baseline evals")
     _, val_loader_baseline = build_imagenet_loaders(
         Path(args.imagenet_root), args.batch_size, args.batch_size_val,
@@ -421,12 +420,12 @@ def main():
             permute_align=args.permute_align, log=True,
         )
 
-    # ---- Skip Linear head per Codex review (head MACs are ~0.1% of eligible) ----
+    # ---- Skip Linear head (head MACs are ~0.1% of eligible MACs) ----
     head_stats = {"layers": {}, "linear_params": 0, "linear_nonzero_before": 0,
                   "linear_nonzero_after": 0, "groups": 0,
                   "groups_with_more_than_2_nonzero_after": 0,
                   "linear_sparsity_before": 0.0, "linear_sparsity_after": 0.0,
-                  "mode": "linear_head_skipped_per_codex_review_negligible_macs"}
+                  "mode": "linear_head_skipped_negligible_macs"}
     if not args.skip_head:
         log("Linear head 2:4 projection (magnitude)")
         head_stats = project_linear_head_2_4_magnitude(student)
@@ -449,7 +448,7 @@ def main():
     masks = collect_nonzero_masks(student, include_linear=not args.skip_head, only_1x1=only_1x1)
     log(f"  collected {len(masks)} layer masks for FT freezing")
 
-    # ---- Exact hook-based MAC count (paper-ready numbers) ----
+    # ---- Exact hook-based MAC count ----
     log("Counting MACs via exact hook-based forward pass at 224x224")
     mac_report = count_macs(timm.create_model(args.timm_name, pretrained=False),
                             image_size=image_size, device=device)
@@ -523,10 +522,10 @@ def main():
             loss = args.distill_alpha * kd + (1 - args.distill_alpha) * ce
             optim.zero_grad()
             loss.backward()
-            # FREEZE 2:4 MASKS: zero gradient at masked-out positions BEFORE optimizer.step()
+            # Freeze 2:4 masks: zero gradients at masked-out positions before optimizer.step().
             freeze_grad_at_masked(student, masks)
             optim.step()
-            # RE-APPLY MASKS in-place AFTER optimizer.step() — guards against any
+            # Re-apply masks in-place after optimizer.step(); guards against any
             # weight-decay drift, momentum carry, or numerical noise.
             apply_masks(student, masks)
             sched.step()
@@ -539,7 +538,7 @@ def main():
                     f"loss={cum_loss/cum_total:.4f}  "
                     f"acc={cum_correct/cum_total*100:.2f}  lr={cur_lr:.2e}")
             # Step-level checkpoint every 500 steps so a spot interruption
-            # costs at most ~5 min of work, not a whole epoch
+            # costs at most ~5 min of work rather than a full epoch.
             if step % 500 == 0:
                 step_ckpt = out_dir / "checkpoints" / "latest_step.pt"
                 step_ckpt.parent.mkdir(parents=True, exist_ok=True)
@@ -557,7 +556,7 @@ def main():
         ep_minutes = (time.time() - t_start) / 60.0
         log(f"  epoch {epoch} done. loss={cum_loss/cum_total:.4f}  "
             f"acc={cum_correct/cum_total*100:.2f}  minutes={ep_minutes:.1f}")
-        # ASSERT 2:4 LEGALITY after every epoch — guarantees the masks held
+        # Check 2:4 legality after every epoch; verifies the masks held.
         try:
             assert_2_4_legality(student, only_1x1=only_1x1,
                                  include_linear_head=not args.skip_head)
@@ -584,7 +583,7 @@ def main():
         "include_3x3_convs": bool(args.include_3x3_convs),
         "free_restoration": bool(not args.no_free_restore),
         "skip_head": bool(args.skip_head),
-        # Top-1 numbers — the meaningful ones for the paper:
+        # Top-1 metrics used by downstream reporting:
         "dense_teacher_top1": dense_teacher_top1,   # what the dense pretrained timm model scores
         "ser_source_top1":    ser_source_top1,      # what the SER s=0.35 ckpt scores BEFORE projection
         "pre_ft_top1":        pre_top1,             # post-projection, pre-FT
@@ -597,7 +596,7 @@ def main():
         "ts":                 datetime.now(timezone.utc).isoformat(),
     }, indent=2, default=float))
 
-    # ---- Manifest (canonical run artifact, per Codex review) ----
+    # ---- Manifest (canonical run artifact) ----
     log("Writing manifest.yaml")
     manifest_text = _build_manifest(args, image_size, mean, std,
                                      dense_teacher_top1=dense_teacher_top1,
