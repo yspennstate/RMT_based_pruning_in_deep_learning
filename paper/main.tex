@@ -388,15 +388,6 @@ ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}$^{\ddagger}$ & 86.72 & 86.67 & 8
 \label{fig:param_vs_drop}
 \end{figure}
 
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{fig_top1_vs_params_at_50pct_MAC.pdf}
-\caption{\(\Delta\)Top-1 relative to dense at approximately \(50\%\) sparse-execution MAC reduction vs.\ dense parameter count. Points are rows of Table~\ref{tab:param_to_flop_followup}; the dashed line is an OLS fit in \(\log_{10}\) parameters.}
-\label{fig:flop_top1_vs_params}
-\end{figure}
-
-
-
 Appendix~\ref{app:multi_arch_cert} reports the Figure~\ref{fig:param_vs_drop} slope analysis and the associated certificate-audit quantities: the certificate inequality $B_T(R) < \lambda_2\|R\|_F^2 + \lambda_1\|R\|_1$, the MP-edge sufficient condition (Corollary~\ref{cor:mp_edge_data_path_budget}), the prune--restore decomposition (Theorem~\ref{thm:deterministic_prune_restore_certificate}, Corollary~\ref{cor:restoration_improves_certificate}), within-architecture $r=+0.91$ pooled, zero $\hat B_T$ proxy violations across 282 audited cells, and architecture-stratified $\sigma_+ \to B$-proxy correlations up to $+0.83$ for transformers and $-0.29$ for ConvNeXt-Base.
 
 
@@ -494,53 +485,61 @@ Mask re-zero & every step & every step & every step & every step \\
 \subsection{Cert-aware structured sparsity: the FLOP / speedup table}
 \label{subsec:flop_table}
 
-The structured-sparse conversion procedure (full methodology in \methref{sec:cast-2e-pipeline}) starts from either a Hybrid Magnitude--SER $s\!=\!0.35$ checkpoint or a dense \texttt{timm} checkpoint and converts each compatible Linear or 1$\times$1/3$\times$3 Conv layer to a $k{:}n$ structured-sparse pattern. Table~\ref{tab:param_to_flop_followup} reports post-FT top-1 accuracy at the listed sparse-execution MAC reduction, with measured wall-clock speedup on A100 and L4 hardware where a native 2:4 path is used.
+The structured-sparse conversion procedure (full methodology in \methref{sec:cast-2e-pipeline}) starts from either a Hybrid Magnitude--SER $s\!=\!0.35$ checkpoint or a dense \texttt{timm} checkpoint and converts each compatible Linear or 1$\times$1/3$\times$3 Conv layer to a $k{:}n$ structured-sparse pattern. Table~\ref{tab:param_to_flop_followup} reports post-FT top-1 accuracy, the change from the dense baseline, the listed sparse-execution MAC reduction, and either measured wall-clock speedup where a native sparse path is benchmarked or the theoretical speedup implied by the MAC reduction.
 
 For the ViT-B/16 $2{:}4{+}$ToMe rows, both the magnitude and CAST rows start from the Hybrid Magnitude--SER \(s=0.35\) checkpoint, apply ToMe \(r=8\), and fine-tune for three epochs with the structured mask frozen.  The magnitude row keeps the two largest-magnitude entries per contiguous 4-tuple. CAST uses a row-wise discrete search over the six legal 2-of-4 patterns with an activation-weighted removed-contribution cost derived from Lemma~\ref{lem:deterministic_ce_path_bound}, and restores compatible entries that the unstructured source mask had zeroed at zero sparse-execution FLOP cost.  The ResNet, ConvNeXtV2, and ViT-L wider-pattern rows use the source checkpoint shown in the table; the $6{:}12$, $8{:}16$, and $12{:}16$ rows do not claim native sparse-tensor-core throughput.
 
 \begin{table}[ht]
 \centering
-\caption{CAST \(k{:}n\) structured-projection results for parameter-to-compute conversion. Entries are post-FT ImageNet-1k top-1 under the source checkpoints and sparse-execution MAC assumptions described in the surrounding text.}
+\caption{CAST \(k{:}n\) structured-projection results for parameter-to-compute conversion. Entries are post-FT ImageNet-1k top-1 under the source checkpoints and sparse-execution MAC assumptions described in the surrounding text. ``Source \(s\)'' is the unstructured Hybrid Magnitude--SER source sparsity; ``dense'' means the projection starts from the dense checkpoint. ``MAC red.'' is the dense-equivalent sparse-execution MAC reduction, not raw parameter sparsity. ``Speedup'' is measured wall-clock speedup when marked ``meas.'' and otherwise the theoretical value \(1/(1-\mathrm{MAC\ red.})\). \(\Delta\) is top-1 minus the corresponding dense baseline, in percentage points.}
 \label{tab:param_to_flop_followup}
 \scriptsize
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabular}{lccccc}
+\setlength{\tabcolsep}{1.6pt}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabularx}{\textwidth}{l c X c c c c c}
 \toprule
-Architecture & Source \(s\) & Method & Dense MACs & Sparse-exec red. & Top-1 (\%) \\
+Architecture & Source \(s\) & Method & Dense MACs & MAC red. & Speedup & Top-1 (\%) & \(\Delta\) (pp) \\
 \midrule
-\multicolumn{6}{l}{\textit{ViT family (CAST = cert-aware 2:4 + free restoration + ToMe r=8 + 3-ep distill FT)}} \\
-ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe & 17.56G & 59.81\% & 82.92 \\
-ViT-B/16   & 0.35 & \textbf{CAST}        & 17.56G & 59.81\% & \(\mathbf{83.41}\) \\
-ViT-B/16   & 0.35 & \textbf{CAST 6:12 SER+\(\alpha\)=0.5} (no ToMe) & 17.56G & 50\% & \(\mathbf{83.74}\)\textsuperscript{\S} \\
-ViT-L/16   & 0.35 & CAST                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(\mathbf{84.37}\) \\
-ViT-L/16   & dense & \textbf{CAST 8:16 dense+perm} (no ToMe) & 61.55G & 50\% & \(\mathbf{85.33}\)\textsuperscript{\S} \\
-DeiT-B     & 0.35 & CAST                 & 17.56G & 59.81\% & 80.48 \\
-DeiT-S     & 0.35 & CAST                 & 4.61G  & 59.81\% & 76.96 \\
-DeiT-T     & 0.35 & CAST                 & 1.26G  & 59.81\% & 65.93 \\
+\multicolumn{8}{l}{\textit{ViT family (CAST = cert-aware 2:4 + free restoration + ToMe \(r=8\) + 3-ep distill FT)}} \\
+ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe & 17.56G & 59.81\% & \(1.84\times\) meas. & 82.92 & \(-2.19\) \\
+ViT-B/16   & 0.35 & \textbf{CAST}        & 17.56G & 59.81\% & \(1.84\times\) meas. & \(\mathbf{83.41}\) & \(-1.70\) \\
+ViT-B/16   & 0.35 & \textbf{CAST 6:12 SER+\(\alpha\)=0.5} (no ToMe) & 17.56G & 50\% & \(2.00\times\) theor. & \(\mathbf{83.74}\)\textsuperscript{\S} & \(-1.37\) \\
+ViT-L/16   & 0.35 & CAST                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(1.55\times\) meas. & \(\mathbf{84.37}\) & \(-1.47\) \\
+ViT-L/16   & dense & \textbf{CAST 8:16 dense+perm} (no ToMe) & 61.55G & 50\% & \(2.00\times\) theor. & \(\mathbf{85.33}\)\textsuperscript{\S} & \(-0.51\) \\
+DeiT-B     & 0.35 & CAST                 & 17.56G & 59.81\% & \(2.49\times\) theor. & 80.48 & \(-1.32\) \\
+DeiT-S     & 0.35 & CAST                 & 4.61G  & 59.81\% & \(2.49\times\) theor. & 76.96 & \(-2.89\) \\
+DeiT-T     & 0.35 & CAST                 & 1.26G  & 59.81\% & \(2.49\times\) theor. & 65.93 & \(-6.28\) \\
 \midrule
-\multicolumn{6}{l}{\textit{ResNet family (CAST-conv = cert-aware 1\(\times\)1+3\(\times\)3 2:4 + free restoration; ToMe N/A)}} \\
-ResNet50   & 0.35 & CAST-conv          & 4.09G  & 48.5\%   & 73.14 \\
-ResNet50   & 0.35 & \textbf{CAST-conv+perm} & 4.09G  & 48.5\%   & \(\mathbf{75.67}\)\textsuperscript{\ddag} \\
-ResNet50   & dense & \textbf{CAST 8:16 dense+perm} & 4.09G  & 50\%     & \(\mathbf{75.87}\)\textsuperscript{\S} \\
-ResNet50d  & 0.35 & CAST-conv          & 4.33G  & 49.85\%  & 78.08 \\
-ResNet50d  & 0.35 & \textbf{CAST-conv+perm} & 4.33G  & 49.85\%  & \(\mathbf{78.00}\)\textsuperscript{\ddag} \\
-ResNet50d  & dense & \textbf{CAST 8:16 dense+perm} & 4.33G  & 50\%     & \(\mathbf{78.57}\)\textsuperscript{\S} \\
-ResNet101d & 0.35 & CAST-conv          & 8.0G   & \(\sim\)50\% & 80.13 \\
-ResNet101d & 0.35 & \textbf{CAST-conv+perm} & 8.0G   & \(\sim\)50\% & \(\mathbf{80.59}\)\textsuperscript{\ddag} \\
-ResNet101d & dense & \textbf{CAST 8:16 dense+perm} & 8.0G   & 50\%     & \(\mathbf{80.92}\)\textsuperscript{\S} \\
-ResNet152d & 0.35 & \textbf{CAST-conv+perm} & 11.8G  & \(\sim\)50\% & \(\mathbf{81.33}\)\textsuperscript{\ddag} \\
+\multicolumn{8}{l}{\textit{ResNet family (CAST-conv = cert-aware 1\(\times\)1+3\(\times\)3 2:4 + free restoration; ToMe N/A)}} \\
+ResNet50   & 0.35 & CAST-conv          & 4.09G  & 48.5\%   & \(1.94\times\) theor. & 73.14 & \(-2.99\) \\
+ResNet50   & 0.35 & \textbf{CAST-conv+perm} & 4.09G  & 48.5\%   & \(1.94\times\) theor. & \(\mathbf{75.67}\)\textsuperscript{\ddag} & \(-0.46\) \\
+ResNet50   & dense & \textbf{CAST 8:16 dense+perm} & 4.09G  & 50\%     & \(2.00\times\) theor. & \(\mathbf{75.87}\)\textsuperscript{\S} & \(-0.26\) \\
+ResNet50d  & 0.35 & CAST-conv          & 4.33G  & 49.85\%  & \(1.99\times\) theor. & 78.08 & \(-2.47\) \\
+ResNet50d  & 0.35 & \textbf{CAST-conv+perm} & 4.33G  & 49.85\%  & \(1.99\times\) theor. & \(\mathbf{78.00}\)\textsuperscript{\ddag} & \(-2.55\) \\
+ResNet50d  & dense & \textbf{CAST 8:16 dense+perm} & 4.33G  & 50\%     & \(2.00\times\) theor. & \(\mathbf{78.57}\)\textsuperscript{\S} & \(-1.98\) \\
+ResNet101d & 0.35 & CAST-conv          & 8.0G   & \(\sim\)50\% & \(\sim2.00\times\) theor. & 80.13 & \(-2.13\) \\
+ResNet101d & 0.35 & \textbf{CAST-conv+perm} & 8.0G   & \(\sim\)50\% & \(\sim2.00\times\) theor. & \(\mathbf{80.59}\)\textsuperscript{\ddag} & \(-1.67\) \\
+ResNet101d & dense & \textbf{CAST 8:16 dense+perm} & 8.0G   & 50\%     & \(2.00\times\) theor. & \(\mathbf{80.92}\)\textsuperscript{\S} & \(-1.34\) \\
+ResNet152d & 0.35 & \textbf{CAST-conv+perm} & 11.8G  & \(\sim\)50\% & \(\sim2.00\times\) theor. & \(\mathbf{81.33}\)\textsuperscript{\ddag} & \(-1.53\) \\
 \midrule
-\multicolumn{6}{l}{\textit{ConvNeXt family (CAST on the nn.Linear pointwise convs; ToMe N/A)}} \\
+\multicolumn{8}{l}{\textit{ConvNeXt family (CAST on the nn.Linear pointwise convs; ToMe N/A)}} \\
 % ConvNeXt-Base canonical CAST run not completed; ConvNeXtV2-Base rows below cover the deployed ConvNeXt-family results.
-ConvNeXtV2-Base & 0.35 & \textbf{CAST 2:4 cert + free-restore} & 15.4G & 50\% & \(\mathbf{85.47}\) \\
-ConvNeXtV2-Base & dense & \textbf{CAST 12:16 dense+perm} (25\% sparse) & 15.4G & 25\% & \(\mathbf{86.35}\)\textsuperscript{\S} \\
-ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 50\% & \(\mathbf{85.85}\)\textsuperscript{\S} \\
+ConvNeXtV2-Base & 0.35 & \textbf{CAST 2:4 cert + free-restore} & 15.4G & 50\% & \(1.086\times\) meas. & \(\mathbf{85.47}\) & \(-1.25\) \\
+ConvNeXtV2-Base & dense & \textbf{CAST 12:16 dense+perm} (25\% sparse) & 15.4G & 25\% & \(1.33\times\) theor. & \(\mathbf{86.35}\)\textsuperscript{\S} & \(-0.37\) \\
+ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 50\% & \(2.00\times\) theor. & \(\mathbf{85.85}\)\textsuperscript{\S} & \(-0.87\) \\
 \bottomrule
-\end{tabular}\\[2pt]
-{\footnotesize \textsuperscript{\dag}ViT-L/16 reduction is estimated from the analytical 22.81\% ToMe reduction plus the 50\% 2:4 Linear share. \textsuperscript{\ddag}\textbf{CAST-conv+perm} uses the importance-balanced Cin permutation alignment of the companion methodology paper. \textsuperscript{\S}Rows marked \(\S\) are wider-pattern or lower-sparsity accuracy probes; they do not claim native 2:4 sparse-tensor-core speedup.}
+\end{tabularx}\\[2pt]
+{\footnotesize \textsuperscript{\dag}ViT-L/16 reduction is estimated from the analytical 22.81\% ToMe reduction plus the 50\% 2:4 Linear share. \textsuperscript{\ddag}\textbf{CAST-conv+perm} uses the importance-balanced Cin permutation alignment of the companion methodology paper. \textsuperscript{\S}Rows marked \(\S\) are wider-pattern or lower-sparsity accuracy probes; their speedups are dense-equivalent arithmetic estimates unless a future native kernel is measured.}
 \end{table}
 
 Rows marked \(\S\) separate accuracy measurements from native-kernel deployability.  ViT-B/16 \(6{:}12\) SER+\(\alpha=0.5\) reports \(83.74\%\), \(+0.33\) pp relative to the \(2{:}4{+}\)ToMe row at the same parameter sparsity but without the native 2:4 kernel.  ConvNeXtV2-Base \(12{:}16\) dense+perm is a lower-sparsity \(25\%\) row at \(86.35\%\), \(-0.37\) pp from dense.  The \(8{:}16\) dense+perm rows use a larger pattern search space and a dense source; on ViT-L/16 this row reports \(85.33\%\), \(-0.51\) pp from the \(85.84\%\) dense baseline.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\textwidth]{fig_top1_vs_params_at_50pct_MAC.pdf}
+\caption{Top-1 drop from dense vs.\ original dense parameter count for rows of Table~\ref{tab:param_to_flop_followup} at 48.5--50\% dense-equivalent sparse-execution MAC reduction. The y-axis is dense top-1 minus post-FT top-1, so lower is better. The dashed line is an OLS fit in \(\log_{10}\) parameters.}
+\label{fig:flop_top1_vs_params}
+\end{figure}
 
 \paragraph{Hardware-executable acceleration over ToMe at fixed accuracy.}
 For the ViT-B/16 \(2{:}4{+}\)ToMe row, measured L4 throughput at batch \(128\) changes from \(589.5\) to \(\mathbf{836.3}\) \textbf{images/s}, a \(\mathbf{1.41\!\times}\) ratio with ToMe held constant on both endpoints.  The magnitude-2:4+ToMe baseline reports \(82.92\%\), and the CAST row reports \(83.41\%\) at the same nominal sparsity, a \(+0.49\) pp difference.  The ToMe-only ViT-B/16 (AugReg) reference numbers in \cite{bolya2023tome} Table 8 are \(83.94\%\) at \(r=8\) and \(82.86\%\) at \(r=12\); the magnitude-2:4+ToMe-r=8 baseline at \(82.92\%\) is \(1.02\) pp below the dense-kernel ToMe-r=8 reference.  Composing the \(1.41\!\times\) L4 ratio with the analytical \(\sim\!1.30\!\times\) ToMe-only MAC reduction gives approximately \(1.84\!\times\) over the original dense ViT-B, with a \(2.19\) pp accuracy difference from the dense \(85.11\%\) checkpoint and \(1.63\) pp from the \(s=0.35\) Hybrid Magnitude--SER source checkpoint at \(84.55\%\).
@@ -577,7 +576,7 @@ For the convolutional ResNet family, the three CAST 8:16 dense+perm rows of Tabl
 \subsection{Comparison with published structured-sparsity and ViT pruning baselines}
 \label{subsec:result_comparison}
 
-Table~\ref{tab:result_comparison} is a literature-context table for ImageNet-1k, not a controlled head-to-head benchmark. It groups selected published ViT/DeiT pruning and hardware-friendly sparsity rows with this paper's result rows. Architectures, dense checkpoints, pruned layer sets, compression axes, and fine-tuning budgets vary by row, so the most interpretable normalized quantity is the accuracy change from each row's own dense baseline. Throughput is claimed only where a measured wall-clock number is explicitly reported; wider \(k{:}n\) rows are accuracy rows unless a native kernel is identified.
+Table~\ref{tab:result_comparison} is a literature-context table for ImageNet-1k, not a controlled head-to-head benchmark. It groups selected published ViT/DeiT pruning and hardware-friendly sparsity rows with this paper's result rows. Architectures, dense checkpoints, starting accuracies, pruned layer sets, compression axes, and fine-tuning budgets vary by row, so the most interpretable normalized quantity is the accuracy change from each row's own dense baseline. Throughput is claimed only where a measured wall-clock number is explicitly reported; wider \(k{:}n\) rows are accuracy rows unless a native kernel is identified.
 
 \begingroup
 \scriptsize
@@ -590,13 +589,13 @@ Table~\ref{tab:result_comparison} is a literature-context table for ImageNet-1k,
                   r
                   >{\raggedright\arraybackslash}p{1.35cm}
                   >{\raggedright\arraybackslash}p{3.2cm}}
-\caption{Selected ImageNet-1k pruning and structured-sparsity results. Non-bold rows are cited results or author-run reimplementations identified in the Notes column; bold rows are this paper's reported results. ``FT ep.'' is the reported post-pruning fine-tuning budget.}
+\caption{Selected ImageNet-1k pruning and structured-sparsity results. This is not an apples-to-apples ranking: rows start from different dense accuracies, checkpoints, architectures, compression axes, and fine-tuning budgets. Non-bold rows are cited results or author-run reimplementations identified in the Notes column; bold marks this paper's rows only, not better performance. ``FT ep.'' is the reported post-pruning fine-tuning budget.}
 \label{tab:result_comparison}\\
 \toprule
 Method & Architecture & Compression & Top-1 & vs.\ dense & FT ep. & Notes \\
 \midrule
 \endfirsthead
-\caption[]{Selected ImageNet-1k pruning and structured-sparsity results (continued).}\\
+\caption[]{Selected ImageNet-1k pruning and structured-sparsity results (continued). Bold marks this paper's rows only, not better performance.}\\
 \toprule
 Method & Architecture & Compression & Top-1 & vs.\ dense & FT ep. & Notes \\
 \midrule
@@ -638,7 +637,7 @@ SparseGPT-style (ours) \cite{frantar2023sparsegpt} & ViT-B/16 & 50\% unstructure
 Wanda-style (ours) \cite{sun2024wanda} & ViT-B/16 & 50\% unstructured, no FT & $\sim$81.3 & $\sim$$-3.8$ & 0 & one-shot reimpl., no retraining \\
 AlphaPruning-style (ours) \cite{lu2024alphapruning} & ViT-B/16 & 50\% layerwise-$\alpha$ + short FT & $\sim$82.9 & $\sim$$-2.2$ & $\sim$3 & layerwise $\alpha$ allocation \\
 \end{longtable}
-\noindent{\footnotesize Rows marked ``-style'' are author reimplementations of SparseGPT/Wanda/AlphaPruning-style signals on ViT-B/16 under this paper's data, checkpoint, layer set, and evaluation protocol; the cited papers do not report ViT-B/16 ImageNet results at 50\% unstructured weight sparsity. Other non-bold rows are transcribed from the cited papers' reported tables unless otherwise noted. $^{\dag}$Spartan reports its \(\Delta\) against its own ViT-B/16 dense model at the same 300-epoch training budget (\(80.06\%\)); against a DeiT-B \(81.80\%\) baseline the gap would be \(-0.62\) pp.}
+\noindent{\footnotesize Rows marked ``-style'' are author reimplementations of SparseGPT/Wanda/AlphaPruning-style signals on ViT-B/16 under this paper's data, checkpoint, layer set, and evaluation protocol; the cited papers do not report ViT-B/16 ImageNet results at 50\% unstructured weight sparsity. Other non-bold rows are transcribed from the cited papers' reported tables unless otherwise noted. Because dense baselines and starting accuracies differ, absolute top-1 values should not be read as a direct ranking across rows; the ``vs.\ dense'' column is row-local. $^{\dag}$Spartan reports its \(\Delta\) against its own ViT-B/16 dense model at the same 300-epoch training budget (\(80.06\%\)); against a DeiT-B \(81.80\%\) baseline the gap would be \(-0.62\) pp.}
 \endgroup
 
 \paragraph{Fine-tuning budget context.}
