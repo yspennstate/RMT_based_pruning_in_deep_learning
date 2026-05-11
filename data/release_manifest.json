@@ -1,27 +1,35 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "paper_release_date": "2026-05-11",
   "drive_folder_url": "https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd",
   "bundles": [
     {
-      "name": "17-model Hybrid Magnitude–SER sparsification checkpoints",
+      "name": "17-model Hybrid Magnitude-SER sparsification checkpoints",
       "zip_filename": "rmt_pruning_paper_17_model_checkpoints_20260502.zip",
-      "size_bytes": 68941434880,
-      "sha256": "e965bbf7834a3d2cf9c16e7cd878aeaa7588c66d281f53ffd9de898e8e96eef1",
-      "supports_paper_rows": "Table 11 (multi-arch Hybrid Mag–SER sweep, 17 architectures, sparsity grid 0.05–0.70)"
+      "size_bytes": 68935892958,
+      "supports_paper_rows": "Main paper tab:multi_arch_hybrid and methodology checkpoint ledger for the 17-architecture Hybrid Mag-SER sweep, sparsity grid 0.05-0.70",
+      "checksum_status": "Local release copy size recorded on 2026-05-11; SHA-256 not recomputed after mirroring."
     },
     {
-      "name": "FLOP-model post-FT checkpoints + final_eval.json",
+      "name": "FLOP-model checkpoints where available plus final_eval.json logs",
       "zip_filename": "rmt_paper_flop_model_data_20260511.zip",
       "size_bytes": 6677716082,
-      "supports_paper_rows": "Table 5 CAST 8:16 dense+perm rows (ViT-L, R50, R50d, R101d), Table 5 CAST 6:12 SER+α=0.5 ViT-B row"
+      "zip_root": "cast_results_2026_05_10/",
+      "supports_paper_rows": "Main paper tab:param_to_flop_followup CAST rows listed in row_to_evidence; checkpoint availability is recorded in row_to_checkpoint_status."
     }
   ],
   "row_to_evidence": {
-    "Table 5 / ViT-L 8:16 dense+perm 85.33%": "pod1_vitl_d816_dense/final_eval.json",
-    "Table 5 / ViT-B 6:12 SER+α=0.5 83.74%": "pod1_vitb_ft_D612_ser_a05/final_eval.json",
-    "Table 5 / ResNet50 8:16 dense+perm 75.87%": "pod3_4resnet_8_16_chain/resnet50.tv_in1k/final_eval.json",
-    "Table 5 / ResNet50d 8:16 dense+perm 78.57%": "pod3_4resnet_8_16_chain/resnet50d.ra2_in1k/final_eval.json",
-    "Table 5 / ResNet101d 8:16 dense+perm 80.92%": "pod3_4resnet_8_16_chain/resnet101d.ra2_in1k/final_eval.json"
+    "tab:param_to_flop_followup / ViT-L 8:16 dense+perm 85.33%": "pod1_vitl_d816_dense/final_eval.json",
+    "tab:param_to_flop_followup / ViT-B 6:12 SER+alpha=0.5 83.74%": "pod1_vitb_ft_D612_ser_a05/final_eval.json",
+    "tab:param_to_flop_followup / ResNet50 8:16 dense+perm 75.87%": "pod3_4resnet_8_16_chain/resnet50.tv_in1k/final_eval.json",
+    "tab:param_to_flop_followup / ResNet50d 8:16 dense+perm 78.57%": "pod3_4resnet_8_16_chain/resnet50d.ra2_in1k/final_eval.json",
+    "tab:param_to_flop_followup / ResNet101d 8:16 dense+perm 80.92%": "pod3_4resnet_8_16_chain/resnet101d.ra2_in1k/final_eval.json"
+  },
+  "row_to_checkpoint_status": {
+    "tab:param_to_flop_followup / ViT-L 8:16 dense+perm 85.33%": "Bundle contains final_eval.json, student_pre_ft.pt, student_ep1.pt, student_ep2.pt, and recipe/logs; final post-FT weights are unavailable.",
+    "tab:param_to_flop_followup / ViT-B 6:12 SER+alpha=0.5 83.74%": "Bundle contains final_eval.json and post-FT checkpoint artifact.",
+    "tab:param_to_flop_followup / ResNet50 8:16 dense+perm 75.87%": "Bundle contains final_eval.json and post-FT checkpoint artifact.",
+    "tab:param_to_flop_followup / ResNet50d 8:16 dense+perm 78.57%": "Bundle contains final_eval.json and post-FT checkpoint artifact.",
+    "tab:param_to_flop_followup / ResNet101d 8:16 dense+perm 80.92%": "Bundle contains final_eval.json and post-FT checkpoint artifact."
   }
 }

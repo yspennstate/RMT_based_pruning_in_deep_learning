@@ -1,4 +1,9 @@
-# Post-FT checkpoint archive — Google Drive plan
+# Post-FT checkpoint archive - Google Drive plan
+
+> Release note (2026-05-11): this file is a historical staging plan. The
+> authoritative public-release mapping is `data/release_manifest.json`, which
+> records the released Drive bundles, zip roots, row evidence, and checkpoint
+> availability.
 
 The CAST-2E experimental pipeline produces post-fine-tuning checkpoints that are
 **not stored in this Git repository** because each `.pt` file is 100 MB – 1.5 GB
@@ -7,7 +12,7 @@ Google Drive (matching the Hybrid Magnitude–SER 17-model archive at
 <https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd>) for
 external auditability.
 
-## Local staging (ready for upload)
+## Historical local staging
 
 The local archive at `~/Downloads/cast_2e_resnet_review/checkpoints_for_drive/`
 contains symbolic links to every paper-result post-FT checkpoint. Sizes given
@@ -30,7 +35,7 @@ are the dereferenced sizes (links resolve to the actual .pt files in
 (or `results.json`) packaged alongside so readers can match a checkpoint to
 its evaluation metric without re-running.
 
-## Pending runs
+## Historical pending runs at staging time
 
 | Run | Pod | ETA | Will land at |
 |---|---|---|---|
@@ -38,10 +43,10 @@ its evaluation metric without re-running.
 | ConvNeXtV2 D48 4:8 dense+perm cert + 3-ep FT | Pod 2 (12632) | ~1.5 hr | `convnextv2_d48/` |
 | 4-ResNet 8:16 chain (50d, 101d, 152d) | Pod 3a (12059) | ~21 hr | `resnet*_8_16/` |
 
-As runs finish, the cron health check pulls the JSON eval and the following
-pass pulls the `.pt` files into `checkpoints_for_drive/`.
+At staging time, the cron health check pulled JSON eval files first and pulled
+`.pt` files into `checkpoints_for_drive/` in a following pass.
 
-## Upload procedure
+## Historical upload procedure
 
 ```bash
 # rsync-mirror the staging dir to Google Drive via rclone
@@ -58,12 +63,12 @@ provides the artifacts needed to reproduce a single paper-result number.
 
 ## Provenance audit
 
-For every post-FT checkpoint listed above:
+For every completed post-FT checkpoint in the staging table above:
 - `final_eval.json` records: pre-FT top-1, teacher top-1, post-FT top-1,
   delta_pre_to_post_pp, delta_vs_teacher_pp, ckpt_avg_sparsity, n_layers_with_mask,
   per-epoch (train_loss, val_top1, elapsed_s)
 - `student_pre_ft.pt` records the projected state-dict + cert metadata before FT
 - `student_ep1.pt`, `student_ep2.pt`, `student_ep3.pt` are the per-epoch snapshots
-- `student_final.pt` is the post-FT model (top-1 = post_ft_top1 from the JSON)
+- `student_final.pt`, where present, is the post-FT model (top-1 = post_ft_top1 from the JSON)
 
 This is the same provenance schema as the Hybrid Magnitude–SER 17-model archive.

@@ -8,10 +8,10 @@ Distribution"*.
 
 | Paper | PDF | TeX source |
 |---|---|---|
-| **Main manuscript** (theory + result results, 61 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
-| **Methodology companion** (full methodology + extended numerics + migrated appendices, 54 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
+| **Main manuscript** (theory + results, 69 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
+| **Methodology companion** (full methodology + extended numerics + migrated appendices, 60 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
 
-The main manuscript contains all theoretical statements, proofs, and result
+The main manuscript contains all theoretical statements, proofs, and
 empirical results (Table 2, the new FLOP table, the theory↔numerics map). The
 methodology paper contains everything operational: the full RMT protocol stack
 (BEMA, SEB, SER, Hybrid Magnitude–SER), the CAST-2E pipeline (cert-aware $k{:}n$
@@ -286,16 +286,14 @@ Report any leaked secret in the repository history immediately. The maintainers 
 
 ## Data and checkpoint availability
 
-All checkpoints and per-run evidence files supporting the empirical claims in the paper are released via a public Google Drive folder:
+Checkpoints and per-run evidence files are released here:
 
 **Google Drive folder:** <https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd>
 
-The bundle includes:
-- The 17 Hybrid Magnitude–SER sparsification checkpoints for the multi-architecture sweep (Table 11 of the paper) — per-architecture grids over $s\in[0.05, 0.70]$, ~230 post-FT `.pt` files, ~69 GB. SHA-256 of the source zip: `e965bbf7834a3d2cf9c16e7cd878aeaa7588c66d281f53ffd9de898e8e96eef1`.
-- FLOP-model post-FT checkpoints and `final_eval.json` logs for every CAST row in Table 5 (ViT-L 8:16 dense+perm 85.33%, ViT-B 6:12 SER+α=0.5 83.74%, ResNet50/50d/101d 8:16 dense+perm 75.87/78.57/80.92%) — ~6.7 GB.
+The released Drive bundles include:
+- The 17 Hybrid Magnitude-SER sparsification checkpoints for the multi-architecture sweep: per-architecture grids over $s\in[0.05, 0.70]$, about 230 post-FT `.pt` files, 68,935,892,958 bytes.
+- FLOP-model checkpoints where available plus `final_eval.json` logs for the bundled `tab:param_to_flop_followup` rows: ViT-L 8:16 dense+perm 85.33%, ViT-B 6:12 SER+alpha=0.5 83.74%, and ResNet50/50d/101d 8:16 dense+perm 75.87/78.57/80.92%.
 - SER source checkpoints at $s\!=\!0.35$ (ViT-B, ViT-L, ConvNeXt-Base, ResNet50/50d/101d/152d).
-- 282-cell certificate-audit results CSV/JSON (the three bridges of Section 3 of the paper).
-- Mask-statistics JSON snapshots and per-run training logs.
-- `release_manifest.json` mapping every paper row → evidence files.
+- 282-cell certificate-audit CSV/JSON files, mask-statistics JSON snapshots, and per-run training logs.
 
-See `data/release_manifest.json` for the machine-readable mapping (manifest also mirrored inside the Drive zip).
+See `data/release_manifest.json` for the machine-readable mapping. It records zip-relative evidence paths and checkpoint availability, including that the ViT-L 8:16 dense+perm row includes `final_eval.json`, `student_pre_ft.pt`, `student_ep1.pt`, `student_ep2.pt`, and recipe/logs, but not final post-FT weights.
