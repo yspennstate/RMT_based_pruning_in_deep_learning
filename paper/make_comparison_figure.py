@@ -1,6 +1,6 @@
 """
 Comparison figure: post-FT Top-1 vs structured-sparsity MAC reduction across
-all baselines tabulated in tab:headline_comparison + this paper's headline
+all baselines tabulated in tab:result_comparison + this paper's result
 CAST rows.
 
 Output: comparison_top1_vs_macred.png (raster, included in main.tex).
@@ -54,7 +54,7 @@ family_labels = {
     "vit_pruning": "ViT pruning baselines (NViT/SViTE/Spartan)",
     "kn_hw": "Hardware-friendly k:n baselines",
     "ours_vitb": "This paper, ViT-B/16",
-    "ours_vitl": "This paper, ViT-L/16 (new headline)",
+    "ours_vitl": "This paper, ViT-L/16 (new result)",
     "ours_conv": "This paper, ConvNeXt / ResNet",
 }
 
@@ -145,7 +145,7 @@ ax.set_xlabel("Structured-sparsity / MAC reduction (%)", fontsize=12)
 ax.set_ylabel("ImageNet-1k Top-1 accuracy (%)", fontsize=12)
 ax.set_title(
     "Top-1 accuracy vs.\\ MAC reduction across published ViT/DeiT pruning baselines\n"
-    "and this paper's CAST headline rows (large markers = ours)",
+    "and this paper's CAST rows (large markers = ours)",
     fontsize=12,
 )
 ax.set_xlim(20, 95)

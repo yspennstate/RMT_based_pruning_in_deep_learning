@@ -9,7 +9,7 @@ Prepared 2026-05-07 after AWS approved G/VT Spot quota (4 vCPUs, us-east-1).
 ## Summary
 
 - **6 runs** total: 3 ResNets × 2 main modes + 3 ablations on resnet50
-- **Target headline**: ≥50% FLOP reduction with maintained ImageNet top-1
+- **Target result**: ≥50% FLOP reduction with maintained ImageNet top-1
 - **Cost**: ~$5–10 of the $160 AWS credit (g6.xlarge spot, ~$0.30/hr × 2.5–5h per run)
 - **Runtime**: ~16–24 GPU-hours total, sequential (4-vCPU quota = one g6.xlarge at a time)
 - **Output per run**: post-FT top-1, dense GMACs, eligible GMACs, sparse-exec GMACs, MAC reduction %, per-layer sparsity table, S3 checkpoints + manifest

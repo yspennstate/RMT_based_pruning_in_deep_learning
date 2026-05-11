@@ -5,16 +5,16 @@ The CAST-2E experimental pipeline produces post-fine-tuning checkpoints that are
 and the total exceeds GitHub's per-repo limits. Instead, they are mirrored to
 Google Drive (matching the Hybrid Magnitude–SER 17-model archive at
 <https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd>) for
-reviewer verifiability.
+external auditability.
 
 ## Local staging (ready for upload)
 
 The local archive at `~/Downloads/cast_2e_resnet_review/checkpoints_for_drive/`
-contains symbolic links to every paper-headline post-FT checkpoint. Sizes given
+contains symbolic links to every paper-result post-FT checkpoint. Sizes given
 are the dereferenced sizes (links resolve to the actual .pt files in
 `~/Downloads/cast_2e_resnet_review/github_archive/`).
 
-| Subdirectory | Contents | Approximate size | Paper headline number |
+| Subdirectory | Contents | Approximate size | Paper result number |
 |---|---|---|---|
 | `vitl_canonical/` | ViT-L 2:4 + ToMe-r=8 epochs 1–3 + final + pre-FT + teacher dense | ~16 GB | 84.37% (Tab. param_to_flop_followup) |
 | `resnet50.tv_in1k_8_16/` | ResNet50 8:16 cert+perm epochs 1–3 + final | 392 MB | 75.87% (NEW) |
@@ -27,7 +27,7 @@ are the dereferenced sizes (links resolve to the actual .pt files in
 | `convnextv2_d816/` | ConvNeXtV2 8:16 dense+perm (post-FT) | ~339 MB | 85.85% |
 
 **Total staging size: ~20 GB.** Each entry has its `final_eval.json`
-(or `results.json`) packaged alongside so reviewers can match a checkpoint to
+(or `results.json`) packaged alongside so readers can match a checkpoint to
 its evaluation metric without re-running.
 
 ## Pending runs
@@ -54,7 +54,7 @@ The README of each subdirectory contains the post-FT top-1, the cert
 configuration, the FT hyperparameters, the train/eval epoch records, and the
 exact `git rev-parse HEAD` of the producing run. Together with the
 corresponding `cast_2e/code/run_*_ft_inline.py` script, a subdirectory
-provides the artifacts needed to reproduce a single paper-headline number.
+provides the artifacts needed to reproduce a single paper-result number.
 
 ## Provenance audit
 

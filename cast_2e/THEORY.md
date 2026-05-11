@@ -91,7 +91,7 @@ or limitations on the interpretation of the experiments.
 These limitations constrain how the ResNet experiments should be interpreted;
 they do not expand or weaken the claim boundary stated above.
 
-## Reproducibility checklist
+## Run manifest requirements
 
 - [ ] `git_commit` SHA in every `manifest.yaml`
 - [ ] `engine_version` in every manifest

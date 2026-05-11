@@ -587,7 +587,7 @@ def main():
         "dense_teacher_top1": dense_teacher_top1,   # what the dense pretrained timm model scores
         "ser_source_top1":    ser_source_top1,      # what the SER s=0.35 ckpt scores BEFORE projection
         "pre_ft_top1":        pre_top1,             # post-projection, pre-FT
-        "post_ft_top1":       post_top1,            # post-projection, post-FT  (the headline number)
+        "post_ft_top1":       post_top1,            # post-projection, post-FT  (the number)
         "delta_vs_dense":     post_top1 - dense_teacher_top1,
         "delta_vs_ser":       post_top1 - ser_source_top1,
         "delta_vs_pre_ft":    post_top1 - pre_top1,

@@ -8,10 +8,10 @@ Distribution"*.
 
 | Paper | PDF | TeX source |
 |---|---|---|
-| **Main manuscript** (theory + headline results, 61 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
+| **Main manuscript** (theory + result results, 61 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
 | **Methodology companion** (full methodology + extended numerics + migrated appendices, 54 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
 
-The main manuscript contains all theoretical statements, proofs, and headline
+The main manuscript contains all theoretical statements, proofs, and result
 empirical results (Table 2, the new FLOP table, the theory↔numerics map). The
 methodology paper contains everything operational: the full RMT protocol stack
 (BEMA, SEB, SER, Hybrid Magnitude–SER), the CAST-2E pipeline (cert-aware $k{:}n$
@@ -27,7 +27,7 @@ The repository contains every method evaluated in either paper:
 - **Classical RMT pruning** — Marchenko–Pastur (MP) edge fitting + sub-edge bulk denoising (negative control).
 - **Spectral Edge Budgeting (SEB / S+)** — no-fine-tuning, layerwise magnitude budget allocated by the fitted MP edge \(\sigma_+(\ell)\) and Hill exponent \(\alpha_\ell\).
 - **Spectral Edge Reallocation (SER)** — main RMT prune-restore method: prune beyond the target, form a reservoir, reinsert an RMT-ranked budget, run a short frozen-mask fine-tuning phase.
-- **Hybrid Magnitude–SER** — exact global magnitude pruning through \(s = 0.20\), then SER for \(s \ge 0.25\). This is the headline protocol of Tables 1 and 2 in the paper.
+- **Hybrid Magnitude–SER** — exact global magnitude pruning through \(s = 0.20\), then SER for \(s \ge 0.25\). This is the protocol of Tables 1 and 2 in the paper.
 - **Drop-threshold variant** — stage-1 magnitude continues until post–FT top-1 drops by more than 0.7 percentage points, then stage-2 (SER) begins. Two flavors:
   - **From-scratch**: stage-1 starts from the dense model.
   - **Seeded**: stage-1 starts from the canonical \(s=0.20\) checkpoint and continues magnitude past it.
@@ -38,9 +38,9 @@ Code currently used to produce the validated checkpoints in the paper is preserv
 
 ## Relationship to the prior repository
 
-A predecessor of this code is the public repo **[yspennstate/RMT_pruning_ViT](https://github.com/yspennstate/RMT_pruning_ViT)**, which implements the Marchenko–Pastur–based ViT-Base pruning algorithm of Berlyand, Bourdais, Owhadi & Shmalo (2022). The current repository is a strict superset of that code:
+A predecessor of this code is the public repo **[yspennstate/RMT_pruning_ViT](https://github.com/yspennstate/RMT_pruning_ViT)**, which implements the Marchenko–Pastur–based ViT-Base pruning algorithm of Berlyand, Bourdais, Owhadi & Shmalo (2025) (Pruning Deep Neural Networks via a Combination of the Marchenko–Pastur Distribution and Regularization; ResearchGate publication 389484743). The current repository is a strict superset of that code:
 
-1. **Inherited modules.** `src/RMT.py`, `src/SplittableLayers.py`, `src/training.py`, `src/utils.py` are byte-identical with the prior repo. `src/pruning.py` and `src/validation.py` are extended with reservoir / reinsert primitives and a multi-resolution validation path (no behavioural change to the original primitives). The two top-level entry scripts `prune.py` and `fine_tune.py` are also identical with the prior repo, so the headline ViT-Base figure of Berlyand et al. reproduces exactly.
+1. **Inherited modules.** `src/RMT.py`, `src/SplittableLayers.py`, `src/training.py`, `src/utils.py` are byte-identical with the prior repo. `src/pruning.py` and `src/validation.py` are extended with reservoir / reinsert primitives and a multi-resolution validation path (no behavioural change to the original primitives). The two top-level entry scripts `prune.py` and `fine_tune.py` are also identical with the prior repo, so the ViT-Base figure of Berlyand et al. reproduces exactly.
 2. **What is new.** The protocols studied in the current paper — SER, Hybrid Magnitude–SER, drop-threshold variant (from-scratch and seeded), Spectral Edge Budgeting / S+ with a Haar bulk model, the multi-architecture queue runners, and the layer-aware adaptive RMT controller in `adaptive_rmt/` — are all new. They sit on top of the inherited library; they do not replace any of it.
 3. **What changed in the inherited code.** Hardcoded paths and the prior repo’s baked-in HuggingFace token have been removed and replaced by environment variables (`HF_TOKEN`, `RMT_OPTUNA_RUN`, `RMT_CACHE`). No algorithmic changes.
 
@@ -142,7 +142,7 @@ The `adaptive_rmt/` package implements layer-aware RMT budget allocation used by
 
 `src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code, which lives in a separate public repository: **https://github.com/yspennstate/RMT_pruning_ViT** (this repo). The two repositories are deliberately layered:
 
-- The prior repo is the **single-architecture (ViT-Base) implementation** of the original Marchenko–Pastur–based pruning algorithm (Algorithm 3 of the prior paper). It is small, focused, and intended for someone who wants to reproduce the headline ViT-Base figure in 1–2 commands.
+- The prior repo is the **single-architecture (ViT-Base) implementation** of the original Marchenko–Pastur–based pruning algorithm (Algorithm 3 of the prior paper). It is small, focused, and intended for someone who wants to reproduce the ViT-Base figure in 1–2 commands.
 - The current repo is the **multi-architecture / multi-protocol successor.** It re-uses the prior repo’s Marchenko–Pastur, splittable-layer, and validation infrastructure unchanged, and builds the new protocols (SER, Hybrid Magnitude–SER, drop-threshold variant, SEB / S+) on top of that foundation.
 
 The six modules in `src/` are used as a library by every new method:
@@ -172,7 +172,7 @@ The six modules in `src/` are used as a library by every new method:
 
 ---
 
-## Quick start (single architecture, headline method)
+## Quick start (single architecture, result method)
 
 ```bash
 # 1. Install
@@ -188,7 +188,7 @@ export RMT_OPTUNA_RUN=$(pwd)/optuna_run     # results go here
 # 4. Pre-compute the per-layer RMT cache for ViT-B/16
 python build_model_rmt_cache.py --timm-checkpoint vit_base_patch16_224.augreg2_in21k_ft_in1k
 
-# 5. Run the headline Hybrid Magnitude–SER protocol
+# 5. Run the Hybrid Magnitude–SER protocol
 python hybrid_mag20_then_v8_model.py \
     --timm-checkpoint vit_base_patch16_224.augreg2_in21k_ft_in1k \
     --target-sparsities 0.05 0.10 0.15 0.20 0.25 0.30 0.35 0.40 0.45 0.50 0.55 0.60 0.65 0.70 \
@@ -244,7 +244,7 @@ A complete s=0.05 → 0.70 schedule (14 cycles, including stage-1 magnitude pref
 ├── adaptive_rmt/               — adaptive RMT package (layer-aware budget)
 ├── src/                    — RMT/pruning utilities (re-used from prior repo)
 ├── model_queue_runs/           — per-queue watchdog configs
-├── hybrid_mag20_then_v8*.py    — Hybrid Magnitude–SER (headline)
+├── hybrid_mag20_then_v8*.py    — Hybrid Magnitude–SER (result)
 ├── hybrid_mag_until_drop*.py   — Drop-threshold variant
 ├── magnitude_rmt_sweep.py      — Classical magnitude baseline sweep
 ├── prune.py                    — Classical RMT (cycle implementation)
@@ -288,11 +288,11 @@ Report any leaked secret in the repository history immediately. The maintainers 
 
 All checkpoints and per-run evidence files supporting the empirical claims in the paper are released via a public Google Drive folder:
 
-**Google Drive folder:** [https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd]
+**Google Drive folder:** <https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd>
 
 The bundle includes:
 - The 17 Hybrid Magnitude–SER sparsification checkpoints for the multi-architecture sweep (Table 11 of the paper) — per-architecture grids over $s\in[0.05, 0.70]$, ~230 post-FT `.pt` files, ~69 GB. SHA-256 of the source zip: `e965bbf7834a3d2cf9c16e7cd878aeaa7588c66d281f53ffd9de898e8e96eef1`.
-- FLOP-model post-FT checkpoints and `final_eval.json` logs for every CAST headline row (ViT-L 8:16 dense+perm 85.33%, ViT-B 6:12 SER+α=0.5 83.74%, ResNet50/50d/101d 8:16 dense+perm 75.87/78.57/80.92%) — ~6.7 GB.
+- FLOP-model post-FT checkpoints and `final_eval.json` logs for every CAST row in Table 5 (ViT-L 8:16 dense+perm 85.33%, ViT-B 6:12 SER+α=0.5 83.74%, ResNet50/50d/101d 8:16 dense+perm 75.87/78.57/80.92%) — ~6.7 GB.
 - SER source checkpoints at $s\!=\!0.35$ (ViT-B, ViT-L, ConvNeXt-Base, ResNet50/50d/101d/152d).
 - 282-cell certificate-audit results CSV/JSON (the three bridges of Section 3 of the paper).
 - Mask-statistics JSON snapshots and per-run training logs.

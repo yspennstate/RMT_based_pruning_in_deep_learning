@@ -15,7 +15,7 @@ the local archive.
 
 ---
 
-## Paper-headline checkpoints (must preserve)
+## Paper-result checkpoints (must preserve)
 
 | Result | Where | Status |
 |---|---|---|
@@ -101,9 +101,9 @@ Each JSON contains per-cell: pre_ft_top1, layers_modified, projection_time, eval
 ## Risks (data preservation)
 
 Pod-local state is not durable. Critical preservation items:
-1. **Pod 2 ViT-L canonical (16 GB)** — paper-headline result. JSONs are local; the 1.5 GB post-FT checkpoint remains only on Pod 2. Action: copy to S3 or local storage.
-2. **Pod 2 ConvNeXtV2 canonical** (in flight) — paper-headline result. Action: pull post-FT checkpoint and results.json after ep3 finishes.
-3. **Pod 1 4-ResNet FT chain ckpts** (~3 GB epoch3 ckpts) — paper-headline. JSONs are local; checkpoints remain only on Pod 1 disk.
+1. **Pod 2 ViT-L canonical (16 GB)** — paper-result result. JSONs are local; the 1.5 GB post-FT checkpoint remains only on Pod 2. Action: copy to S3 or local storage.
+2. **Pod 2 ConvNeXtV2 canonical** (in flight) — paper-result result. Action: pull post-FT checkpoint and results.json after ep3 finishes.
+3. **Pod 1 4-ResNet FT chain ckpts** (~3 GB epoch3 ckpts) — paper-result. JSONs are local; checkpoints remain only on Pod 1 disk.
 4. **Pod 3a sweep mask snapshots** — action: pull after the sweep completes.
 
 The local archive contains all small artifacts (JSONs, mask stats, code, and paper sources/builds), but not the large checkpoints (about 30 GB across the 3 pods). It supports manuscript rebuilds and result inspection from saved summaries. The post-FT checkpoints should be published separately, for example on HuggingFace Hub, for full external reproduction.

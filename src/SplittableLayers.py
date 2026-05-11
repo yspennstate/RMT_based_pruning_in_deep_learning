@@ -90,7 +90,7 @@ class Splittable(nn.Module):
         Splus = math.sqrt(V.shape[1] * lamda_plus)
         LinfError = error(eigenvals, self.alpha, p, gamma, sigma_sq)
         goodFit = LinfError < self.goodnessOfFitCutoff
-        if True:  # save_plot is not None:
+        if save_plot is not None:
             fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
             Z = eigenvals[eigenvals < lamda_plus]
             Y = MP_Density_Wrapper(gamma, sigma_sq, Z)

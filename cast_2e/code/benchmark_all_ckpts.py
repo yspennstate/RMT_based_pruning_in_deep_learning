@@ -189,10 +189,11 @@ def main():
             out["cells"].append(cell_record)
             Path(args.output).parent.mkdir(parents=True, exist_ok=True)
             Path(args.output).write_text(json.dumps(out, indent=2))
+            thru_24_str = f"{thru_24['images_per_s']:.1f}" if thru_24 else "NA"
             print(f"  pre_ft={cell_pre_ft:.4f}  k:n={k}:{n}  src={source}  "
                   f"sparsity_eligible={theoretical_flop_reduction:.4f}  "
                   f"dense-kernel={thru_dense['images_per_s']:.1f} im/s  "
-                  f"2:4-kernel={thru_24['images_per_s']:.1f if thru_24 else 'NA'} im/s")
+                  f"2:4-kernel={thru_24_str} im/s")
         except Exception as e:
             print(f"  FAILED: {e}")
             out["cells"].append({"label": label, "error": str(e)})

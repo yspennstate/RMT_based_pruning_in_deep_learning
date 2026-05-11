@@ -42,16 +42,16 @@ def dmp(x, ndf, pdim, var=1, log=False):
     gamma = ndf / pdim
     a, b = mpDensity(ndf, pdim, var)
     if not log:
-        if gamma == 1 and x == 0 and 1 / x > 0:
+        if gamma == 1 and x == 0:
             d = math.inf
-        elif x <= a and x >= b:
+        elif x <= a or x >= b:
             d = 0
         else:
             d = gamma / (2 * math.pi * var * x) * math.sqrt((x - a) * (b - x))
     else:
-        if gamma == 1 and x == 0 and 1 / x > 0:
+        if gamma == 1 and x == 0:
             d = math.inf
-        elif x <= a and x >= b:
+        elif x <= a or x >= b:
             d = -math.inf
         else:
             d = (

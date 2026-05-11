@@ -1,6 +1,6 @@
-# Headline result artifact manifest
+# Result result artifact manifest
 
-Each row of the four headline tables in the main paper is backed by the
+Each row of the four result tables in the main paper is backed by the
 JSON evidence listed below and, for post-FT rows, by the corresponding
 `.pt` checkpoint.
 
@@ -41,7 +41,7 @@ contains the consolidated ledger. Spot-check sources:
 - Hiera-Base+: `optuna_run/randomness_audit_results_model_queue/queue_h/full_run_2026_04_27_hiera_base_plus_224.mae_in1k_ft_in1k_hybrid_mag20_v8/results.json`
 - ConvNeXtV2-B: `optuna_run/randomness_audit_results_model_queue/queue_f/full_run_2026_04_26_convnextv2_base.fcmae_ft_in22k_in1k_hybrid_mag20_v8/results.json`
 
-## Main paper Table 4 (`tab:headline_comparison`) — comparison vs prior work
+## Main paper Table 4 (`tab:result_comparison`) — comparison vs prior work
 
 Cited rows are from each cited paper's primary table:
 
@@ -60,7 +60,7 @@ ViT-B/16 ImageNet numbers.
 
 ## Reproducibility
 
-For a headline row, main paper Table 5 (`tab:reproduce_recipe`) and the
+For a row, main paper Table 5 (`tab:reproduce_recipe`) and the
 corresponding script in `cast_2e/code/` provide the reproduction recipe.
 The full 30 GB of post-FT checkpoints is slated for HuggingFace Hub after
 finalization; the current copies are on the three RunPod A100 pods and in

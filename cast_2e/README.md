@@ -26,14 +26,14 @@ main manuscript.
 | [`project_kn_sampled.py`](code/project_kn_sampled.py) | Sampled $k{:}n$ projection variant for large $n$ (e.g. 16:32) where enumerating all $\binom{n}{k}$ patterns is prohibitive. Draws ≤1024 candidates uniformly without replacement. | §3 |
 | [`project_cert_advanced.py`](code/project_cert_advanced.py) | Mixed-sparsity, iterative refinement, and robust-ℓ∞ variants of the cert framework. | §3 |
 | [`project_conv_2_4.py`](code/project_conv_2_4.py) | Original 2:4-only Conv2d cert framework (predecessor to `project_kn_sparsity.py`). | §9 |
-| [`project_convnextv2_d1216.py`](code/project_convnextv2_d1216.py) | Standalone wrapper for ConvNeXtV2 12:16 dense-source projection (the 86.35% headline). Linear-only pipeline (depthwise convs excluded). | §3 |
+| [`project_convnextv2_d1216.py`](code/project_convnextv2_d1216.py) | Standalone wrapper for ConvNeXtV2 12:16 dense-source projection (the 86.35% result). Linear-only pipeline (depthwise convs excluded). | §3 |
 | [`quick_prune_vitb224.py`](code/quick_prune_vitb224.py) | Quick magnitude-based ViT-B/16 pruning validation utility. | §3 |
 
 ### Fine-tuning runners: inline projection + 3-epoch distillation
 
 | File | Role | Methodology paper § |
 |---|---|---|
-| [`run_vitb_ft_inline.py`](code/run_vitb_ft_inline.py) | ViT inline FT runner (used for the **83.74%** ViT-B headline + ViT-L 8:16). AdamW, cosine LR with warmup, label smoothing, distillation alpha=0.5 T=2.0, mask-freeze re-zero every step. | §4 |
+| [`run_vitb_ft_inline.py`](code/run_vitb_ft_inline.py) | ViT inline FT runner (used for the **83.74%** ViT-B result + ViT-L 8:16). AdamW, cosine LR with warmup, label smoothing, distillation alpha=0.5 T=2.0, mask-freeze re-zero every step. | §4 |
 | [`run_resnet_ft_inline.py`](code/run_resnet_ft_inline.py) | ResNet inline FT runner (used for the 4-ResNet 8:16 chain producing **75.67% / 78.00% / 80.59% / 81.33%**). SGD+momentum, otherwise same recipe as ViT. | §4 |
 | [`run_vitb_ft_from_ckpt.py`](code/run_vitb_ft_from_ckpt.py) | Older save-load FT runner kept for reference; **deprecated** because of the perm-hook serialisation bug (top-1 drops to 0.0006 on reload). Do not use with `permute_align=True`. | §3.5 |
 | [`run_resnet_cast_aws.py`](code/run_resnet_cast_aws.py) | AWS-side ResNet CAST runner (used during the AWS spot-instance pilot before we standardised on RunPod A100). | scripts |
@@ -45,7 +45,7 @@ main manuscript.
 | [`benchmark_sparse_throughput.py`](code/benchmark_sparse_throughput.py) | Single-checkpoint A100/L4 throughput measurement. Converts each Linear with a 2:4 mask into `torch.sparse.SparseSemiStructuredTensor` and reports median throughput over 100 iterations after 30 warm-up. | §5 |
 | [`benchmark_6_12_to_2_4_projection.py`](code/benchmark_6_12_to_2_4_projection.py) | 6:12 → 2:4 deployable-speedup projection benchmark. Maps each 4-sub-block of a 12-tuple to its nearest 2:4 pattern. | §5 |
 | [`benchmark_all_ckpts.py`](code/benchmark_all_ckpts.py) | Directory-scan throughput benchmark: runs `benchmark_sparse_throughput.py` over every `*.pt` in a directory. | §5 |
-| [`mac_counter.py`](code/mac_counter.py) | Theoretical MAC counter for sparse Linear/Conv layers; used to compute the headline FLOP-reduction percentages in the FLOP table. | §5 |
+| [`mac_counter.py`](code/mac_counter.py) | Theoretical MAC counter for sparse Linear/Conv layers; used to compute the FLOP-reduction percentages in the FLOP table. | §5 |
 
 ### Cell-sweep evaluators
 
@@ -77,7 +77,7 @@ separate files for reproducibility):
 
 | File | Role |
 |---|---|
-| `pod1_best_2hr_chain.sh` | Pod 1 best-method 2-hour chain for the four headline runs. |
+| `pod1_best_2hr_chain.sh` | Pod 1 best-method 2-hour chain for the four result runs. |
 | `pod1_2_4_speedup_supplement.sh` | Pod 1 2:4 throughput supplement. |
 | `pod3_full_chain.sh`, `pod3_setup.sh` | Pod 3 (deprecated by Pod 3a). |
 | `pod3a_comprehensive.sh` | Pod 3a comprehensive sweep (all 3 archs × 6 patterns × dense/SER × α_ser × seed). |
@@ -95,13 +95,13 @@ separate files for reproducibility):
 | [`benchmarks_speedup/`](benchmarks_speedup/) | 6:12 → 2:4 projection-speedup measurements, 5 files |
 | [`sweep_results/`](sweep_results/) | k:n cell-sweep result JSONs (Pod 3a), 12+ files |
 | [`sweep_results_initial/`](sweep_results_initial/) | First-round sweep JSONs (Pod 1, Pod 2), 18 files |
-| [`post_ft_eval/`](post_ft_eval/) | Post-FT final-eval JSONs for the four headline ResNet runs |
+| [`post_ft_eval/`](post_ft_eval/) | Post-FT final-eval JSONs for the four result ResNet runs |
 | [`masks/`](masks/), [`masks_archive/`](masks_archive/) | Per-layer mask statistics from the cell sweeps |
 
 ## Pointers from the main paper
 
 The main paper's appendices B, E, F, G have been migrated here verbatim to
-keep the main manuscript focused on theory and headline results:
+keep the main manuscript focused on theory and result results:
 
 | Main-paper appendix | Methodology-paper section |
 |---|---|
