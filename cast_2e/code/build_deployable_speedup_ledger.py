@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Build a table-ready deployability ledger for the paper checkpoints.
 
-This is a read-only audit. It joins the checkpoint tensor audit with archived
+This audit preserves checkpoint weights. It joins the checkpoint tensor audit with archived
 throughput logs and paper-row metadata. It does not rewrite checkpoints.
 """
 

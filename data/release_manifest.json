@@ -6,6 +6,7 @@
     {
       "name": "17-model Hybrid Magnitude-SER sparsification checkpoints",
       "zip_filename": "rmt_pruning_paper_17_model_checkpoints_20260502.zip",
+      "drive_zip_filename_observed_2026_05_12": "rmt_pruning_sparsification_17_model_checkpoints_20260502.zip",
       "size_bytes": 68935892958,
       "supports_paper_rows": "Main paper tab:multi_arch_hybrid and methodology checkpoint ledger for the 17-architecture Hybrid Mag-SER sweep, sparsity grid 0.05-0.70",
       "checksum_status": "Local release copy size recorded on 2026-05-11; SHA-256 not recomputed after mirroring."
@@ -16,6 +17,15 @@
       "size_bytes": 6677716082,
       "zip_root": "cast_results_2026_05_10/",
       "supports_paper_rows": "Main paper tab:param_to_flop_followup CAST rows listed in row_to_evidence; checkpoint availability is recorded in row_to_checkpoint_status."
+    },
+    {
+      "name": "FLOP-model missing-checkpoint supplement",
+      "zip_filename": "rmt_paper_flop_missing_checkpoint_supplement_20260512.zip",
+      "size_bytes": 4300989937,
+      "sha256": "2721a063dfc4d40c13957c6afde22fd6b8071c4c8c0e6e440b6399985669102c",
+      "local_path": "C:\\Users\\owner\\Downloads\\rmt_paper_flop_missing_checkpoint_supplement_20260512.zip",
+      "upload_status": "Created locally after auditing the Drive FLOP bundle; upload to the Drive folder is recommended.",
+      "supports_paper_rows": "Valid local final checkpoints for canonical native-2:4 ViT-B/ViT-L/DeiT/ConvNeXtV2 rows, valid final ResNet 2:4 epoch-3 checkpoints, ConvNeXtV2 8:16/12:16 accuracy checkpoints, and deployability audit metadata."
     }
   ],
   "row_to_evidence": {

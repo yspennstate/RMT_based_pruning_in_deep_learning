@@ -33,11 +33,11 @@
     "row_id": "deits_cast_24_tome",
     "endpoint": "linear_native_2_4_best_a40",
     "batch": "128",
-    "dense_ips": "2708.55353568278",
-    "sparse_ips": "3715.5642310733615",
-    "speedup_x": "1.371789105189952",
-    "speedup_vs_bf16_x": "0.9949064183513777",
-    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_full_a40_b128_with_dense_bf16.json"
+    "dense_ips": "2708.4664113806753",
+    "sparse_ips": "3725.844904180984",
+    "speedup_x": "1.375628986398132",
+    "speedup_vs_bf16_x": "",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\deployable_backend_summary_a40_20260512.csv"
   },
   {
     "row_id": "deitt_cast_24_tome",

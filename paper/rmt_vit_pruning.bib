@@ -1,9 +1,10 @@
-@article{LBD,
-  title   = {Handwritten Digit Recognition with a Back-Propagation Network},
-  author  = {LeCun, Yann and Boser, Bernhard and Denker, John S. and Henderson, Donnie and Howard, Richard E. and Hubbard, Wayne and Jackel, Lawrence D.},
-  journal = {Advances in Neural Information Processing Systems},
-  volume  = {2},
-  year    = {1989}
+@inproceedings{LBD,
+  title     = {Handwritten Digit Recognition with a Back-Propagation Network},
+  author    = {LeCun, Yann and Boser, Bernhard E. and Denker, John S. and Henderson, Donnie and Howard, R. E. and Hubbard, Wayne E. and Jackel, Lawrence D.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {2},
+  year      = {1989},
+  url       = {https://papers.nips.cc/paper_files/paper/1989/hash/53c3bce66e43be4f209556518c2fcb54-Abstract.html}
 }
 
 @article{krizhevsky2017imagenet,
@@ -26,12 +27,13 @@
   year    = {2012}
 }
 
-@article{sutskever2014sequence,
-  title   = {Sequence to Sequence Learning with Neural Networks},
-  author  = {Sutskever, Ilya and Vinyals, Oriol and Le, Quoc V.},
-  journal = {Advances in Neural Information Processing Systems},
-  volume  = {27},
-  year    = {2014}
+@inproceedings{sutskever2014sequence,
+  title     = {Sequence to Sequence Learning with Neural Networks},
+  author    = {Sutskever, Ilya and Vinyals, Oriol and Le, Quoc V.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {27},
+  pages     = {3104--3112},
+  year      = {2014}
 }
 
 @article{srivastava2014dropout,
@@ -53,11 +55,22 @@
   year      = {2012}
 }
 
-@article{Park2023,
-  title   = {Minimum Norm Interpolation by Perceptra: Explicit Regularization and Implicit Bias},
-  author  = {Park, Jiyoung and Pelakh, Ian and Wojtowytsch, Stephan},
-  journal = {Advances in Neural Information Processing Systems},
-  year    = {2023}
+@inproceedings{krogh1991simple,
+  title     = {A Simple Weight Decay Can Improve Generalization},
+  author    = {Krogh, Anders and Hertz, John A.},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {4},
+  pages     = {950--957},
+  year      = {1991},
+  url       = {https://papers.nips.cc/paper/1991/hash/8eefcfdf5990e441f0fb6f3fad709e21-Abstract.html}
+}
+
+@inproceedings{Park2023,
+  title     = {Minimum Norm Interpolation by Perceptra: Explicit Regularization and Implicit Bias},
+  author    = {Park, Jiyoung and Pelakh, Ian and Wojtowytsch, Stephan},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {36},
+  year      = {2023}
 }
 
 @article{vadera2022methods,
@@ -240,10 +253,11 @@
   title   = {Estimation of the Number of Spiked Eigenvalues in a Covariance Matrix by Bulk Eigenvalue Matching Analysis},
   author  = {Ke, Zheng Tracy and Ma, Yucong and Lin, Xihong},
   journal = {Journal of the American Statistical Association},
-  volume  = {117},
-  number  = {538},
-  pages   = {962--974},
-  year    = {2022}
+  volume  = {118},
+  number  = {541},
+  pages   = {374--392},
+  year    = {2023},
+  doi     = {10.1080/01621459.2021.1933497}
 }
 
 @inproceedings{rao2021dynamicvit,
@@ -271,11 +285,12 @@
 
 @inproceedings{kong2022spvit,
   title     = {SPViT: Enabling Faster Vision Transformers via Latency-Aware Soft Token Pruning},
-  author    = {Kong, Zhenglun and Dong, Peiyan and Ma, Xiaolong and Meng, Xin and Sun, Mengshu and Niu, Wei and Shen, Xuan and Yuan, Geng and Ren, Bin and Qin, Minghai and Tang, Hao and Wang, Yanzhi},
+  author    = {Kong, Zhenglun and Dong, Peiyan and Ma, Xiaolong and Meng, Xin and Niu, Wei and Sun, Mengshu and Shen, Xuan and Yuan, Geng and Ren, Bin and Tang, Hao and Qin, Minghai and Wang, Yanzhi},
   booktitle = {Computer Vision -- ECCV 2022},
   pages     = {620--640},
   year      = {2022},
-  publisher = {Springer}
+  publisher = {Springer},
+  doi       = {10.1007/978-3-031-20083-0_37}
 }
 
 @inproceedings{zheng2022savit,
@@ -334,18 +349,22 @@
 }
 
 @article{zhu2021visual,
-  title   = {Visual Transformer Pruning},
-  author  = {Zhu, Mingjian and Han, Kai and Tang, Yehui and Wang, Yunhe},
+  title   = {Vision Transformer Pruning},
+  author  = {Zhu, Mingjian and Tang, Yehui and Han, Kai},
   journal = {arXiv preprint arXiv:2104.08500},
-  year    = {2021}
+  year    = {2021},
+  note    = {Accepted by the KDD 2021 Workshop on Model Mining}
 }
 
 @inproceedings{goyal2020powerbert,
-  title     = {PoWER-BERT: Accelerating {BERT} Inference via Progressive Word-Vector Elimination},
-  author    = {Goyal, Saurabh and Roy Choudhury, Anamitra and Raje, Saurabh and Chakaravarthy, Venkatesan and Sabharwal, Yogish and Verma, Ashish},
-  booktitle = {International Conference on Machine Learning},
+  title     = {{PoWER}-{BERT}: Accelerating {BERT} Inference via Progressive Word-vector Elimination},
+  author    = {Goyal, Saurabh and Choudhury, Anamitra Roy and Raje, Saurabh and Chakaravarthy, Venkatesan and Sabharwal, Yogish and Verma, Ashish},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning},
   pages     = {3690--3699},
-  year      = {2020}
+  year      = {2020},
+  volume    = {119},
+  series    = {Proceedings of Machine Learning Research},
+  publisher = {PMLR}
 }
 
 @inproceedings{pan2021scalable,
@@ -471,11 +490,13 @@
   year    = {2023}
 }
 
-@article{lu2024alphapruning,
-  title   = {{AlphaPruning}: Using Heavy-Tailed Self Regularization Theory for Improved Layer-Wise Pruning of Large Language Models},
-  author  = {Lu, Haiquan and Zhou, Yefan and Liu, Shiwei and Wang, Zhangyang and Mahoney, Michael W. and Yang, Yaoqing},
-  journal = {Advances in Neural Information Processing Systems},
-  year    = {2024}
+@inproceedings{lu2024alphapruning,
+  title     = {{AlphaPruning}: Using Heavy-Tailed Self Regularization Theory for Improved Layer-wise Pruning of Large Language Models},
+  author    = {Lu, Haiquan and Zhou, Yefan and Liu, Shiwei and Wang, Zhangyang and Mahoney, Michael W. and Yang, Yaoqing},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  year      = {2024},
+  doi       = {10.52202/079017-0289}
 }
 
 @inproceedings{xue2013restructuring,
@@ -508,8 +529,9 @@
   title     = {Learning Low-Rank Deep Neural Networks via Singular Vector Orthogonality Regularization and Singular Value Sparsification},
   author    = {Yang, Huanrui and Tang, Minxue and Wen, Wei and Yan, Feng and Hu, Daniel and Li, Ang and Li, Hai and Chen, Yiran},
   booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops},
-  pages     = {678--679},
-  year      = {2020}
+  pages     = {2899--2908},
+  year      = {2020},
+  doi       = {10.1109/CVPRW50498.2020.00347}
 }
 
 @inproceedings{dauphin2014identifying,
@@ -592,6 +614,47 @@
   year      = {2022}
 }
 
+@inproceedings{he2018softfilter,
+  title     = {Soft Filter Pruning for Accelerating Deep Convolutional Neural Networks},
+  author    = {He, Yang and Kang, Guoliang and Dong, Xuanyi and Fu, Yanwei and Yang, Yi},
+  booktitle = {Proceedings of the Twenty-Seventh International Joint Conference on Artificial Intelligence},
+  pages     = {2234--2240},
+  year      = {2018},
+  doi       = {10.24963/ijcai.2018/309}
+}
+
+@inproceedings{he2019fpgm,
+  title     = {Filter Pruning via Geometric Median for Deep Convolutional Neural Networks Acceleration},
+  author    = {He, Yang and Liu, Ping and Wang, Ziwei and Hu, Zhilan and Yang, Yi},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {4340--4349},
+  year      = {2019}
+}
+
+@inproceedings{lin2020hrank,
+  title     = {{HRank}: Filter Pruning using High-Rank Feature Map},
+  author    = {Lin, Mingbao and Ji, Rongrong and Wang, Yan and Zhang, Yichen and Zhang, Baochang and Tian, Yonghong and Shao, Ling},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {1529--1538},
+  year      = {2020}
+}
+
+@inproceedings{ding2021resrep,
+  title     = {{ResRep}: Lossless {CNN} Pruning via Decoupling Remembering and Forgetting},
+  author    = {Ding, Xiaohan and Hao, Tianxiang and Tan, Jianchao and Liu, Ji and Han, Jungong and Guo, Yuchen and Ding, Guiguang},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  pages     = {4510--4520},
+  year      = {2021}
+}
+
+@inproceedings{fang2023depgraph,
+  title     = {{DepGraph}: Towards Any Structural Pruning},
+  author    = {Fang, Gongfan and Ma, Xinyin and Song, Mingli and Mi, Michael Bi and Wang, Xinchao},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {16091--16101},
+  year      = {2023}
+}
+
 @inproceedings{fang2024isomorphic,
   title     = {Isomorphic Pruning for Vision Models},
   author    = {Fang, Gongfan and Ma, Xinyin and Mi, Michael Bi and Wang, Xinchao},
@@ -607,11 +670,12 @@
   year={2023}
 }
 
-@article{sun2024wanda,
-  title={A simple and effective pruning approach for large language models},
-  author={Sun, Mingjie and Liu, Zhuang and Bair, Anna and Kolter, J. Zico},
-  journal={ICLR},
-  year={2024}
+@inproceedings{sun2024wanda,
+  title     = {A Simple and Effective Pruning Approach for Large Language Models},
+  author    = {Sun, Mingjie and Liu, Zhuang and Bair, Anna and Kolter, J. Zico},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=PxoFut3dWW}
 }
 
 @inproceedings{woo2023convnextv2,
@@ -621,55 +685,74 @@
   year={2023}
 }
 
-@misc{hassani2024resnetstrikesback,
-  title={{ResNet} strikes back: An improved training procedure in {timm}},
-  author={Wightman, Ross and Touvron, Hugo and J{\'e}gou, Herv{\'e}},
-  year={2021},
-  eprint={2110.00476}
+@article{wightman2021resnetstrikesback,
+  title         = {{ResNet} strikes back: An improved training procedure in {timm}},
+  author        = {Wightman, Ross and Touvron, Hugo and J{\'e}gou, Herv{\'e}},
+  journal       = {arXiv preprint arXiv:2110.00476},
+  year          = {2021},
+  eprint        = {2110.00476},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
 }
 
 @inproceedings{gpusq_vit2023,
-  title={Boost Vision Transformer with {GPU}-Friendly Sparsity and Quantization},
-  author={Yu, Chong and Chen, Tao and Gan, Zhongxue and Fan, Jiayuan},
-  booktitle={CVPR},
-  year={2023}
+  title     = {Boost Vision Transformer with {GPU}-Friendly Sparsity and Quantization},
+  author    = {Yu, Chong and Chen, Tao and Gan, Zhongxue and Fan, Jiayuan},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {22658--22668},
+  month     = {June},
+  year      = {2023},
+  doi       = {10.1109/CVPR52729.2023.02170}
 }
 
-@article{elsa2024,
-  title={{ELSA}: Exploiting Layer-wise {N:M} Sparsity for Vision Transformer Acceleration},
-  author={Huang, Ning-Chi and others},
-  journal={arXiv preprint arXiv:2409.09708},
-  year={2024},
-  note={CVPRW 2024}
+@inproceedings{elsa2024,
+  title     = {{ELSA}: Exploiting Layer-wise {N:M} Sparsity for Vision Transformer Acceleration},
+  author    = {Huang, Ning-Chi and Chang, Chi-Chih and Lin, Wei-Cheng and Taka, Endri and Marculescu, Diana and Wu, Kai-Chiang},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops},
+  pages     = {8006--8015},
+  month     = {June},
+  year      = {2024}
 }
 
-@article{lpvit2024,
-  title={{LPViT}: Low-Power Semi-Structured Pruning for Vision Transformers},
-  author={Xu, Kaixin and others},
-  journal={arXiv preprint arXiv:2407.02068},
-  year={2024},
-  note={ECCV 2024}
+@inproceedings{lpvit2024,
+  title     = {{LPViT}: Low-Power Semi-structured Pruning for Vision Transformers},
+  author    = {Xu, Kaixin and Wang, Zhe and Chen, Chunyun and Geng, Xue and Lin, Jie and Yang, Xulei and Wu, Min and Li, Xiaoli and Lin, Weisi},
+  booktitle = {Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages     = {269--287},
+  year      = {2024},
+  doi       = {10.1007/978-3-031-73209-6_16}
 }
 
-@article{beyond_24_2024,
-  title={Beyond {2:4}: Exploring {V:N:M} Sparsity for Hardware-Accelerated Inference},
-  author={Zhao, Kang and others},
-  journal={arXiv preprint arXiv:2410.16135},
-  year={2024}
+@misc{beyond_24_2024,
+  title         = {{Beyond 2:4}: Exploring {V:N:M} Sparsity for Efficient Transformer Inference on {GPUs}},
+  author        = {Zhao, Kang and Yuan, Tao and Bao, Han and Su, Zhenfeng and Gao, Chang and Sun, Zhaofeng and Liang, Zichen and Jing, Liping and Chen, Jianfei},
+  year          = {2024},
+  eprint        = {2410.16135},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2410.16135}
 }
 
 @inproceedings{sero2025,
-  title={{SERo}: Sparse Structure Exploration and Re-optimization for Vision Transformers},
-  author={An, Sangmin and others},
-  booktitle={UAI / PMLR},
-  year={2025}
+  title     = {Sparse Structure Exploration and Re-optimization for Vision Transformer},
+  author    = {An, Sangho and Kim, Jinwoo and Lee, Keonho and Huh, Jingang and Kwak, Chanwoong and Lee, Yujin and Jin, Moonsub and Kim, Jangho},
+  booktitle = {Proceedings of the Forty-first Conference on Uncertainty in Artificial Intelligence},
+  pages     = {111--131},
+  year      = {2025},
+  volume    = {286},
+  series    = {Proceedings of Machine Learning Research},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v286/an25a.html}
 }
 
 
-@article{berlyand2025marchenko_regularization,
-  title   = {Pruning Deep Neural Networks via a Combination of the Marchenko--Pastur Distribution and Regularization},
-  author  = {Berlyand, Leonid and Bourdais, Theo and Owhadi, Houman and Shmalo, Yitzchak},
-  year    = {2025},
-  note    = {ResearchGate publication 389484743; predecessor of the current manuscript},
-  url     = {https://www.researchgate.net/publication/389484743_Pruning_Deep_Neural_Networks_via_a_Combination_of_the_Marchenko-Pastur_Distribution_and_Regularization}
+@misc{berlyand2025marchenko_regularization,
+  title         = {Pruning Deep Neural Networks via a Combination of the Marchenko--Pastur Distribution and Regularization},
+  author        = {Berlyand, Leonid and Bourdais, Theo and Owhadi, Houman and Shmalo, Yitzchak},
+  year          = {2025},
+  eprint        = {2503.01922},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  doi           = {10.48550/arXiv.2503.01922},
+  url           = {https://arxiv.org/abs/2503.01922}
 }

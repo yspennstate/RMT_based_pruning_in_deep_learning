@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Benchmark exact deployable backends for paper checkpoints.
 
-This is a read-only audit. It loads the paper checkpoints, builds execution
+This audit preserves checkpoint weights. It loads the paper checkpoints, builds execution
 endpoints in memory, and writes benchmark JSON. It never rewrites a checkpoint.
 
 Two deployable paths are tested where the checkpoint structure permits it:

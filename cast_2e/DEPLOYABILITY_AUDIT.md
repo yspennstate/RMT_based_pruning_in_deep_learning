@@ -1,13 +1,13 @@
 # Deployability Audit
 
-This audit is read-only. It loads the paper checkpoints, checks whether their
+This audit preserves checkpoint weights. It loads the paper checkpoints, checks whether their
 zero pattern matches a real sparse backend, and joins the result with existing
 throughput logs. It does not re-project, fine-tune, or rewrite any checkpoint.
 
 ## Files
 
 - `cast_2e/code/audit_checkpoint_deployability.py`: tensor-pattern audit.
-- `cast_2e/code/benchmark_deployable_backends.py`: read-only runtime audit of
+- `cast_2e/code/benchmark_deployable_backends.py`: runtime audit of
   exact checkpoint endpoints on A40/A100.
 - `cast_2e/code/build_deployable_speedup_ledger.py`: joins audit output with
   paper-row metadata and throughput logs.
@@ -117,4 +117,4 @@ python cast_2e/code/benchmark_deployable_backends.py \
 
 Do not use the exploratory `6:12 -> 2:4` projection files as deployable evidence
 for the fixed paper checkpoints. That projection changes weights and can change
-validation accuracy; the paper table uses the read-only checkpoint audit above.
+validation accuracy; the paper table uses the checkpoint-preserving audit above.

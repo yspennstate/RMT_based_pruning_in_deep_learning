@@ -89,10 +89,11 @@
   title   = {Estimation of the Number of Spiked Eigenvalues in a Covariance Matrix by Bulk Eigenvalue Matching Analysis},
   author  = {Ke, Zheng Tracy and Ma, Yucong and Lin, Xihong},
   journal = {Journal of the American Statistical Association},
-  volume  = {117},
-  number  = {538},
-  pages   = {962--974},
-  year    = {2022}
+  volume  = {118},
+  number  = {541},
+  pages   = {374--392},
+  year    = {2023},
+  doi     = {10.1080/01621459.2021.1933497}
 }
 
 @article{song2022cp,
@@ -111,18 +112,22 @@
 }
 
 @article{zhu2021visual,
-  title   = {Visual Transformer Pruning},
-  author  = {Zhu, Mingjian and Han, Kai and Tang, Yehui and Wang, Yunhe},
+  title   = {Vision Transformer Pruning},
+  author  = {Zhu, Mingjian and Tang, Yehui and Han, Kai},
   journal = {arXiv preprint arXiv:2104.08500},
-  year    = {2021}
+  year    = {2021},
+  note    = {Accepted by the KDD 2021 Workshop on Model Mining}
 }
 
 @inproceedings{goyal2020powerbert,
-  title     = {PoWER-BERT: Accelerating {BERT} Inference via Progressive Word-Vector Elimination},
-  author    = {Goyal, Saurabh and Roy Choudhury, Anamitra and Raje, Saurabh and Chakaravarthy, Venkatesan and Sabharwal, Yogish and Verma, Ashish},
-  booktitle = {International Conference on Machine Learning},
+  title     = {{PoWER}-{BERT}: Accelerating {BERT} Inference via Progressive Word-vector Elimination},
+  author    = {Goyal, Saurabh and Choudhury, Anamitra Roy and Raje, Saurabh and Chakaravarthy, Venkatesan and Sabharwal, Yogish and Verma, Ashish},
+  booktitle = {Proceedings of the 37th International Conference on Machine Learning},
   pages     = {3690--3699},
-  year      = {2020}
+  year      = {2020},
+  volume    = {119},
+  series    = {Proceedings of Machine Learning Research},
+  publisher = {PMLR}
 }
 
 @inproceedings{pan2021scalable,
@@ -133,11 +138,13 @@
   year      = {2021}
 }
 
-@article{lu2024alphapruning,
-  title   = {AlphaPruning: Using Heavy-Tailed Self Regularization Theory for Improved Layer-Wise Pruning of Large Language Models},
-  author  = {Lu, Haiquan and Zhou, Yefan and Liu, Shiwei and Wang, Zhangyang and Mahoney, Michael W. and Yang, Yaoqing},
-  journal = {Advances in Neural Information Processing Systems},
-  year    = {2024}
+@inproceedings{lu2024alphapruning,
+  title     = {{AlphaPruning}: Using Heavy-Tailed Self Regularization Theory for Improved Layer-wise Pruning of Large Language Models},
+  author    = {Lu, Haiquan and Zhou, Yefan and Liu, Shiwei and Wang, Zhangyang and Mahoney, Michael W. and Yang, Yaoqing},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {37},
+  year      = {2024},
+  doi       = {10.52202/079017-0289}
 }
 
 @inproceedings{liu2021swin,
@@ -166,9 +173,10 @@
 
 @inproceedings{bao2022beit,
   title     = {{BEiT}: {BERT} Pre-Training of Image Transformers},
-  author    = {Bao, Hangbo and Dong, Li and Wei, Furu},
+  author    = {Bao, Hangbo and Dong, Li and Piao, Songhao and Wei, Furu},
   booktitle = {International Conference on Learning Representations},
-  year      = {2022}
+  year      = {2022},
+  url       = {https://openreview.net/forum?id=p-BhZSz59o4}
 }
 
 @article{fang2023eva02,
@@ -247,7 +255,7 @@
 
 @inproceedings{touvron2021going,
   title     = {Going Deeper with Image Transformers},
-  author    = {Touvron, Hugo and Cord, Matthieu and El-Nouby, Alaaeldin and Verbeek, Jakob and Jegou, Herve},
+  author    = {Touvron, Hugo and Cord, Matthieu and Sablayrolles, Alexandre and Synnaeve, Gabriel and J{\'e}gou, Herv{\'e}},
   booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
   pages     = {32--42},
   year      = {2021}
@@ -276,43 +284,60 @@
 }
 
 @inproceedings{gpusq_vit2023,
-  title={Boost Vision Transformer with GPU-Friendly Sparsity and Quantization},
-  author={Yu, Chong and Chen, Tao and Gao, Zhongxue and Yan, Yongming},
-  booktitle={CVPR},
-  year={2023}
+  title     = {Boost Vision Transformer with {GPU}-Friendly Sparsity and Quantization},
+  author    = {Yu, Chong and Chen, Tao and Gan, Zhongxue and Fan, Jiayuan},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages     = {22658--22668},
+  month     = {June},
+  year      = {2023},
+  doi       = {10.1109/CVPR52729.2023.02170}
 }
 
 @inproceedings{unipts2024,
-  title={{UniPTS}: A Unified Framework for Proficient Post-Training Sparsity},
-  author={Xie, Jingjing and others},
-  booktitle={CVPR},
-  year={2024}
+  title     = {{UniPTS}: A Unified Framework for Proficient Post-Training Sparsity},
+  author    = {Xie, Jingjing and Zhang, Yuxin and Lin, Mingbao and Lin, Zhihang and Cao, Liujuan and Ji, Rongrong},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {5746--5755},
+  month     = {June},
+  year      = {2024}
 }
 
-@article{elsa2024,
-  title={{ELSA}: Efficient Layer-wise Sparse Adapters for Vision Transformer},
-  author={(arXiv 2409.09708)},
-  journal={arXiv preprint arXiv:2409.09708},
-  year={2024}
+@inproceedings{elsa2024,
+  title     = {{ELSA}: Exploiting Layer-wise {N:M} Sparsity for Vision Transformer Acceleration},
+  author    = {Huang, Ning-Chi and Chang, Chi-Chih and Lin, Wei-Cheng and Taka, Endri and Marculescu, Diana and Wu, Kai-Chiang},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops},
+  pages     = {8006--8015},
+  month     = {June},
+  year      = {2024}
 }
 
-@article{lpvit2024,
-  title={{LPViT}: Low-Power Layer-Pruned Vision Transformer},
-  author={(arXiv 2407.02068)},
-  journal={arXiv preprint arXiv:2407.02068},
-  year={2024}
+@inproceedings{lpvit2024,
+  title     = {{LPViT}: Low-Power Semi-structured Pruning for Vision Transformers},
+  author    = {Xu, Kaixin and Wang, Zhe and Chen, Chunyun and Geng, Xue and Lin, Jie and Yang, Xulei and Wu, Min and Li, Xiaoli and Lin, Weisi},
+  booktitle = {Proceedings of the European Conference on Computer Vision (ECCV)},
+  pages     = {269--287},
+  year      = {2024},
+  doi       = {10.1007/978-3-031-73209-6_16}
 }
 
-@article{beyond_24_2024,
-  title={Beyond {2:4}: Exploring {V:N:M} Sparsity for Hardware-Accelerated Inference},
-  author={(arXiv 2410.16135)},
-  journal={arXiv preprint arXiv:2410.16135},
-  year={2024}
+@misc{beyond_24_2024,
+  title         = {{Beyond 2:4}: Exploring {V:N:M} Sparsity for Efficient Transformer Inference on {GPUs}},
+  author        = {Zhao, Kang and Yuan, Tao and Bao, Han and Su, Zhenfeng and Gao, Chang and Sun, Zhaofeng and Liang, Zichen and Jing, Liping and Chen, Jianfei},
+  year          = {2024},
+  eprint        = {2410.16135},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  url           = {https://arxiv.org/abs/2410.16135}
 }
 
 @inproceedings{sero2025,
-  title={{SERo}: Sparse and Efficient Reordering for Vision Transformers},
-  author={An, et al.},
-  booktitle={UAI / PMLR},
-  year={2025}
+  title     = {Sparse Structure Exploration and Re-optimization for Vision Transformer},
+  author    = {An, Sangho and Kim, Jinwoo and Lee, Keonho and Huh, Jingang and Kwak, Chanwoong and Lee, Yujin and Jin, Moonsub and Kim, Jangho},
+  booktitle = {Proceedings of the Forty-first Conference on Uncertainty in Artificial Intelligence},
+  pages     = {111--131},
+  year      = {2025},
+  volume    = {286},
+  series    = {Proceedings of Machine Learning Research},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v286/an25a.html}
 }
