@@ -1,0 +1,3189 @@
+{
+  "schema": "checkpoint_deployability_audit.v1",
+  "n_paths": 18,
+  "n_audited": 18,
+  "n_errors": 0,
+  "rows": [
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\github_archive\\pod1_complete\\best_pod1_ckpts\\ckpts\\vitb\\D24_dense_perm.pt",
+      "file_size": 346330054,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.4965824136703453,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 86292480,
+        "nnz": 43441152,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 49,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 48,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 768000,
+        "linear_native_2_4_groups": 21425664,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 147456,
+        "conv_flat_2_4_bad_groups": 147456,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 21573120,
+        "expected_kn_bad_groups": 147456
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        }
+      ],
+      "seconds": 13.214138984680176
+    },
+    {
+      "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\vit_base_canonical_cast_20260504T170942Z\\ft_phase\\checkpoints\\vit_base_patch16_224.augreg2_in21k_ft_in1k_cast2e_2to4_tome_r8_post_ft.pt",
+      "file_size": 432077214,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.4965824136703453,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 86292480,
+        "nnz": 43441152,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 49,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 48,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 768000,
+        "linear_native_2_4_groups": 21425664,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 147456,
+        "conv_flat_2_4_bad_groups": 147456,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 21573120,
+        "expected_kn_bad_groups": 147456
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        }
+      ],
+      "seconds": 10.678681373596191
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod1_vitb_ft_D612_ser_a05\\student_final.pt",
+      "file_size": 346329834,
+      "expected_k": 6,
+      "expected_n": 12,
+      "sparsity_over_weight_tensors": 0.4965824136703453,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 86292480,
+        "nnz": 43441152,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 768000,
+        "linear_native_2_4_groups": 21425664,
+        "linear_native_2_4_bad_groups": 12112485,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 147456,
+        "conv_flat_2_4_bad_groups": 147456,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 7191040,
+        "expected_kn_bad_groups": 49152
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "6:12",
+          "groups": 49152,
+          "bad_groups": 49152,
+          "nnz_hist": {
+            "12": 49152
+          }
+        },
+        {
+          "name": "blocks.0.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 343374,
+          "nnz_hist": {
+            "3": 135705,
+            "0": 106341,
+            "4": 59435,
+            "2": 98994,
+            "1": 41893
+          }
+        },
+        {
+          "name": "blocks.0.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 92128,
+          "nnz_hist": {
+            "2": 55328,
+            "3": 36043,
+            "1": 38143,
+            "4": 9496,
+            "0": 8446
+          }
+        },
+        {
+          "name": "blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 450684,
+          "nnz_hist": {
+            "3": 185766,
+            "0": 123522,
+            "4": 67558,
+            "1": 73838,
+            "2": 139140
+          }
+        },
+        {
+          "name": "blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 355951,
+          "nnz_hist": {
+            "0": 32421,
+            "2": 233873,
+            "4": 30796,
+            "3": 147992,
+            "1": 144742
+          }
+        },
+        {
+          "name": "blocks.1.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 238397,
+          "nnz_hist": {
+            "1": 105968,
+            "2": 203971,
+            "3": 107678,
+            "0": 12803,
+            "4": 11948
+          }
+        },
+        {
+          "name": "blocks.1.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 98997,
+          "nnz_hist": {
+            "4": 9933,
+            "2": 48459,
+            "0": 14718,
+            "3": 41958,
+            "1": 32388
+          }
+        },
+        {
+          "name": "blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 350908,
+          "nnz_hist": {
+            "3": 151020,
+            "1": 146020,
+            "2": 238916,
+            "4": 25684,
+            "0": 28184
+          }
+        },
+        {
+          "name": "blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 337834,
+          "nnz_hist": {
+            "1": 145214,
+            "3": 146770,
+            "2": 251990,
+            "0": 23314,
+            "4": 22536
+          }
+        },
+        {
+          "name": "blocks.2.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 245571,
+          "nnz_hist": {
+            "0": 14932,
+            "3": 108545,
+            "2": 196797,
+            "1": 107623,
+            "4": 14471
+          }
+        },
+        {
+          "name": "blocks.2.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 86025,
+          "nnz_hist": {
+            "1": 36229,
+            "3": 37191,
+            "2": 61431,
+            "0": 6543,
+            "4": 6062
+          }
+        },
+        {
+          "name": "blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 321630,
+          "nnz_hist": {
+            "3": 143185,
+            "2": 268194,
+            "1": 142817,
+            "0": 17906,
+            "4": 17722
+          }
+        },
+        {
+          "name": "blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 324388,
+          "nnz_hist": {
+            "2": 265436,
+            "1": 143040,
+            "3": 143728,
+            "4": 18638,
+            "0": 18982
+          }
+        },
+        {
+          "name": "blocks.3.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 246738,
+          "nnz_hist": {
+            "3": 108365,
+            "1": 108269,
+            "2": 195630,
+            "4": 15028,
+            "0": 15076
+          }
+        },
+        {
+          "name": "blocks.3.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 83174,
+          "nnz_hist": {
+            "1": 36157,
+            "2": 64282,
+            "3": 36437,
+            "4": 5220,
+            "0": 5360
+          }
+        },
+        {
+          "name": "blocks.3.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 321187,
+          "nnz_hist": {
+            "2": 268637,
+            "3": 142758,
+            "1": 142736,
+            "4": 17841,
+            "0": 17852
+          }
+        },
+        {
+          "name": "blocks.3.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 328272,
+          "nnz_hist": {
+            "1": 143895,
+            "3": 144831,
+            "2": 261552,
+            "0": 20007,
+            "4": 19539
+          }
+        },
+        {
+          "name": "blocks.4.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 244937,
+          "nnz_hist": {
+            "3": 107895,
+            "2": 197431,
+            "1": 108133,
+            "4": 14514,
+            "0": 14395
+          }
+        },
+        {
+          "name": "blocks.4.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 84466,
+          "nnz_hist": {
+            "3": 36835,
+            "0": 5938,
+            "2": 62990,
+            "1": 36115,
+            "4": 5578
+          }
+        },
+        {
+          "name": "blocks.4.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 321739,
+          "nnz_hist": {
+            "2": 268085,
+            "1": 142685,
+            "4": 17913,
+            "3": 143047,
+            "0": 18094
+          }
+        },
+        {
+          "name": "blocks.4.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 323534,
+          "nnz_hist": {
+            "2": 266290,
+            "3": 143408,
+            "1": 142936,
+            "4": 18477,
+            "0": 18713
+          }
+        },
+        {
+          "name": "blocks.5.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 442368,
+          "bad_groups": 244157,
+          "nnz_hist": {
+            "1": 107128,
+            "3": 107918,
+            "2": 198211,
+            "0": 14753,
+            "4": 14358
+          }
+        },
+        {
+          "name": "blocks.5.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 81636,
+          "nnz_hist": {
+            "4": 4792,
+            "1": 35825,
+            "2": 65820,
+            "3": 36093,
+            "0": 4926
+          }
+        },
+        {
+          "name": "blocks.5.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 589824,
+          "bad_groups": 320849,
+          "nnz_hist": {
+            "2": 268975,
+            "0": 17965,
+            "4": 17688,
+            "1": 142321,
+            "3": 142875
+          }
+        }
+      ],
+      "seconds": 7.229277610778809
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\vitl_canonical\\vit_large_patch16_224.augreg_in21k_ft_in1k_cast2e_2to4_tome_r8_post_ft.pt",
+      "file_size": 1520526163,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.49870567614938655,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 303800320,
+        "nnz": 152293376,
+        "linear_layers": 97,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 97,
+        "linear_native_2_4_exact_layers": 97,
+        "linear_native_2_4_convertible_layers": 96,
+        "linear_native_2_4_exact_convertible_layers": 96,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 75753472,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 196608,
+        "conv_flat_2_4_bad_groups": 196608,
+        "expected_kn_eligible_layers": 98,
+        "expected_kn_exact_layers": 97,
+        "expected_kn_groups": 75950080,
+        "expected_kn_bad_groups": 196608
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 196608,
+          "bad_groups": 196608,
+          "nnz_hist": {
+            "4": 196608
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 196608,
+          "bad_groups": 196608,
+          "nnz_hist": {
+            "4": 196608
+          }
+        }
+      ],
+      "seconds": 57.59316372871399
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod1_vitl_d816_dense\\student_ep2.pt",
+      "file_size": 1217421586,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.49870567614938655,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 303800320,
+        "nnz": 152293376,
+        "linear_layers": 97,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 97,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 96,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 75753472,
+        "linear_native_2_4_bad_groups": 45612540,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 196608,
+        "conv_flat_2_4_bad_groups": 196608,
+        "expected_kn_eligible_layers": 98,
+        "expected_kn_exact_layers": 97,
+        "expected_kn_groups": 18987520,
+        "expected_kn_bad_groups": 49152
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 196608,
+          "bad_groups": 196608,
+          "nnz_hist": {
+            "4": 196608
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "8:16",
+          "groups": 49152,
+          "bad_groups": 49152,
+          "nnz_hist": {
+            "16": 49152
+          }
+        },
+        {
+          "name": "blocks.0.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 472603,
+          "nnz_hist": {
+            "1": 196726,
+            "2": 313829,
+            "3": 195088,
+            "0": 39985,
+            "4": 40804
+          }
+        },
+        {
+          "name": "blocks.0.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 197796,
+          "nnz_hist": {
+            "4": 38617,
+            "3": 56542,
+            "0": 31139,
+            "1": 71498,
+            "2": 64348
+          }
+        },
+        {
+          "name": "blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 744766,
+          "nnz_hist": {
+            "3": 316003,
+            "1": 189423,
+            "2": 303810,
+            "4": 88025,
+            "0": 151315
+          }
+        },
+        {
+          "name": "blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 724271,
+          "nnz_hist": {
+            "0": 116119,
+            "1": 231493,
+            "3": 289587,
+            "4": 87072,
+            "2": 324305
+          }
+        },
+        {
+          "name": "blocks.1.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 468989,
+          "nnz_hist": {
+            "3": 190665,
+            "2": 317443,
+            "0": 37777,
+            "1": 198735,
+            "4": 41812
+          }
+        },
+        {
+          "name": "blocks.1.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 210027,
+          "nnz_hist": {
+            "4": 42801,
+            "3": 65101,
+            "0": 48578,
+            "1": 53547,
+            "2": 52117
+          }
+        },
+        {
+          "name": "blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 723728,
+          "nnz_hist": {
+            "1": 209900,
+            "3": 301420,
+            "2": 324848,
+            "4": 83324,
+            "0": 129084
+          }
+        },
+        {
+          "name": "blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 734567,
+          "nnz_hist": {
+            "1": 232285,
+            "3": 286379,
+            "2": 314009,
+            "4": 94428,
+            "0": 121475
+          }
+        },
+        {
+          "name": "blocks.2.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 469593,
+          "nnz_hist": {
+            "1": 198553,
+            "3": 192899,
+            "2": 316839,
+            "0": 37657,
+            "4": 40484
+          }
+        },
+        {
+          "name": "blocks.2.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 192602,
+          "nnz_hist": {
+            "2": 69542,
+            "4": 29306,
+            "0": 40688,
+            "3": 72686,
+            "1": 49922
+          }
+        },
+        {
+          "name": "blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 714844,
+          "nnz_hist": {
+            "3": 295608,
+            "1": 221212,
+            "2": 333732,
+            "0": 117611,
+            "4": 80413
+          }
+        },
+        {
+          "name": "blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 734535,
+          "nnz_hist": {
+            "1": 273492,
+            "3": 270034,
+            "2": 314041,
+            "0": 94640,
+            "4": 96369
+          }
+        },
+        {
+          "name": "blocks.3.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 462254,
+          "nnz_hist": {
+            "3": 194873,
+            "1": 195705,
+            "4": 36046,
+            "0": 35630,
+            "2": 324178
+          }
+        },
+        {
+          "name": "blocks.3.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 191661,
+          "nnz_hist": {
+            "2": 70483,
+            "3": 79139,
+            "1": 38941,
+            "0": 46840,
+            "4": 26741
+          }
+        },
+        {
+          "name": "blocks.3.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 670459,
+          "nnz_hist": {
+            "2": 378117,
+            "3": 279018,
+            "1": 249588,
+            "4": 63569,
+            "0": 78284
+          }
+        },
+        {
+          "name": "blocks.3.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 641691,
+          "nnz_hist": {
+            "2": 406885,
+            "3": 270746,
+            "1": 262768,
+            "0": 56083,
+            "4": 52094
+          }
+        },
+        {
+          "name": "blocks.4.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 457877,
+          "nnz_hist": {
+            "1": 194724,
+            "3": 195398,
+            "2": 328555,
+            "4": 33709,
+            "0": 34046
+          }
+        },
+        {
+          "name": "blocks.4.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 186160,
+          "nnz_hist": {
+            "3": 70647,
+            "1": 58435,
+            "2": 75984,
+            "4": 25486,
+            "0": 31592
+          }
+        },
+        {
+          "name": "blocks.4.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 624056,
+          "nnz_hist": {
+            "4": 49917,
+            "2": 424520,
+            "1": 259279,
+            "3": 263055,
+            "0": 51805
+          }
+        },
+        {
+          "name": "blocks.4.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 627788,
+          "nnz_hist": {
+            "3": 269796,
+            "1": 257988,
+            "2": 420788,
+            "0": 52954,
+            "4": 47050
+          }
+        },
+        {
+          "name": "blocks.5.attn.qkv.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 786432,
+          "bad_groups": 455187,
+          "nnz_hist": {
+            "2": 331245,
+            "3": 195711,
+            "1": 194049,
+            "0": 33129,
+            "4": 32298
+          }
+        },
+        {
+          "name": "blocks.5.attn.proj.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 262144,
+          "bad_groups": 171789,
+          "nnz_hist": {
+            "4": 19467,
+            "1": 66114,
+            "2": 90355,
+            "3": 66532,
+            "0": 19676
+          }
+        },
+        {
+          "name": "blocks.5.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 1048576,
+          "bad_groups": 629813,
+          "nnz_hist": {
+            "4": 50429,
+            "1": 258344,
+            "2": 418763,
+            "3": 266522,
+            "0": 54518
+          }
+        }
+      ],
+      "seconds": 48.142518520355225
+    },
+    {
+      "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_base_cast_20260505T065522Z\\ft_phase\\checkpoints\\deit_base_patch16_224.fb_in1k_cast2e_2to4_tome_r8_post_ft.pt",
+      "file_size": 432067867,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.4965824136703453,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 86292480,
+        "nnz": 43441152,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 49,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 48,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 768000,
+        "linear_native_2_4_groups": 21425664,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 147456,
+        "conv_flat_2_4_bad_groups": 147456,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 21573120,
+        "expected_kn_bad_groups": 147456
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 147456,
+          "nnz_hist": {
+            "4": 147456
+          }
+        }
+      ],
+      "seconds": 20.19888138771057
+    },
+    {
+      "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_small_cast_20260505T032704Z\\ft_phase\\checkpoints\\deit_small_patch16_224.fb_in1k_cast2e_2to4_tome_r8_post_ft.pt",
+      "file_size": 109915114,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.49327071358474694,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 21912576,
+        "nnz": 11103744,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 49,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 48,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 384000,
+        "linear_native_2_4_groups": 5404416,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 73728,
+        "conv_flat_2_4_bad_groups": 73728,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 5478144,
+        "expected_kn_bad_groups": 73728
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 73728,
+          "bad_groups": 73728,
+          "nnz_hist": {
+            "4": 73728
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 73728,
+          "bad_groups": 73728,
+          "nnz_hist": {
+            "4": 73728
+          }
+        }
+      ],
+      "seconds": 6.283618688583374
+    },
+    {
+      "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_tiny_cast_20260505T003151Z\\ft_phase\\checkpoints\\deit_tiny_patch16_224_cast2e_2to4_tome_r8_post_ft.pt",
+      "file_size": 28462243,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.4869458797933097,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 5647872,
+        "nnz": 2897664,
+        "linear_layers": 49,
+        "conv2d_layers": 1,
+        "linear_native_2_4_eligible_layers": 49,
+        "linear_native_2_4_exact_layers": 49,
+        "linear_native_2_4_convertible_layers": 48,
+        "linear_native_2_4_exact_convertible_layers": 48,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 192000,
+        "linear_native_2_4_groups": 1375104,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 1,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 36864,
+        "conv_flat_2_4_bad_groups": 36864,
+        "expected_kn_eligible_layers": 50,
+        "expected_kn_exact_layers": 49,
+        "expected_kn_groups": 1411968,
+        "expected_kn_bad_groups": 36864
+      },
+      "sample_failing_layers": [
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 36864,
+          "nnz_hist": {
+            "4": 36864
+          }
+        },
+        {
+          "name": "patch_embed.proj.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 36864,
+          "nnz_hist": {
+            "4": 36864
+          }
+        }
+      ],
+      "seconds": 1.5841014385223389
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_1_resnet50.tv_in1k\\epoch3.pt",
+      "file_size": 102738898,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.45966903701036177,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25502912,
+        "nnz": 13780013,
+        "linear_layers": 1,
+        "conv2d_layers": 53,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 52,
+        "conv_flat_2_4_exact_layers": 52,
+        "conv_flat_2_4_groups": 5861376,
+        "conv_flat_2_4_bad_groups": 0,
+        "expected_kn_eligible_layers": 53,
+        "expected_kn_exact_layers": 52,
+        "expected_kn_groups": 6373376,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 6.5871076583862305
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_2_resnet50d.ra2_in1k\\epoch3.pt",
+      "file_size": 102821480,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.45986190902787616,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25522016,
+        "nnz": 13785413,
+        "linear_layers": 1,
+        "conv2d_layers": 55,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 54,
+        "conv_flat_2_4_exact_layers": 54,
+        "conv_flat_2_4_groups": 5868288,
+        "conv_flat_2_4_bad_groups": 0,
+        "expected_kn_eligible_layers": 55,
+        "expected_kn_exact_layers": 54,
+        "expected_kn_groups": 6380288,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 6.2729315757751465
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_3_resnet101d.ra2_in1k\\epoch3.pt",
+      "file_size": 179326585,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.47696055411012395,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 44461920,
+        "nnz": 23255338,
+        "linear_layers": 1,
+        "conv2d_layers": 106,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 105,
+        "conv_flat_2_4_exact_layers": 105,
+        "conv_flat_2_4_groups": 10603264,
+        "conv_flat_2_4_bad_groups": 0,
+        "expected_kn_eligible_layers": 106,
+        "expected_kn_exact_layers": 105,
+        "expected_kn_groups": 11115264,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 9.50579571723938
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_4_resnet152d.ra2_in1k\\epoch3.pt",
+      "file_size": 242388654,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.48294304473591254,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 60059488,
+        "nnz": 31054176,
+        "linear_layers": 1,
+        "conv2d_layers": 157,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 156,
+        "conv_flat_2_4_exact_layers": 156,
+        "conv_flat_2_4_groups": 14502656,
+        "conv_flat_2_4_bad_groups": 0,
+        "expected_kn_eligible_layers": 157,
+        "expected_kn_exact_layers": 156,
+        "expected_kn_groups": 15014656,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 13.904666423797607
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50.tv_in1k\\student_final.pt",
+      "file_size": 102550346,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.45966327296271103,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25502912,
+        "nnz": 13780160,
+        "linear_layers": 1,
+        "conv2d_layers": 53,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 52,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 5861376,
+        "conv_flat_2_4_bad_groups": 3704161,
+        "expected_kn_eligible_layers": 53,
+        "expected_kn_exact_layers": 52,
+        "expected_kn_groups": 1593344,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 656,
+          "nnz_hist": {
+            "2": 368,
+            "3": 270,
+            "1": 230,
+            "4": 68,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 6306,
+          "nnz_hist": {
+            "1": 2054,
+            "2": 2910,
+            "4": 1129,
+            "3": 2014,
+            "0": 1109
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 3179,
+          "nnz_hist": {
+            "3": 1128,
+            "4": 545,
+            "1": 794,
+            "0": 712,
+            "2": 917
+          }
+        },
+        {
+          "name": "layer1.0.downsample.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2674,
+          "nnz_hist": {
+            "4": 307,
+            "2": 1422,
+            "1": 1072,
+            "3": 1016,
+            "0": 279
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2934,
+          "nnz_hist": {
+            "3": 1187,
+            "1": 911,
+            "2": 1162,
+            "4": 349,
+            "0": 487
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 6195,
+          "nnz_hist": {
+            "1": 1999,
+            "2": 3021,
+            "4": 1100,
+            "3": 1997,
+            "0": 1099
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2537,
+          "nnz_hist": {
+            "2": 1559,
+            "0": 214,
+            "3": 1029,
+            "1": 1063,
+            "4": 231
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2884,
+          "nnz_hist": {
+            "2": 1212,
+            "3": 1048,
+            "1": 1020,
+            "4": 401,
+            "0": 415
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5591,
+          "nnz_hist": {
+            "3": 2265,
+            "2": 3625,
+            "0": 514,
+            "1": 2287,
+            "4": 525
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2440,
+          "nnz_hist": {
+            "3": 996,
+            "2": 1656,
+            "1": 1016,
+            "4": 219,
+            "0": 209
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 8192,
+          "bad_groups": 5499,
+          "nnz_hist": {
+            "3": 2166,
+            "2": 2693,
+            "1": 1852,
+            "4": 662,
+            "0": 819
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23326,
+          "nnz_hist": {
+            "3": 9087,
+            "1": 9231,
+            "2": 13538,
+            "4": 2540,
+            "0": 2468
+          }
+        },
+        {
+          "name": "layer2.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9523,
+          "nnz_hist": {
+            "2": 6861,
+            "3": 4016,
+            "0": 711,
+            "1": 4062,
+            "4": 734
+          }
+        },
+        {
+          "name": "layer2.0.downsample.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 19412,
+          "nnz_hist": {
+            "4": 1564,
+            "3": 8126,
+            "1": 8190,
+            "0": 1532,
+            "2": 13356
+          }
+        },
+        {
+          "name": "layer2.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 12200,
+          "nnz_hist": {
+            "3": 4220,
+            "2": 4184,
+            "1": 3372,
+            "4": 2092,
+            "0": 2516
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 24049,
+          "nnz_hist": {
+            "3": 9229,
+            "2": 12815,
+            "1": 9227,
+            "4": 2796,
+            "0": 2797
+          }
+        },
+        {
+          "name": "layer2.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10934,
+          "nnz_hist": {
+            "1": 4297,
+            "3": 3913,
+            "2": 5450,
+            "4": 1458,
+            "0": 1266
+          }
+        },
+        {
+          "name": "layer2.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10539,
+          "nnz_hist": {
+            "4": 1098,
+            "2": 5845,
+            "1": 4143,
+            "3": 4181,
+            "0": 1117
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23115,
+          "nnz_hist": {
+            "0": 2326,
+            "2": 13749,
+            "3": 9299,
+            "1": 9209,
+            "4": 2281
+          }
+        },
+        {
+          "name": "layer2.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9826,
+          "nnz_hist": {
+            "2": 6558,
+            "3": 4152,
+            "1": 4108,
+            "4": 772,
+            "0": 794
+          }
+        },
+        {
+          "name": "layer2.3.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10400,
+          "nnz_hist": {
+            "3": 4172,
+            "1": 4180,
+            "4": 1026,
+            "0": 1022,
+            "2": 5984
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 22244,
+          "nnz_hist": {
+            "4": 1947,
+            "2": 14620,
+            "1": 9184,
+            "3": 9172,
+            "0": 1941
+          }
+        },
+        {
+          "name": "layer2.3.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9597,
+          "nnz_hist": {
+            "1": 4053,
+            "2": 6787,
+            "4": 708,
+            "3": 4103,
+            "0": 733
+          }
+        },
+        {
+          "name": "layer3.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 19952,
+          "nnz_hist": {
+            "4": 1630,
+            "2": 12816,
+            "0": 1840,
+            "3": 8451,
+            "1": 8031
+          }
+        },
+        {
+          "name": "layer3.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 147456,
+          "bad_groups": 96345,
+          "nnz_hist": {
+            "1": 36411,
+            "3": 36273,
+            "2": 51111,
+            "4": 11865,
+            "0": 11796
+          }
+        }
+      ],
+      "seconds": 3.8290698528289795
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50d.ra2_in1k\\student_final.pt",
+      "file_size": 102631930,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.45986085111771735,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25522016,
+        "nnz": 13785440,
+        "linear_layers": 1,
+        "conv2d_layers": 55,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 54,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 5868288,
+        "conv_flat_2_4_bad_groups": 3704198,
+        "expected_kn_eligible_layers": 55,
+        "expected_kn_exact_layers": 54,
+        "expected_kn_groups": 1595072,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 2304,
+          "bad_groups": 1545,
+          "nnz_hist": {
+            "2": 759,
+            "1": 527,
+            "3": 525,
+            "0": 246,
+            "4": 247
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4608,
+          "bad_groups": 3075,
+          "nnz_hist": {
+            "2": 1533,
+            "1": 1160,
+            "3": 1106,
+            "4": 418,
+            "0": 391
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 622,
+          "nnz_hist": {
+            "1": 264,
+            "3": 256,
+            "2": 402,
+            "0": 49,
+            "4": 53
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5975,
+          "nnz_hist": {
+            "1": 2251,
+            "3": 2301,
+            "2": 3241,
+            "0": 724,
+            "4": 699
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2712,
+          "nnz_hist": {
+            "2": 1384,
+            "3": 976,
+            "1": 1092,
+            "0": 293,
+            "4": 351
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2601,
+          "nnz_hist": {
+            "2": 1495,
+            "3": 1021,
+            "0": 263,
+            "1": 1043,
+            "4": 274
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2688,
+          "nnz_hist": {
+            "4": 317,
+            "1": 1018,
+            "2": 1408,
+            "3": 1030,
+            "0": 323
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5958,
+          "nnz_hist": {
+            "2": 3258,
+            "1": 2409,
+            "3": 2265,
+            "4": 678,
+            "0": 606
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2414,
+          "nnz_hist": {
+            "2": 1682,
+            "1": 1001,
+            "3": 997,
+            "0": 207,
+            "4": 209
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2415,
+          "nnz_hist": {
+            "3": 1007,
+            "1": 1025,
+            "4": 196,
+            "2": 1681,
+            "0": 187
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5876,
+          "nnz_hist": {
+            "3": 2219,
+            "2": 3340,
+            "1": 2299,
+            "4": 699,
+            "0": 659
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2468,
+          "nnz_hist": {
+            "1": 1020,
+            "4": 193,
+            "2": 1628,
+            "3": 1048,
+            "0": 207
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 8192,
+          "bad_groups": 5502,
+          "nnz_hist": {
+            "3": 2174,
+            "2": 2690,
+            "0": 766,
+            "4": 640,
+            "1": 1922
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23544,
+          "nnz_hist": {
+            "2": 13320,
+            "1": 9202,
+            "3": 9058,
+            "4": 2678,
+            "0": 2606
+          }
+        },
+        {
+          "name": "layer2.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9842,
+          "nnz_hist": {
+            "1": 4116,
+            "2": 6542,
+            "3": 4036,
+            "4": 865,
+            "0": 825
+          }
+        },
+        {
+          "name": "layer2.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 19345,
+          "nnz_hist": {
+            "2": 13423,
+            "1": 8125,
+            "3": 8239,
+            "0": 1519,
+            "4": 1462
+          }
+        },
+        {
+          "name": "layer2.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10339,
+          "nnz_hist": {
+            "1": 3879,
+            "2": 6045,
+            "3": 4233,
+            "0": 1202,
+            "4": 1025
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 24168,
+          "nnz_hist": {
+            "4": 3037,
+            "2": 12696,
+            "1": 9119,
+            "3": 9023,
+            "0": 2989
+          }
+        },
+        {
+          "name": "layer2.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9625,
+          "nnz_hist": {
+            "2": 6759,
+            "3": 3918,
+            "1": 4136,
+            "4": 840,
+            "0": 731
+          }
+        },
+        {
+          "name": "layer2.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10223,
+          "nnz_hist": {
+            "2": 6161,
+            "3": 4058,
+            "1": 4080,
+            "0": 1037,
+            "4": 1048
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23025,
+          "nnz_hist": {
+            "2": 13839,
+            "1": 9342,
+            "3": 9212,
+            "0": 2203,
+            "4": 2268
+          }
+        },
+        {
+          "name": "layer2.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9908,
+          "nnz_hist": {
+            "3": 4041,
+            "1": 4169,
+            "2": 6476,
+            "4": 881,
+            "0": 817
+          }
+        },
+        {
+          "name": "layer2.3.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 11037,
+          "nnz_hist": {
+            "2": 5347,
+            "4": 1429,
+            "0": 1408,
+            "1": 4121,
+            "3": 4079
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23012,
+          "nnz_hist": {
+            "4": 2160,
+            "3": 9373,
+            "1": 9265,
+            "0": 2214,
+            "2": 13852
+          }
+        },
+        {
+          "name": "layer2.3.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10022,
+          "nnz_hist": {
+            "3": 3921,
+            "1": 4193,
+            "4": 1022,
+            "2": 6362,
+            "0": 886
+          }
+        }
+      ],
+      "seconds": 3.8463492393493652
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet101d.ra2_in1k\\student_final.pt",
+      "file_size": 178914370,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.4769593395876741,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 44461920,
+        "nnz": 23255392,
+        "linear_layers": 1,
+        "conv2d_layers": 106,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 105,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 10603264,
+        "conv_flat_2_4_bad_groups": 6710639,
+        "expected_kn_eligible_layers": 106,
+        "expected_kn_exact_layers": 105,
+        "expected_kn_groups": 2778816,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 2304,
+          "bad_groups": 1566,
+          "nnz_hist": {
+            "2": 738,
+            "1": 473,
+            "3": 505,
+            "4": 286,
+            "0": 302
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4608,
+          "bad_groups": 3140,
+          "nnz_hist": {
+            "3": 1062,
+            "1": 1098,
+            "2": 1468,
+            "0": 481,
+            "4": 499
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 648,
+          "nnz_hist": {
+            "2": 376,
+            "1": 220,
+            "3": 284,
+            "4": 56,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5880,
+          "nnz_hist": {
+            "4": 679,
+            "2": 3336,
+            "1": 2327,
+            "3": 2239,
+            "0": 635
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2784,
+          "nnz_hist": {
+            "4": 356,
+            "2": 1312,
+            "0": 346,
+            "3": 1031,
+            "1": 1051
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2618,
+          "nnz_hist": {
+            "3": 1006,
+            "0": 279,
+            "2": 1478,
+            "1": 1038,
+            "4": 295
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2796,
+          "nnz_hist": {
+            "3": 1132,
+            "1": 924,
+            "4": 318,
+            "0": 422,
+            "2": 1300
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5791,
+          "nnz_hist": {
+            "0": 589,
+            "3": 2260,
+            "2": 3425,
+            "1": 2322,
+            "4": 620
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2544,
+          "nnz_hist": {
+            "3": 1026,
+            "2": 1552,
+            "1": 1046,
+            "0": 231,
+            "4": 241
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2703,
+          "nnz_hist": {
+            "3": 1078,
+            "2": 1393,
+            "1": 972,
+            "4": 300,
+            "0": 353
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5827,
+          "nnz_hist": {
+            "1": 2311,
+            "2": 3389,
+            "3": 2273,
+            "0": 612,
+            "4": 631
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2470,
+          "nnz_hist": {
+            "1": 1005,
+            "3": 1041,
+            "0": 221,
+            "4": 203,
+            "2": 1626
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 8192,
+          "bad_groups": 5443,
+          "nnz_hist": {
+            "4": 641,
+            "2": 2749,
+            "0": 670,
+            "3": 2095,
+            "1": 2037
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23468,
+          "nnz_hist": {
+            "2": 13396,
+            "1": 9262,
+            "3": 9142,
+            "0": 2502,
+            "4": 2562
+          }
+        },
+        {
+          "name": "layer2.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10370,
+          "nnz_hist": {
+            "4": 1070,
+            "2": 6014,
+            "1": 4217,
+            "3": 4081,
+            "0": 1002
+          }
+        },
+        {
+          "name": "layer2.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 19728,
+          "nnz_hist": {
+            "2": 13040,
+            "4": 1639,
+            "1": 8240,
+            "3": 8220,
+            "0": 1629
+          }
+        },
+        {
+          "name": "layer2.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10540,
+          "nnz_hist": {
+            "2": 5844,
+            "3": 4250,
+            "1": 4110,
+            "4": 1055,
+            "0": 1125
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 24823,
+          "nnz_hist": {
+            "1": 8987,
+            "3": 8997,
+            "2": 12041,
+            "0": 3422,
+            "4": 3417
+          }
+        },
+        {
+          "name": "layer2.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9174,
+          "nnz_hist": {
+            "3": 4146,
+            "2": 7210,
+            "1": 3994,
+            "4": 479,
+            "0": 555
+          }
+        },
+        {
+          "name": "layer2.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10558,
+          "nnz_hist": {
+            "3": 4223,
+            "2": 5826,
+            "1": 4027,
+            "0": 1203,
+            "4": 1105
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 24297,
+          "nnz_hist": {
+            "1": 9195,
+            "2": 12567,
+            "4": 2997,
+            "3": 9137,
+            "0": 2968
+          }
+        },
+        {
+          "name": "layer2.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10052,
+          "nnz_hist": {
+            "4": 881,
+            "2": 6332,
+            "0": 803,
+            "3": 4106,
+            "1": 4262
+          }
+        },
+        {
+          "name": "layer2.3.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 10345,
+          "nnz_hist": {
+            "2": 6039,
+            "1": 4049,
+            "3": 4075,
+            "0": 1117,
+            "4": 1104
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23037,
+          "nnz_hist": {
+            "1": 9016,
+            "3": 9222,
+            "0": 2451,
+            "2": 13827,
+            "4": 2348
+          }
+        },
+        {
+          "name": "layer2.3.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 9968,
+          "nnz_hist": {
+            "2": 6416,
+            "1": 4224,
+            "3": 4040,
+            "4": 898,
+            "0": 806
+          }
+        }
+      ],
+      "seconds": 6.7900779247283936
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_canonical\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_2to4_tome_r0_post_ft.pt",
+      "file_size": 439855072,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.47939988158605207,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 88422016,
+        "nnz": 46032512,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 73,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 72,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 73,
+        "expected_kn_groups": 21884416,
+        "expected_kn_bad_groups": 689664
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.2.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 131072,
+          "bad_groups": 131072,
+          "nnz_hist": {
+            "4": 131072
+          }
+        },
+        {
+          "name": "stages.2.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 131072,
+          "bad_groups": 131072,
+          "nnz_hist": {
+            "4": 131072
+          }
+        },
+        {
+          "name": "stages.3.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 524288,
+          "bad_groups": 524288,
+          "nnz_hist": {
+            "4": 524288
+          }
+        },
+        {
+          "name": "stages.3.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 524288,
+          "bad_groups": 524288,
+          "nnz_hist": {
+            "4": 524288
+          }
+        }
+      ],
+      "seconds": 13.792907476425171
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d1216\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d1216_tome_r0_post_ft.pt",
+      "file_size": 355038970,
+      "expected_k": 12,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.0,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 88422016,
+        "nnz": 88422016,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 21194752,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 0,
+        "expected_kn_groups": 5471104,
+        "expected_kn_bad_groups": 5471104
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "12:16",
+          "groups": 384,
+          "bad_groups": 384,
+          "nnz_hist": {
+            "16": 384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "12:16",
+          "groups": 8192,
+          "bad_groups": 8192,
+          "nnz_hist": {
+            "16": 8192
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        }
+      ],
+      "seconds": 12.833612442016602
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d816\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d816_tome_r0_post_ft.pt",
+      "file_size": 355038586,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.0,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 88422016,
+        "nnz": 88422016,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 21194752,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 0,
+        "expected_kn_groups": 5471104,
+        "expected_kn_bad_groups": 5471104
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "8:16",
+          "groups": 384,
+          "bad_groups": 384,
+          "nnz_hist": {
+            "16": 384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "8:16",
+          "groups": 8192,
+          "bad_groups": 8192,
+          "nnz_hist": {
+            "16": 8192
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        }
+      ],
+      "seconds": 14.097031593322754
+    }
+  ],
+  "errors": []
+}

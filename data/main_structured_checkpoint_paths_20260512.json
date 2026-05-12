@@ -1,0 +1,92 @@
+[
+  {
+    "row": "ViT-B/16 Magnitude 2:4 + ToMe, 82.92%",
+    "checkpoint_status": "stage-1/pre-FT 2:4 artifact located; final post-FT magnitude checkpoint not located locally",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\github_archive\\pod1_complete\\best_pod1_ckpts\\ckpts\\vitb\\D24_dense_perm.pt"
+  },
+  {
+    "row": "ViT-B/16 CAST 2:4 + ToMe, 83.41%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\vit_base_canonical_cast_20260504T170942Z\\ft_phase\\checkpoints\\vit_base_patch16_224.augreg2_in21k_ft_in1k_cast2e_2to4_tome_r8_post_ft.pt"
+  },
+  {
+    "row": "ViT-B/16 CAST 6:12 SER+alpha=0.5, 83.74%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod1_vitb_ft_D612_ser_a05\\student_final.pt"
+  },
+  {
+    "row": "ViT-L/16 CAST 2:4 + ToMe, 84.37%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\vitl_canonical\\vit_large_patch16_224.augreg_in21k_ft_in1k_cast2e_2to4_tome_r8_post_ft.pt"
+  },
+  {
+    "row": "ViT-L/16 CAST 8:16 dense+perm, 85.33%",
+    "checkpoint_status": "epoch-2 checkpoint located; final_eval reports epoch-3 top-1 but final post-FT weights are unavailable locally",
+    "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod1_vitl_d816_dense\\student_ep2.pt"
+  },
+  {
+    "row": "DeiT-B CAST 2:4 + ToMe, 80.48%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_base_cast_20260505T065522Z\\ft_phase\\checkpoints\\deit_base_patch16_224.fb_in1k_cast2e_2to4_tome_r8_post_ft.pt"
+  },
+  {
+    "row": "DeiT-S CAST 2:4 + ToMe, 76.96%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_small_cast_20260505T032704Z\\ft_phase\\checkpoints\\deit_small_patch16_224.fb_in1k_cast2e_2to4_tome_r8_post_ft.pt"
+  },
+  {
+    "row": "DeiT-T CAST 2:4 + ToMe, 65.93%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\v11_pod_debug\\cast_canonical_local\\deit_tiny_cast_20260505T003151Z\\ft_phase\\checkpoints\\deit_tiny_patch16_224_cast2e_2to4_tome_r8_post_ft.pt"
+  },
+  {
+    "row": "ResNet50 CAST-conv+perm 2:4, 75.67%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_1_resnet50.tv_in1k\\epoch3.pt"
+  },
+  {
+    "row": "ResNet50d CAST-conv+perm 2:4, 78.00%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_2_resnet50d.ra2_in1k\\epoch3.pt"
+  },
+  {
+    "row": "ResNet101d CAST-conv+perm 2:4, 80.59%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_3_resnet101d.ra2_in1k\\epoch3.pt"
+  },
+  {
+    "row": "ResNet152d CAST-conv+perm 2:4, 81.33%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_4_resnet152d.ra2_in1k\\epoch3.pt"
+  },
+  {
+    "row": "ResNet50 CAST 8:16 dense+perm, 75.87%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50.tv_in1k\\student_final.pt"
+  },
+  {
+    "row": "ResNet50d CAST 8:16 dense+perm, 78.57%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50d.ra2_in1k\\student_final.pt"
+  },
+  {
+    "row": "ResNet101d CAST 8:16 dense+perm, 80.92%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet101d.ra2_in1k\\student_final.pt"
+  },
+  {
+    "row": "ConvNeXtV2-Base CAST 2:4 cert + free-restore, 85.47%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_canonical\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_2to4_tome_r0_post_ft.pt"
+  },
+  {
+    "row": "ConvNeXtV2-Base CAST 12:16 dense+perm, 86.35%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d1216\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d1216_tome_r0_post_ft.pt"
+  },
+  {
+    "row": "ConvNeXtV2-Base CAST 8:16 dense+perm, 85.85%",
+    "checkpoint_status": "final post-FT checkpoint located",
+    "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d816\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d816_tome_r0_post_ft.pt"
+  }
+]

@@ -1,0 +1,180 @@
+{
+  "schema": "deployable_backend_benchmark.v1",
+  "created_unix": 1778598145.123557,
+  "working_directory": "/workspace/deploy_audit",
+  "device_info": {
+    "python": "3.11.10",
+    "platform": "Linux-6.8.0-52-generic-x86_64-with-glibc2.35",
+    "torch": "2.4.1+cu124",
+    "cuda_available": true,
+    "device": "cuda",
+    "cuda": "12.4",
+    "gpu_name": "NVIDIA A40",
+    "gpu_capability": [
+      8,
+      6
+    ],
+    "gpu_total_memory_gb": 44.432,
+    "cudnn": 90100,
+    "bf16_supported": true
+  },
+  "args": {
+    "rows": "deitt_cast_24_tome",
+    "output": "results/smoke_deitt_a40.json",
+    "batch": 16,
+    "warmup": 3,
+    "iters": 5,
+    "device": "cuda",
+    "include_dense_bf16": false,
+    "skip_conv_im2col": false,
+    "check_outputs": false,
+    "check_batch": 2,
+    "continue_on_error": true
+  },
+  "rows": [
+    {
+      "row_id": "deitt_cast_24_tome",
+      "architecture": "DeiT-T",
+      "timm_name": "deit_tiny_patch16_224.fb_in1k",
+      "kind": "linear_2_4",
+      "top1_pct": 65.93,
+      "note": "",
+      "checkpoint_meta": {
+        "checkpoint": "/workspace/deploy_audit/checkpoints/deitt_cast_24_tome.pt",
+        "missing_keys": [],
+        "unexpected_keys": [],
+        "attached_conv_permutations": 0,
+        "sparsity": {
+          "weight_tensors_params": 5647872,
+          "weight_tensors_nnz": 2897664,
+          "weight_sparsity": 0.4869458797933097,
+          "linear_2_4_groups": 1375104,
+          "linear_2_4_bad_groups": 0,
+          "linear_2_4_exact": true,
+          "conv_flat_2_4_groups": 36864,
+          "conv_flat_2_4_bad_groups": 36864,
+          "conv_flat_2_4_exact": false
+        }
+      },
+      "input_size": [
+        3,
+        224,
+        224
+      ],
+      "dense_tensor_autocast_bf16": {
+        "label": "dense_tensor_autocast_bf16",
+        "batch_size": 16,
+        "input_size": [
+          3,
+          224,
+          224
+        ],
+        "warmup_iters": 3,
+        "timed_iters": 5,
+        "input_dtype": "float32",
+        "autocast_bfloat16": true,
+        "median_batch_s": 0.01663488006591797,
+        "median_images_per_second": 961.8344067764738,
+        "mean_batch_s": 0.01668236198425293,
+        "mean_images_per_second": 959.09680026743,
+        "all_batch_s": [
+          0.01663488006591797,
+          0.016271392822265626,
+          0.01637500762939453,
+          0.01693769645690918,
+          0.017192832946777342
+        ]
+      },
+      "dense_tensor_bfloat16": null,
+      "semi_structured_conversion": {
+        "converted": 48,
+        "converted_layers": [
+          "blocks.0.attn.qkv",
+          "blocks.0.attn.proj",
+          "blocks.0.mlp.fc1",
+          "blocks.0.mlp.fc2",
+          "blocks.1.attn.qkv",
+          "blocks.1.attn.proj",
+          "blocks.1.mlp.fc1",
+          "blocks.1.mlp.fc2",
+          "blocks.2.attn.qkv",
+          "blocks.2.attn.proj",
+          "blocks.2.mlp.fc1",
+          "blocks.2.mlp.fc2",
+          "blocks.3.attn.qkv",
+          "blocks.3.attn.proj",
+          "blocks.3.mlp.fc1",
+          "blocks.3.mlp.fc2",
+          "blocks.4.attn.qkv",
+          "blocks.4.attn.proj",
+          "blocks.4.mlp.fc1",
+          "blocks.4.mlp.fc2",
+          "blocks.5.attn.qkv",
+          "blocks.5.attn.proj",
+          "blocks.5.mlp.fc1",
+          "blocks.5.mlp.fc2",
+          "blocks.6.attn.qkv",
+          "blocks.6.attn.proj",
+          "blocks.6.mlp.fc1",
+          "blocks.6.mlp.fc2",
+          "blocks.7.attn.qkv",
+          "blocks.7.attn.proj",
+          "blocks.7.mlp.fc1",
+          "blocks.7.mlp.fc2",
+          "blocks.8.attn.qkv",
+          "blocks.8.attn.proj",
+          "blocks.8.mlp.fc1",
+          "blocks.8.mlp.fc2",
+          "blocks.9.attn.qkv",
+          "blocks.9.attn.proj",
+          "blocks.9.mlp.fc1",
+          "blocks.9.mlp.fc2",
+          "blocks.10.attn.qkv",
+          "blocks.10.attn.proj",
+          "blocks.10.mlp.fc1",
+          "blocks.10.mlp.fc2",
+          "blocks.11.attn.qkv",
+          "blocks.11.attn.proj",
+          "blocks.11.mlp.fc1",
+          "blocks.11.mlp.fc2"
+        ],
+        "skipped": [
+          {
+            "name": "head",
+            "shape": [
+              1000,
+              192
+            ],
+            "reason": "Error original_tensor.shape torch.Size([1000, 192]) is not supported! Both dimensions must be larger or equal than and a multiple of (32, 64)"
+          }
+        ]
+      },
+      "native_linear_2_4_sparse_bfloat16": {
+        "label": "native_linear_2_4_sparse_bfloat16",
+        "batch_size": 16,
+        "input_size": [
+          3,
+          224,
+          224
+        ],
+        "warmup_iters": 3,
+        "timed_iters": 5,
+        "input_dtype": "bfloat16",
+        "autocast_bfloat16": false,
+        "median_batch_s": 0.019306495666503908,
+        "median_images_per_second": 828.7366219318319,
+        "mean_batch_s": 0.01941308822631836,
+        "mean_images_per_second": 824.1862301078286,
+        "all_batch_s": [
+          0.017011552810668944,
+          0.01740015983581543,
+          0.019306495666503908,
+          0.02180496025085449,
+          0.021542272567749023
+        ]
+      },
+      "deployable_speedup_sparse_vs_dense_autocast": 0.8616208945043767,
+      "deployable_speedup_sparse_vs_dense_bfloat16": null
+    }
+  ]
+}

@@ -146,7 +146,7 @@ This methodology paper contains the operational material:
 \begin{enumerate}[leftmargin=2em]
 \item the full RMT-pruning protocol stack (BEMA, Spectral Edge Budgeting, Spectral Edge Reallocation, Hybrid Magnitude--SER);
 \item the CAST and CAST-2E pipelines (cert-aware $k{:}n$ projection, Cin permutation alignment, free restoration, frozen-mask distillation);
-\item the reported hardware speedup measurements, including the A100 native-2:4 throughput data and the $6{:}12 \to 2{:}4$ projection benchmark used to translate non-deployable certificate-selected cells into deployable ones;
+\item the reported hardware speedup measurements and the read-only checkpoint deployability audit that separates native sparse-backend rows from MAC-accounting rows;
 \item the certification-audit numerics (three diagnostics from \mainpaper{}-\S5: top-1 drop vs.\ audit budget, empirical CE exceedances, $\sigma_+ \to B_{\mathrm{proxy}}$ within-cycle correlations);
 \item the extended fully-connected MP-pruning experiments;
 \item ledgered checkpoint validation tables.
@@ -163,7 +163,7 @@ The companion GitHub repository contains:
 \item Approximately 60 Python scripts at the repository root implementing the classical RMT, magnitude, Hybrid Magnitude--SER, four-regime SEB, and drop-threshold protocols (these underlie \mainpaper{}-\S3 and the multi-architecture validation table);
 \item A self-contained \texttt{cast\_2e/} subtree containing the new CAST-2E pipeline: certificate-aware $k{:}n$ projection (with $k=2,4,6,8,12$ and $n=4,8,12,16$ supported), Cin permutation alignment, in-place inline fine-tuning runners avoiding the perm-hook serialization issue, and the suite of speedup benchmarks;
 \item Eighteen sweep-result JSONs covering all three architecture families (ResNet50, ConvNeXtV2-Base, ViT-B/L), six $k{:}n$ patterns, dense vs.\ SER source ablations, and $\alpha_{\mathrm{ser}}$ sweeps;
-\item Five A100 throughput JSONs (dense vs.\ 2:4 vs.\ ToMe-only vs.\ 2:4+ToMe) plus the $6{:}12 \to 2{:}4$ projection-speedup data;
+\item native-2:4 throughput JSONs and the read-only deployability audit ledger used to separate measured sparse-backend rows from MAC-accounting rows;
 \item All post-fine-tuning evaluation JSONs underlying the FLOP table in \mainpaper{}.
 \end{itemize}
 
@@ -202,7 +202,7 @@ RMT_based_pruning_in_deep_learning/
    +- methodology.tex                        # this document
    +- code/                                  # cert-aware k:n + FT runners
    +- scripts/                               # launch / watcher scripts
-   +- benchmarks/                            # A100/L4 throughput JSONs
+   +- benchmarks/                            # A40/A100 throughput JSONs
    +- benchmarks_speedup/                    # 6:12->2:4 speedup JSONs
    +- masks_archive/                         # per-layer mask stats
    +- post_ft_eval/                          # post-FT eval JSONs
@@ -248,8 +248,9 @@ $\alpha$ power-law signal &
 \path{haar_optuna*.py} & \S\ref{sec:seb-protocols}, alpha-signal sweep \\
 A100 throughput benchmark (2:4) &
 \path{cast_2e/code/benchmark_sparse_throughput.py} & \S\ref{sec:speedup} \\
-$6{:}12 \to 2{:}4$ projection speedup &
-\path{cast_2e/code/benchmark_6_12_to_2_4_projection.py} & \S\ref{sec:speedup} \\
+Deployability audit for the CAST FLOP table &
+\path{cast_2e/code/audit_checkpoint_deployability.py},
+\path{cast_2e/code/build_deployable_speedup_ledger.py} & \S\ref{sec:speedup} \\
 $k{:}n$ sweep driver (sweeps in this paper) &
 \path{cast_2e/code/cert_opt_eval_kn*.py} & \S\ref{sec:kn-sweeps} \\
 ViT-B inline FT (row 83.74) &
@@ -438,49 +439,56 @@ The FT budget is matched to the CAST recipe recorded in \S\ref{subsec:cast_stage
 We report two distinct speedups for every CAST-family configuration.
 
 \begin{description}
-\item[Practical (hardware) speedup.] The wall-clock images-per-second improvement on a specific GPU, kernel selection, and batch size. We use NVIDIA's PyTorch \path{torch.sparse.to_sparse_semi_structured} for the 2:4 path on A100 (sparse Tensor Core) and report the same measurement on L4. Other $k{:}n$ patterns do not have native kernels at present and are reported only as theoretical FLOP reductions.
+\item[Practical (hardware) speedup.] The wall-clock images-per-second improvement on a specific GPU, kernel selection, and batch size. We use NVIDIA's PyTorch \path{torch.sparse.to_sparse_semi_structured} for the 2:4 path on Ampere GPUs. Linear rows are measured as dense-tensor versus native 2:4 Linear endpoints. ResNet Conv2d rows are additionally audited through an exact im2col+\(\mathrm{Linear}\) lowering followed by the same native 2:4 backend. Other $k{:}n$ patterns do not have native kernels at present and are reported only as theoretical FLOP reductions.
 \item[Theoretical (FLOP) speedup.] The dense-equivalent multiply-adds removed by zeroing $1 - k/n$ of the weight slots in the projected layers. This is a dense-equivalent arithmetic reduction, not a hardware-speedup guarantee for future sparse kernels. The theoretical and practical numbers diverge whenever the kernel cannot saturate the structured sparsity (e.g., very small batch sizes, or layers with very small $C_{\mathrm{out}}$).
 \end{description}
 
-\subsection{The A100 native-2:4 measurement}
+\subsection{Native-2:4 throughput measurements}
 \label{subsec:a100-bench}
 
-The benchmark in \path{cast_2e/code/benchmark_sparse_throughput.py} converts each Linear layer with a 2:4 mask into a \path{torch.sparse.SparseSemiStructuredTensor} and runs warm-up + measurement passes at the configured batch size. The reported throughput in \path{cast_2e/benchmarks/} is the median of the last 100 iterations after 30 warm-up iterations.
+The benchmark in \path{cast_2e/code/benchmark_deployable_backends.py} converts each compatible Linear layer with a 2:4 mask into a \path{torch.sparse.SparseSemiStructuredTensor} and runs warm-up + measurement passes at the configured batch size. For flattened-2:4 Conv2d checkpoints, it optionally lowers Conv2d to im2col+\(\mathrm{Linear}\), then applies the same native 2:4 Linear backend. The reported throughput is the median after warm-up. The table below reports only read-only measurements of existing checkpoint endpoints; no projection or fine-tuning is performed during this audit.
 
 \begin{table}[h]
 \centering
-\caption{A100 throughput (images/s) for the CAST configurations reported in the paper.}
+\caption{Measured sparse-backend throughput for audited 2:4 checkpoints at batch 128. For Linear rows, deployable speedup is native 2:4 Linear divided by the dense-tensor endpoint for the same checkpoint and model graph. For ResNet rows, deployable speedup is exact im2col+native 2:4 Linear divided by dense im2col; these rows are slower than cuDNN Conv2d end-to-end and are reported as deployable sparse-GEMM audits. The ViT-B no-ToMe row is a separate A100 endpoint comparison for the original dense graph versus the same graph with 2:4 weights.}
 \label{tab:a100-throughput}
 \scriptsize
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrr>{\raggedright\arraybackslash}p{0.23\textwidth}}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}Xrrr>{\raggedright\arraybackslash}p{0.24\textwidth}}
 \toprule
-Configuration & Throughput (im/s) & Speedup vs.\ dense & Source \\
+Configuration & Dense im/s & Sparse im/s & Deploy speedup & Source \\
 \midrule
-Dense ViT-B/16 (batch 128) & 463.6 & --- & \path{vitb_bench.json} \\
-2:4 ViT-B/16 (sparse Tensor Core) & 1254.1 & $2.705\times$ & \path{vitb_bench_with_24.json} \\
-\midrule
-Dense ViT-L/16 + ToMe $r=8$ & 1248.7 & $1.298\times$ & \path{vitl_canonical/results.json} \\
-2:4 ViT-L/16 + ToMe $r=8$ (sparse) & 1489.9 & $1.549\times$ & \path{vitl_canonical/results.json} \\
-\midrule
-Dense ConvNeXtV2-B (batch 128) & 443.0 & --- & \path{convnextv2_canonical/results.json} \\
-2:4 ConvNeXtV2-B (sparse Linear) & 481.2 & $1.086\times$ & \path{convnextv2_canonical/results.json} \\
-\midrule
-L4 ViT-B 2:4 + ToMe (CAST row) & 837 & $1.84\times$ & main FLOP table \\
+ViT-B/16 + ToMe $r=8$ (A40) & 1246.1 & 1700.4 & $1.365\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ViT-B/16, no ToMe & 463.6 & 1254.1 & $2.705\times$ & \path{cast_2e/benchmarks/vitb_bench_with_24.json} \\
+ViT-L/16 + ToMe $r=8$ (A40) & 659.2 & 900.6 & $1.366\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+DeiT-B + ToMe $r=8$ (A40) & 1239.6 & 1691.5 & $1.365\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+DeiT-S + ToMe $r=8$ (A40) & 2708.5 & 3725.8 & $1.376\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+DeiT-T + ToMe $r=8$ (A40) & 5150.5 & 6862.2 & $1.332\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ConvNeXtV2-B (A40) & 512.3 & 644.1 & $1.257\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ResNet50 im2col (A40) & 469.5 & 797.9 & $1.700\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ResNet50d im2col (A40) & 445.2 & 666.2 & $1.496\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ResNet101d im2col (A40) & 228.2 & 357.8 & $1.568\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
+ResNet152d im2col (A40) & 159.9 & 258.7 & $1.617\times$ & \path{data/runpod_a40_deploy_audit_20260512/...} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-The ViT-L speedup (1.55$\times$) is meaningfully smaller than the ViT-B speedup (2.71$\times$). The reason is that ViT-L+ToMe is already operating in a kernel-bandwidth-limited regime; the 2:4 path saves on multiply-adds but not on memory bandwidth. \mainpaper{} reports both figures and discusses this in the speedup section.
+These are backend measurements, not accuracy measurements. Accuracy is the validation Top-1 already reported for each checkpoint. The A40 audit converted the final ViT-B, ViT-L, DeiT-B/S/T, and ConvNeXtV2-Base 2:4 checkpoints without rewriting them. The ResNet im2col endpoints preserve the flattened Conv2d weights and agree with native Conv2d within small numerical tolerance on random inputs, but their sparse-im2col throughput is only \(0.37\)--\(0.44\times\) of cuDNN Conv2d throughput; the im2col rows therefore document a deployable sparse-GEMM path, not an end-to-end Conv2d speedup.
 
-\subsection{The \texorpdfstring{$6{:}12 \to 2{:}4$}{6:12 to 2:4} projection (deployable speedup)}
+We also ran controls on A100 and H100. On A100, absolute throughput was higher than on A40, but the same-checkpoint sparse/dense ratios were lower for the Linear rows; for example, at batch \(128\), ViT-B/16+ToMe was \(2385.2\rightarrow2660.9\) images/s (\(1.12\times\)) and ViT-L/16+ToMe was \(1266.0\rightarrow1525.0\) images/s (\(1.20\times\)). Against an already-BF16 dense endpoint, the sparse advantage was near break-even on most Linear rows. On H100 with the tested PyTorch 2.4.1 build, \path{torch.sparse.to_sparse_semi_structured} constructed sparse tensors but the sparse matmul failed at execution with a compute-capability error, so H100 is not used as deployability evidence for this audit. The raw files are archived under \path{data/deployable_backend_comparison_20260512.csv}.
+
+\subsection{Read-only deployability audit for the FLOP table}
 \label{subsec:6to24}
 
-Several cells in the CAST-2E sweep produce non-deployable patterns ($6{:}12$, $8{:}16$, etc.) that are selected by the cert-inspired sweep. To translate these into deployable speedup numbers, \path{cast_2e/code/benchmark_6_12_to_2_4_projection.py} re-projects each $6{:}12$ block into the nearest $2{:}4$ block by enumerating the $6$ canonical $2{:}4$ patterns inside each $4$-sub-block of a $12$-tuple, choosing per-sub-block the pattern of lowest Hamming distance to the $6{:}12$ pattern. The resulting model is then benchmarked on the same A100 \path{torch.sparse.SparseSemiStructuredTensor} kernel as in \S\ref{subsec:a100-bench}.
+The deployability audit is implemented by \path{cast_2e/code/audit_checkpoint_deployability.py}, \path{cast_2e/code/benchmark_deployable_backends.py}, and \path{cast_2e/code/build_deployable_speedup_ledger.py}. It is read-only: it loads checkpoint tensors, checks sparsity patterns, joins existing throughput logs and A40 backend measurements, and writes \path{data/paper_checkpoint_deployable_speedup_ledger_20260512.csv}. It does not rewrite weights, fine-tune models, or project a non-native checkpoint into a different sparsity pattern.
 
-The audit in \texttt{AUDIT.md} records that none of the $49$ tested ViT-B $6{:}12$ cells projects to a pure $2{:}4$ pattern in every $4$-sub-block; the resulting masks contain a mix of $0$, $2$, and $4$ nonzeros per sub-block. For deployable-speedup purposes \mainpaper{} therefore reports the $2{:}4$ speedup ($2.705\times$ on A100, $1.84\times$ on L4) as the deployable 2:4 number, and reports the $6{:}12$ speedup only as a theoretical FLOP reduction.
+For a row to receive a measured deployable speedup in \mainpaper{}-Table~\mainref{tab:param_to_flop_followup}, the final checkpoint must pass the backend-specific tensor audit and the benchmark log must contain a non-null sparse-backend throughput. For the PyTorch/NVIDIA semi-structured path this means exact \(2{:}4\) structure on all convertible Linear layers and successful \path{torch.sparse.to_sparse_semi_structured} conversion. The audited native Linear rows are ViT-B/16, ViT-L/16, DeiT-B/S/T, and ConvNeXtV2-Base canonical \(2{:}4\). The ResNet CAST-conv+perm rows receive a separate im2col+2:4 sparse-GEMM audit because the saved Conv2d tensors are flattened-2:4 exact but not TensorRT-style input-channel-2:4 exact.
+
+For ResNet, the audit checks two different Conv2d notions. The paper's MAC accounting flattens each Conv2d kernel to a matrix and verifies exact \(2{:}4\) groups in that flattened layout. TensorRT-style Conv2d sparsity is stricter: each group of four input channels must contain at most two nonzeros at every output channel and kernel pixel. The current ResNet50/50d/101d/152d CAST-conv+perm checkpoints pass the flattened MAC audit but fail the TensorRT Conv2d audit, with \(913{,}673\), \(904{,}895\), \(1{,}700{,}005\), and \(2{,}356{,}907\) bad TensorRT groups respectively. Consequently the ResNet deployability number in \mainpaper{} is the exact sparse-im2col backend speedup relative to dense im2col, not a native TensorRT Conv2d speedup.
+
+The wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) rows are also kept as MAC-accounting rows. Projecting them to \(2{:}4\) would change the checkpoint and can change validation accuracy, so those exploratory projection benchmarks are not used as deployable speedup evidence for the fixed paper checkpoints.
 
 \subsection{ResNet and ConvNeXtV2 throughput}
-The ResNet50/d/101d/152d post-FT models with $8{:}16$ structured sparsity have no native sparse kernel for general $k{:}n \neq 2{:}4$, so we report only the theoretical $50\%$ MAC reduction. The ConvNeXtV2-Base D816, D1216, and D48 cells are similarly reported only theoretically for non-$2{:}4$ patterns. The ConvNeXtV2-B canonical $2{:}4$ row, however, does run on the A100 sparse Linear kernel: at batch $128$ we measure $443.0$ images/s dense and $\mathbf{481.2}$ images/s sparse, a $\mathbf{1.086{\times}}$ kernel speedup (Table~\ref{tab:a100-throughput}). The ratio is intentionally smaller than the ViT-B/16 $2.705\times$ and the ViT-L/16 $1.549\times$: pointwise-conv $1{\times}1$ Linears (the only layers we sparsify in ConvNeXtV2 with the current kernel) are roughly $40\%$ of MAC budget, vs.\ $\sim 70\%$ for ViT MLP+QKV; the convolution-side $7{\times}7$ depthwise stems and patchify layers are not 2:4-eligible and bottleneck wall-clock. For deployable inference of the $k{:}n \neq 2{:}4$ ConvNeXtV2 cells we re-project to $2{:}4$ as in \S\ref{subsec:6to24}; this re-projection costs $\approx 0.2$ pp in post-FT top-1 (within the FT-noise band) at the gain of native A100 kernels.
+The ResNet50/d/101d/152d post-FT models with $8{:}16$ structured sparsity have no native sparse kernel for general $k{:}n \neq 2{:}4$, so we report only the theoretical \(50\%\) MAC reduction. The \(2{:}4\) CAST-conv+perm checkpoints support an exact im2col sparse-GEMM deployment audit: at batch \(128\) on A40, sparse im2col is \(1.700\), \(1.496\), \(1.568\), and \(1.617\times\) faster than dense im2col for ResNet50/50d/101d/152d respectively. The same sparse-im2col endpoints remain slower than cuDNN Conv2d end-to-end. The ConvNeXtV2-Base D816, D1216, and D48 cells are reported only theoretically for non-\(2{:}4\) patterns; the saved D816 and D1216 final checkpoints audit as dense tensors, so they should be read as accuracy rows unless the associated mask/runtime artifact is supplied. The ConvNeXtV2-B canonical \(2{:}4\) row runs on the sparse Linear kernel: at batch \(128\) on A40 we measure \(512.3\) images/s dense and \(644.1\) images/s sparse, a \(1.257{\times}\) kernel speedup (Table~\ref{tab:a100-throughput}). The ratio is intentionally smaller than the ViT-B/16 \(2.705\times\) no-ToMe endpoint: pointwise-conv \(\mathrm{nn.Linear}\) layers are only part of the ConvNeXtV2 wall-clock path, while depthwise/stem convolutions and other dense operators remain unchanged.
 
 % =====================================================
 \section{The CAST-2E \texorpdfstring{$k{:}n$}{k:n} sweeps}
@@ -1501,7 +1509,7 @@ The remaining hyperparameters --- learning rate \(10^{-5}\) cosine decay, label 
 \subsection{CAST contribution and limitations}
 \label{subsec:cast_limits}
 
-At a fixed compute budget (\(7.06\)G sparse-execution MACs, identical to the magnitude-2:4 row), a fixed token count (ToMe \(r=8\)), identical fine-tuning schedule, and identical measured wall-clock throughput (\(\sim\!837\) images/s on the L4), the certificate-aware mask choice and the free-restoration step together recover an additional \(\sim\!0.49\) pp top-1 on full ImageNet val.  Ablations indicate that both ingredients matter: the row-wise \texttt{argmin} avoids the loss from sharing one pattern per input group across all rows, and the slot-value semantics of Eq.~\eqref{eq:cast_slot_values} preserve SER fine-tuning at SER-kept slots rather than overwriting every selected slot with the dense value.
+At a fixed compute budget (\(7.06\)G sparse-execution MACs, identical to the magnitude-2:4 row), a fixed token count (ToMe \(r=8\)), identical fine-tuning schedule, and the same executable native-2:4 path, the certificate-aware mask choice and the free-restoration step together recover an additional \(\sim\!0.49\) pp top-1 on full ImageNet val.  The saved CAST checkpoint runs at \(1700.4\) images/s on A40 after native 2:4 conversion. Ablations indicate that both ingredients matter: the row-wise \texttt{argmin} avoids the loss from sharing one pattern per input group across all rows, and the slot-value semantics of Eq.~\eqref{eq:cast_slot_values} preserve SER fine-tuning at SER-kept slots rather than overwriting every selected slot with the dense value.
 
 Current implementation limits:
 \begin{itemize}
@@ -1651,8 +1659,8 @@ For the cells of \S\ref{sec:kn-sweeps} we ran 5-seed replicates: different calib
 ``permutation alignment'' / ``flatten the layer'' & Cin permutation method & \S\ref{sec:cast-2e-pipeline} \\
 ``free restoration'' & Stage-1 slot-value rule & \S\ref{sec:cast-old-app} \\
 ``inline FT'' / perm-hook bug & Why save/load is broken; runner architecture & \S\ref{sec:cast-2e-pipeline} \\
-``A100 / L4 throughput'' & Native 2:4 measurements + benchmark code & \S\ref{sec:speedup} \\
-``$6{:}12 \to 2{:}4$ projection'' & Deployable speedup translation & \S\ref{sec:speedup} \\
+``A40 / A100 throughput'' & Native 2:4 measurements + benchmark code & \S\ref{sec:speedup} \\
+``deployability audit'' / ``deployable speedup'' & Read-only checkpoint tensor audit + throughput-ledger join & \S\ref{sec:speedup} \\
 ``deterministic certificate'' / $B_T$ / Lemma 5.4 audit & Three-bridge audit on 282 cells & \S\ref{sec:cert-audit} \\
 ``checkpoint validation ledger'' & 14-arch sparsity-vs-top-1 ledgers & \S\ref{sec:seb-protocols} \\
 ``Fashion MNIST MP-pruning'' & Fully-connected experiments & \S\ref{sec:fc_num_meth} \\
@@ -1799,78 +1807,78 @@ The estimator we use, \(\hat B_T = \|R_\ell\|_{\mathrm{op}} \cdot \overline{\|\p
 
 \begin{table}[ht]
 \centering
-\caption{CAST \(k{:}n\) structured-projection results for parameter-to-compute conversion. Entries are post-FT ImageNet-1k top-1 under the source checkpoints and sparse-execution MAC assumptions described in the surrounding text. ``Source \(s\)'' is the unstructured Hybrid Magnitude--SER source sparsity; ``dense'' means the projection starts from the dense checkpoint. ``MAC red.'' is the dense-equivalent sparse-execution MAC reduction, not raw parameter sparsity. ``Speedup'' is measured wall-clock speedup when marked ``meas.'' and otherwise the theoretical value \(1/(1-\mathrm{MAC\ red.})\). \(\Delta\) is top-1 minus the corresponding dense baseline, in percentage points.}
+\caption{CAST \(k{:}n\) structured-projection results for parameter-to-compute conversion. Entries are post-FT ImageNet-1k top-1 under the source checkpoints and sparse-execution MAC assumptions described in the surrounding text. ``Source \(s\)'' is the unstructured Hybrid Magnitude--SER source sparsity; ``dense'' means the projection starts from the dense checkpoint. ``MAC red.'' is the dense-equivalent sparse-execution MAC reduction, not raw parameter sparsity. ``Th. spd.'' is the theoretical value \(1/(1-\mathrm{MAC\ red.})\). ``Deploy spd.'' is a measured sparse-backend speedup for the audited checkpoint when available; Linear rows use the A40 native 2:4 endpoint at batch 128, and ResNet rows marked \(\ddag\) use exact im2col+2:4 sparse-GEMM relative to dense im2col. A dash means no exact sparse-backend wall-clock speedup is claimed for that row. \(\Delta\) is top-1 minus the corresponding dense baseline, in percentage points.}
 \label{tab:param_to_flop_followup}
 \scriptsize
-\setlength{\tabcolsep}{1.6pt}
+\setlength{\tabcolsep}{1.1pt}
 \renewcommand{\arraystretch}{1.05}
-\begin{tabularx}{\textwidth}{l c X c c c c c}
+\begin{tabularx}{\textwidth}{l c X c c c c c c}
 \toprule
-Architecture & Source \(s\) & Method & Dense MACs & MAC red. & Speedup & Top-1 (\%) & \(\Delta\) (pp) \\
+Architecture & Source \(s\) & Method & Dense MACs & MAC red. & Th. spd. & Deploy spd. & Top-1 (\%) & \(\Delta\) (pp) \\
 \midrule
-\multicolumn{8}{l}{\textit{ViT family (CAST = cert-aware 2:4 + free restoration + ToMe \(r=8\) + 3-ep distill FT)}} \\
-ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe & 17.56G & 59.81\% & \(1.84\times\) meas. & 82.92 & \(-2.19\) \\
-ViT-B/16   & 0.35 & \textbf{CAST}        & 17.56G & 59.81\% & \(1.84\times\) meas. & \(\mathbf{83.41}\) & \(-1.70\) \\
-ViT-B/16   & 0.35 & \textbf{CAST 6:12 SER+\(\alpha\)=0.5} (no ToMe) & 17.56G & 50\% & \(2.00\times\) theor. & \(\mathbf{83.74}\)\textsuperscript{\S} & \(-1.37\) \\
-ViT-L/16   & 0.35 & CAST                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(1.55\times\) meas. & \(\mathbf{84.37}\) & \(-1.47\) \\
-ViT-L/16   & dense & \textbf{CAST 8:16 dense+perm} (no ToMe) & 61.55G & 50\% & \(2.00\times\) theor. & \(\mathbf{85.33}\)\textsuperscript{\S} & \(-0.51\) \\
-DeiT-B     & 0.35 & CAST                 & 17.56G & 59.81\% & \(2.49\times\) theor. & 80.48 & \(-1.32\) \\
-DeiT-S     & 0.35 & CAST                 & 4.61G  & 59.81\% & \(2.49\times\) theor. & 76.96 & \(-2.89\) \\
-DeiT-T     & 0.35 & CAST                 & 1.26G  & 59.81\% & \(2.49\times\) theor. & 65.93 & \(-6.28\) \\
+\multicolumn{9}{l}{\textit{ViT family (CAST = cert-aware 2:4 + free restoration + ToMe \(r=8\) + 3-ep distill FT)}} \\
+ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\)\textsuperscript{*} & 82.92 & \(-2.19\) \\
+ViT-B/16   & 0.35 & \textbf{CAST}        & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\) & \(\mathbf{83.41}\) & \(-1.70\) \\
+ViT-B/16   & 0.35 & \textbf{CAST 6:12 SER+\(\alpha\)=0.5} (no ToMe) & 17.56G & 50\% & \(2.00\times\) & -- & \(\mathbf{83.74}\)\textsuperscript{\S} & \(-1.37\) \\
+ViT-L/16   & 0.35 & CAST                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(2.50\times\) & \(1.37\times\) & \(\mathbf{84.37}\) & \(-1.47\) \\
+ViT-L/16   & dense & \textbf{CAST 8:16 dense+perm} (no ToMe) & 61.55G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.33}\)\textsuperscript{\S} & \(-0.51\) \\
+DeiT-B     & 0.35 & CAST                 & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\) & 80.48 & \(-1.32\) \\
+DeiT-S     & 0.35 & CAST                 & 4.61G  & 59.81\% & \(2.49\times\) & \(1.38\times\) & 76.96 & \(-2.89\) \\
+DeiT-T     & 0.35 & CAST                 & 1.26G  & 59.81\% & \(2.49\times\) & \(1.33\times\) & 65.93 & \(-6.28\) \\
 \midrule
-\multicolumn{8}{l}{\textit{ResNet family (CAST-conv = cert-aware 1\(\times\)1+3\(\times\)3 2:4 + free restoration; ToMe N/A)}} \\
-ResNet50   & 0.35 & CAST-conv          & 4.09G  & 48.5\%   & \(1.94\times\) theor. & 73.14 & \(-2.99\) \\
-ResNet50   & 0.35 & \textbf{CAST-conv+perm} & 4.09G  & 48.5\%   & \(1.94\times\) theor. & \(\mathbf{75.67}\)\textsuperscript{\ddag} & \(-0.46\) \\
-ResNet50   & dense & \textbf{CAST 8:16 dense+perm} & 4.09G  & 50\%     & \(2.00\times\) theor. & \(\mathbf{75.87}\)\textsuperscript{\S} & \(-0.26\) \\
-ResNet50d  & 0.35 & CAST-conv          & 4.33G  & 49.85\%  & \(1.99\times\) theor. & 78.08 & \(-2.47\) \\
-ResNet50d  & 0.35 & \textbf{CAST-conv+perm} & 4.33G  & 49.85\%  & \(1.99\times\) theor. & \(\mathbf{78.00}\)\textsuperscript{\ddag} & \(-2.55\) \\
-ResNet50d  & dense & \textbf{CAST 8:16 dense+perm} & 4.33G  & 50\%     & \(2.00\times\) theor. & \(\mathbf{78.57}\)\textsuperscript{\S} & \(-1.98\) \\
-ResNet101d & 0.35 & CAST-conv          & 8.0G   & \(\sim\)50\% & \(\sim2.00\times\) theor. & 80.13 & \(-2.13\) \\
-ResNet101d & 0.35 & \textbf{CAST-conv+perm} & 8.0G   & \(\sim\)50\% & \(\sim2.00\times\) theor. & \(\mathbf{80.59}\)\textsuperscript{\ddag} & \(-1.67\) \\
-ResNet101d & dense & \textbf{CAST 8:16 dense+perm} & 8.0G   & 50\%     & \(2.00\times\) theor. & \(\mathbf{80.92}\)\textsuperscript{\S} & \(-1.34\) \\
-ResNet152d & 0.35 & \textbf{CAST-conv+perm} & 11.8G  & \(\sim\)50\% & \(\sim2.00\times\) theor. & \(\mathbf{81.33}\)\textsuperscript{\ddag} & \(-1.53\) \\
+\multicolumn{9}{l}{\textit{ResNet family (CAST-conv = cert-aware 1\(\times\)1+3\(\times\)3 2:4 + free restoration; ToMe N/A)}} \\
+ResNet50   & 0.35 & CAST-conv          & 4.09G  & 48.5\%   & \(1.94\times\) & -- & 73.14 & \(-2.99\) \\
+ResNet50   & 0.35 & \textbf{CAST-conv+perm} & 4.09G  & 48.5\%   & \(1.94\times\) & \(1.70\times\)\textsuperscript{\ddag} & \(\mathbf{75.67}\)\textsuperscript{\ddag} & \(-0.46\) \\
+ResNet50   & dense & \textbf{CAST 8:16 dense+perm} & 4.09G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{75.87}\)\textsuperscript{\S} & \(-0.26\) \\
+ResNet50d  & 0.35 & CAST-conv          & 4.33G  & 49.85\%  & \(1.99\times\) & -- & 78.08 & \(-2.47\) \\
+ResNet50d  & 0.35 & \textbf{CAST-conv+perm} & 4.33G  & 49.85\%  & \(1.99\times\) & \(1.50\times\)\textsuperscript{\ddag} & \(\mathbf{78.00}\)\textsuperscript{\ddag} & \(-2.55\) \\
+ResNet50d  & dense & \textbf{CAST 8:16 dense+perm} & 4.33G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{78.57}\)\textsuperscript{\S} & \(-1.98\) \\
+ResNet101d & 0.35 & CAST-conv          & 8.0G   & \(\sim\)50\% & \(2.00\times\) & -- & 80.13 & \(-2.13\) \\
+ResNet101d & 0.35 & \textbf{CAST-conv+perm} & 8.0G   & \(\sim\)50\% & \(2.00\times\) & \(1.57\times\)\textsuperscript{\ddag} & \(\mathbf{80.59}\)\textsuperscript{\ddag} & \(-1.67\) \\
+ResNet101d & dense & \textbf{CAST 8:16 dense+perm} & 8.0G   & 50\%     & \(2.00\times\) & -- & \(\mathbf{80.92}\)\textsuperscript{\S} & \(-1.34\) \\
+ResNet152d & 0.35 & \textbf{CAST-conv+perm} & 11.8G  & \(\sim\)50\% & \(2.00\times\) & \(1.62\times\)\textsuperscript{\ddag} & \(\mathbf{81.33}\)\textsuperscript{\ddag} & \(-1.53\) \\
 \midrule
-\multicolumn{8}{l}{\textit{ConvNeXt family (CAST on the nn.Linear pointwise convs; ToMe N/A)}} \\
-ConvNeXtV2-Base & 0.35 & \textbf{CAST 2:4 cert + free-restore} & 15.4G & 50\% & \(1.086\times\) meas. & \(\mathbf{85.47}\) & \(-1.25\) \\
-ConvNeXtV2-Base & dense & \textbf{CAST 12:16 dense+perm} (25\% sparse) & 15.4G & 25\% & \(1.33\times\) theor. & \(\mathbf{86.35}\)\textsuperscript{\S} & \(-0.37\) \\
-ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 50\% & \(2.00\times\) theor. & \(\mathbf{85.85}\)\textsuperscript{\S} & \(-0.87\) \\
+\multicolumn{9}{l}{\textit{ConvNeXt family (CAST on the nn.Linear pointwise convs; ToMe N/A)}} \\
+ConvNeXtV2-Base & 0.35 & \textbf{CAST 2:4 cert + free-restore} & 15.4G & 50\% & \(2.00\times\) & \(1.26\times\) & \(\mathbf{85.47}\) & \(-1.25\) \\
+ConvNeXtV2-Base & dense & \textbf{CAST 12:16 dense+perm} (25\% sparse) & 15.4G & 25\% & \(1.33\times\) & -- & \(\mathbf{86.35}\)\textsuperscript{\S} & \(-0.37\) \\
+ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.85}\)\textsuperscript{\S} & \(-0.87\) \\
 \bottomrule
 \end{tabularx}\\[2pt]
-{\footnotesize \textsuperscript{\dag}ViT-L/16 reduction is estimated from the analytical 22.81\% ToMe reduction plus the 50\% 2:4 Linear share. \textsuperscript{\ddag}\textbf{CAST-conv+perm} uses the importance-balanced Cin permutation alignment of Section~\ref{subsec:perm}. \textsuperscript{\S}Rows marked \(\S\) are wider-pattern or lower-sparsity accuracy probes; their speedups are dense-equivalent arithmetic estimates unless a future native kernel is measured.}
+{\footnotesize \textsuperscript{\dag}ViT-L/16 reduction is estimated from the analytical 22.81\% ToMe reduction plus the 50\% 2:4 Linear share. \textsuperscript{\ddag}\textbf{CAST-conv+perm} uses the importance-balanced Cin permutation alignment of Section~\ref{subsec:perm}; deploy speedups on these rows are exact im2col+2:4 sparse-GEMM versus dense im2col, while sparse im2col remains slower than cuDNN Conv2d end-to-end. \textsuperscript{\S}Rows marked \(\S\) are wider-pattern or lower-sparsity accuracy probes; their speedups are dense-equivalent arithmetic estimates unless a native kernel is measured. \textsuperscript{*}The magnitude row uses the same ViT-B 2:4+ToMe deployment path as the CAST row; the deployability audit located the pre-FT magnitude 2:4 artifact but not a separate final post-FT magnitude checkpoint.}
 \end{table}
 
 \paragraph{Hardware-executable acceleration over ToMe at the same accuracy.}
-The ViT-B/16 \(2{:}4{+}\)ToMe executable path reports a measured \emph{wall-clock} speedup over the ToMe-r=8 dense-kernel endpoint: \(589.5\rightarrow\mathbf{836.3}\) \textbf{images/s} on an L4 GPU at batch \(128\), a \(\mathbf{1.41\!\times}\) incremental speedup attributable to the 2:4 kernel switch with ToMe held constant on both endpoints.  The magnitude projection reaches \(82.92\%\); the CAST mask uses the same executable 2:4+ToMe path and reaches \(83.41\%\). For context, the ToMe-only ViT-B/16 (AugReg) reference numbers in \cite{bolya2023tome} Table 8 are \(83.94\%\) at \(r=8\) and \(82.86\%\) at \(r=12\); the magnitude-2:4+ToMe-r=8 baseline at \(82.92\%\) is \(1.02\) pp below the dense-kernel ToMe-r=8 reference. The 2:4 projection step provides hardware-executable sparse acceleration over the ToMe-r=8 endpoint at this accuracy level.  Composed with the analytical \(\sim\!1.30\!\times\) ToMe-only MAC reduction over the dense ViT-B baseline, the implied total speedup over the original dense ViT-B is approximately \(1.84\!\times\), at \(2.19\) pp accuracy cost from the dense \(85.11\%\) checkpoint and \(1.63\) pp from the \(s=0.35\) Hybrid Magnitude--SER source checkpoint at \(84.55\%\).
+The ViT-B/16 \(2{:}4{+}\)ToMe executable path reports a measured \emph{wall-clock} backend speedup over the ToMe-r=8 dense-tensor endpoint: \(1246.1\rightarrow1700.4\) images/s on an A40 GPU at batch \(128\), a \(1.365\times\) incremental speedup attributable to the native 2:4 Linear kernel switch with ToMe held constant on both endpoints.  The magnitude projection reaches \(82.92\%\); the CAST mask uses the same executable 2:4+ToMe path and reaches \(83.41\%\). For context, the ToMe-only ViT-B/16 (AugReg) reference numbers in \cite{bolya2023tome} Table 8 are \(83.94\%\) at \(r=8\) and \(82.86\%\) at \(r=12\); the magnitude-2:4+ToMe-r=8 baseline at \(82.92\%\) is \(1.02\) pp below the dense-kernel ToMe-r=8 reference. The 2:4 projection step provides hardware-executable sparse acceleration over the ToMe-r=8 endpoint at this accuracy level.
 
-\paragraph{A100 hardware-speedup measurements: total dense\(\to\)CAST speedups, all paths reported.}
-The L4 throughput number in the previous paragraph (\(1.41\!\times\)) is the \emph{incremental} speedup from the 2:4 kernel switch with ToMe-r=8 already applied on both endpoints; it is not the total speedup over the original dense ViT-B graph.  To make the total speedup explicit we additionally measured wall-clock throughput on an A100 SXM at batch \(128\) for the un-tokened ViT-B graph (no ToMe, dense vs.\ 2:4) and at the canonical ViT-L 2:4 + ToMe-r=8 endpoint, then composed each result with the ToMe MAC ratio to get a single total-speedup number per architecture.
+\paragraph{Hardware-speedup measurements: exact checkpoint backend switches.}
+The A40 audit in Table~\ref{tab:a100-throughput} is the read-only backend-switch measurement used in the main FLOP table. The A100 no-ToMe ViT-B benchmark remains a separate endpoint comparison for the original dense graph versus the same graph with 2:4 weights.
 
 \medskip
-\noindent\emph{ViT-B/16 paths.}  On A100 the dense ViT-B/16 (no ToMe) ran at \(463.6\) images/s; the same graph with the cert-aware 2:4 mask routed through \texttt{torch.sparse.to\_sparse\_semi\_structured} ran at \(\mathbf{1254.1}\) \textbf{images/s}, a \(\mathbf{2.705\!\times}\) measured \emph{total} speedup over the original dense graph (no ToMe involved on either endpoint, no compounding required).  The L4 \(1.41\!\times\) number from Table~\ref{tab:param_to_flop_followup} composed with the analytical \(1/(1-0.2281)\!\approx\!1.30\!\times\) ToMe-r=8 MAC reduction over dense yields a total dense\(\to\)ToMe\(\to\)2:4 speedup of \(\mathbf{\sim 1.84\!\times}\) on L4 ViT-B/16, the value already cited in the previous paragraph.  Thus on ViT-B/16 the two complete deployment paths give:
+\noindent\emph{ViT-B/16 paths.}  On A40, the saved ViT-B/16 CAST \(2{:}4{+}\)ToMe checkpoint ran at \(1246.1\) images/s with dense tensors and \(1700.4\) images/s after \texttt{torch.sparse.to\_sparse\_semi\_structured} conversion of the 48 eligible Linear layers, a \(1.365\times\) measured sparse-backend speedup with ToMe held fixed.  Separately, on A100 the dense ViT-B/16 graph without ToMe ran at \(463.6\) images/s; the same no-ToMe graph with the cert-aware 2:4 mask routed through the sparse backend ran at \(1254.1\) images/s, a \(2.705\times\) endpoint speedup.  Thus the two measured ViT-B deployment endpoints are:
 \begin{itemize}
 \setlength\itemsep{0pt}
-\item dense \(\to\) 2:4 alone (A100, no ToMe): \(\boldsymbol{2.705\!\times}\) measured;
-\item dense \(\to\) ToMe-r=8 \(\to\) 2:4 (L4): \(\boldsymbol{\sim 1.84\!\times}\) total (\(1.30\!\times\) ToMe MAC \(\times\) \(1.41\!\times\) measured 2:4 kernel switch).
+\item same ToMe-r=8 graph, dense tensors \(\to\) native 2:4 Linear backend (A40): \(\boldsymbol{1.365\!\times}\) measured;
+\item dense no-ToMe graph \(\to\) 2:4 no-ToMe graph (A100): \(\boldsymbol{2.705\!\times}\) measured.
 \end{itemize}
 
 \medskip
-\noindent\emph{ViT-L/16 paths.}  On A100 the canonical ViT-L 2:4 + ToMe-r=8 endpoint of Table~\ref{tab:param_to_flop_followup} ran at \(\mathbf{1489.9}\) \textbf{images/s}, and the same 2:4 weights routed through dense GEMMs (the dense-kernel control) ran at \(1248.7\) images/s, an incremental \(1.193\!\times\) from the 2:4 kernel switch with ToMe held constant.  Composed with the analytical \(\sim\!1.30\!\times\) ToMe-r=8 MAC reduction over the dense ViT-L graph this gives a total dense\(\to\)ToMe\(\to\)2:4 speedup of \(\mathbf{\sim 1.55\!\times}\) on A100 ViT-L/16, at \(-1.47\) pp accuracy from dense (\(84.37\) vs.\ \(85.84\)).  The smaller ViT-L incremental-from-2:4 (\(1.193\!\times\)) reflects ToMe-r=8 already having removed a substantial fraction of the per-block MAC count before the 2:4 kernel runs, leaving less arithmetic for it to accelerate; the total speedup composes correctly because ToMe and 2:4 act on independent axes (token count vs.\ in-channel sparsity).
+\noindent\emph{ViT-L/16 path.}  On A40 the canonical ViT-L \(2{:}4{+}\)ToMe-r=8 checkpoint ran at \(659.2\) images/s with dense tensors and \(900.6\) images/s through the native 2:4 Linear backend, a \(1.366\times\) backend speedup with the checkpoint and ToMe graph held fixed.  The measured speedup is smaller than the theoretical \(2.5\times\) MAC speedup because ToMe, attention, patch embedding, normalization, classifier, and framework overhead are not accelerated by the Linear sparse kernel.
 \begin{itemize}
 \setlength\itemsep{0pt}
-\item dense \(\to\) ToMe-r=8 \(\to\) 2:4 (A100): \(\boldsymbol{\sim 1.55\!\times}\) total (\(1.30\!\times\) ToMe MAC \(\times\) \(1.193\!\times\) measured 2:4 kernel switch).
+\item same ToMe-r=8 graph, dense tensors \(\to\) native 2:4 Linear backend (A40): \(\boldsymbol{1.366\!\times}\) measured.
 \end{itemize}
 
 \medskip
-The largest measured speedup is the \(2.705\!\times\) ViT-B 2:4-alone total speedup on A100, which is above the range of several PyTorch native semi-structured 2:4 reference benchmarks (Mishra et al.\ 2021 report a theoretical \(2\!\times\) for sparse tensor cores; PyTorch \texttt{to\_sparse\_semi\_structured} reference benchmarks on Linear layers typically land in the \(1.6\)--\(2.2\!\times\) range).  The \(\sim 1.55\!\times\) ViT-L total-speedup endpoint is comparatively smaller because ToMe is already removing 22.81\% of MACs upstream; the 2:4 kernel then accelerates the remainder.
+The largest measured endpoint speedup is the \(2.705\!\times\) ViT-B 2:4-alone result on A100. The same-checkpoint A40 ratios are lower but more directly tied to the validation rows in Table~\ref{tab:param_to_flop_followup}. They should be read as implementation-specific backend measurements, not theoretical limits.
 
 \paragraph{ResNet CAST-conv+perm vs.\ dense baseline (full family).}
 The four \texttt{CAST-conv+perm} rows of Table~\ref{tab:param_to_flop_followup} (ResNet50/50d/101d/152d) reach \(75.67\%\), \(78.00\%\), \(80.59\%\), and \(81.33\%\) post-FT respectively, against the \texttt{timm} pretrained dense baselines \(76.13\%\), \(80.55\%\), \(82.26\%\), and \(82.86\%\) of Table~\mainref{tab:multi_arch_hybrid}.  The accuracy gap from dense at \(\sim\!50\%\) sparse-execution MAC reduction is \(-0.46\), \(-2.55\), \(-1.67\), and \(-1.53\) percentage points respectively, with arithmetic mean \(-1.55\) pp across the four ResNet checkpoints.  Two architectural observations follow.  First, the permutation alignment on \texttt{resnet50.tv\_in1k} improves over the no-perm CAST-conv by \(+2.53\) pp (\(75.67\) vs.\ \(73.14\)), confirming the within-channel importance-balance argument of Section~\ref{subsec:perm} for plain ResNets.  On \texttt{resnet50d.ra2\_in1k} the permutation gain is essentially zero (\(78.00\) vs.\ \(78.08\) for no-perm), suggesting that the depth-augmented stem and stride patches of \texttt{resnet50d} already align Cin importance much more uniformly than the plain \texttt{tv\_in1k} variant; ResNet101d shows the same pattern, with a \(+0.46\) pp gain from permutation.  Second, the per-row gaps from dense are \(-0.46\), \(-2.55\), \(-1.67\), and \(-1.53\) pp for ResNet50/50d/101d/152d. For reference, DeiT-B at the same parameter-sparsity scale has a \(-1.32\) pp gap (\(80.48\) vs.\ dense \(81.80\)).
 
 \paragraph{Deployment scope and missing ablations.}
-This row is a deployability demonstration: an unstructured Hybrid Magnitude--SER checkpoint can be converted into a semi-structured 2:4 + token-merged model with real wall-clock acceleration.  It is not a state-of-the-art accuracy/compression claim against specialized structural pruning or 2:4 mask-learning methods, which target the accuracy axis directly.  The current table lacks three companion ablations on the \emph{same} \(s=0.35\) checkpoint and the \emph{same} 3-epoch distillation FT pipeline: (i) ToMe-r=8 only, no 2:4 projection (matching the literature \(\sim\!82.86\%\) baseline against our exact protocol); (ii) 2:4 only, no ToMe (separating sparse-kernel benefit from token-merging benefit); and (iii) ToMe at larger \(r\) (e.g.\ \(r=13\) or \(r=16\)) at matched throughput (testing whether 2:4 beats more aggressive token merging on the accuracy/throughput tradeoff).  Consequently, the \(1.41\!\times\) speedup-over-ToMe claim relies on a literature comparison rather than a same-pipeline ablation, and the comparison against higher-\(r\) ToMe remains unresolved.  Relative to the unstructured Hybrid Magnitude--SER \(s=0.60\) row (\(81.39\%\) top-1 in Table~\mainref{tab:vitb_current_methods}; same parameter-sparsity scale but no FLOP reduction because dense kernels execute the full \(17.56\)G MAC cost on irregular masks), this row reaches \(+1.53\) pp top-1 at slightly lower parameter sparsity (\(53.9\%\) vs.\ \(60\%\)) while producing a hardware-executable \(59.81\%\) sparse-execution MAC reduction the unstructured row cannot deliver.
+This row is a deployability demonstration: an unstructured Hybrid Magnitude--SER checkpoint can be converted into a semi-structured 2:4 + token-merged model with real wall-clock acceleration.  It is not a state-of-the-art accuracy/compression claim against specialized structural pruning or 2:4 mask-learning methods, which target the accuracy axis directly.  The current table lacks three companion ablations on the \emph{same} \(s=0.35\) checkpoint and the \emph{same} 3-epoch distillation FT pipeline: (i) ToMe-r=8 only, no 2:4 projection (matching the literature \(\sim\!82.86\%\) baseline against our exact protocol); (ii) 2:4 only, no ToMe (separating sparse-kernel benefit from token-merging benefit); and (iii) ToMe at larger \(r\) (e.g.\ \(r=13\) or \(r=16\)) at matched throughput (testing whether 2:4 beats more aggressive token merging on the accuracy/throughput tradeoff).  Consequently, the \(1.36\!\times\) same-checkpoint A40 speedup should be read as a backend audit, and the comparison against higher-\(r\) ToMe remains unresolved.  Relative to the unstructured Hybrid Magnitude--SER \(s=0.60\) row (\(81.39\%\) top-1 in Table~\mainref{tab:vitb_current_methods}; same parameter-sparsity scale but no FLOP reduction because dense kernels execute the full \(17.56\)G MAC cost on irregular masks), this row reaches \(+1.53\) pp top-1 at slightly lower parameter sparsity (\(53.9\%\) vs.\ \(60\%\)) while producing a hardware-executable \(59.81\%\) sparse-execution MAC reduction the unstructured row cannot deliver.
 
 \paragraph{CAST: a certificate-aware refinement of the same conversion.}
-The second row of Table~\ref{tab:param_to_flop_followup} replaces the magnitude top-2 selection rule of the first row with a calibration-set discrete search that is motivated by the deterministic mask certificate of Section~\mainref{Main_theory_gen}.  At a fixed compute budget, a fixed token count, an identical fine-tuning schedule, and an identical measured throughput (\(\sim\!837\) images/s on the L4), CAST recovers \textbf{83.41\%} top-1 vs.\ \(82.92\%\) for the magnitude rule --- a \(\mathbf{+0.49}\) \textbf{pp} reduction in the structural-conversion penalty, with everything else held equal.  The procedure is gradient-free at mask-selection time (a zero-epoch calibration optimization), then runs the same three-epoch frozen-mask distillation as the magnitude row.  Two distinct ingredients drive the gain: (i) for each Linear layer's contiguous 4-tuple of input-channel weights, CAST picks the 2-of-4 keep pattern that minimizes the activation-weighted Lemma~\mainref{lem:deterministic_ce_path_bound}-inspired removed-contribution cost \emph{per output row} rather than sharing one pattern across all rows in a group; (ii) when the unstructured mask had fewer than two surviving entries in a 4-tuple, CAST restores the missing slot from the dense pretrained checkpoint at zero sparse-execution FLOP cost --- the prune--restore framing of Theorem~\mainref{thm:deterministic_prune_restore_certificate} applied at the 2:4-pattern granularity.  The full algorithm, the role of the Marchenko--Pastur edge \(\sigma_+(\ell)\) (which built the source SER checkpoint that CAST takes as input), the relation of CAST's cost to Lemma~\mainref{lem:deterministic_ce_path_bound}, and the implementation details (calibration set size, ToMe-aware activation capture, exact 4\(\times\)4 within-group covariance scoring, mask handoff to the fine-tuning stage) are documented in Appendix~\mainref{app:cast}.
+The second row of Table~\ref{tab:param_to_flop_followup} replaces the magnitude top-2 selection rule of the first row with a calibration-set discrete search that is motivated by the deterministic mask certificate of Section~\mainref{Main_theory_gen}.  At a fixed compute budget, a fixed token count, an identical fine-tuning schedule, and the same executable sparse-backend path, CAST recovers \textbf{83.41\%} top-1 vs.\ \(82.92\%\) for the magnitude rule --- a \(\mathbf{+0.49}\) \textbf{pp} reduction in the structural-conversion penalty, with everything else held equal.  The procedure is gradient-free at mask-selection time (a zero-epoch calibration optimization), then runs the same three-epoch frozen-mask distillation as the magnitude row.  Two distinct ingredients drive the gain: (i) for each Linear layer's contiguous 4-tuple of input-channel weights, CAST picks the 2-of-4 keep pattern that minimizes the activation-weighted Lemma~\mainref{lem:deterministic_ce_path_bound}-inspired removed-contribution cost \emph{per output row} rather than sharing one pattern across all rows in a group; (ii) when the unstructured mask had fewer than two surviving entries in a 4-tuple, CAST restores the missing slot from the dense pretrained checkpoint at zero sparse-execution FLOP cost --- the prune--restore framing of Theorem~\mainref{thm:deterministic_prune_restore_certificate} applied at the 2:4-pattern granularity.  The full algorithm, the role of the Marchenko--Pastur edge \(\sigma_+(\ell)\) (which built the source SER checkpoint that CAST takes as input), the relation of CAST's cost to Lemma~\mainref{lem:deterministic_ce_path_bound}, and the implementation details (calibration set size, ToMe-aware activation capture, exact 4\(\times\)4 within-group covariance scoring, mask handoff to the fine-tuning stage) are documented in Appendix~\mainref{app:cast}.
 
 \paragraph{Mapping the CAST pipeline to the certificate theorems.}
 Each major step in the CAST and CAST-conv+perm pipelines has a corresponding certificate-side motivation in the deterministic mask-certificate framework of Section~\mainref{Main_theory_gen}.  Table~\mainref{tab:cast_theory_map} pairs each implementation component with the theorem or lemma that motivates it, and identifies the certificate quantity that the component is designed to improve.

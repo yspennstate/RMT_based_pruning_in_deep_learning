@@ -1,0 +1,3305 @@
+{
+  "schema": "checkpoint_deployability_audit.v1",
+  "n_paths": 10,
+  "n_audited": 10,
+  "n_errors": 0,
+  "rows": [
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_1_resnet50.tv_in1k\\epoch3.pt",
+      "file_size": 102738898,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.45966903701036177,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25502912,
+        "nnz": 13780013,
+        "linear_layers": 1,
+        "conv2d_layers": 53,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 52,
+        "conv_flat_2_4_exact_layers": 52,
+        "conv_flat_2_4_groups": 5861376,
+        "conv_flat_2_4_bad_groups": 0,
+        "conv_tensorrt_2_4_eligible_layers": 52,
+        "conv_tensorrt_2_4_exact_layers": 36,
+        "conv_tensorrt_2_4_groups": 5861376,
+        "conv_tensorrt_2_4_bad_groups": 913673,
+        "expected_kn_eligible_layers": 53,
+        "expected_kn_exact_layers": 52,
+        "expected_kn_groups": 6373376,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2950,
+          "nnz_hist": {
+            "2": 3338,
+            "1": 2277,
+            "0": 651,
+            "3": 2321,
+            "4": 629
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2927,
+          "nnz_hist": {
+            "2": 3374,
+            "3": 2325,
+            "1": 2301,
+            "0": 614,
+            "4": 602
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2954,
+          "nnz_hist": {
+            "2": 3328,
+            "1": 2293,
+            "3": 2333,
+            "0": 641,
+            "4": 621
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11851,
+          "nnz_hist": {
+            "2": 13247,
+            "1": 9210,
+            "0": 2556,
+            "3": 9380,
+            "4": 2471
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 12331,
+          "nnz_hist": {
+            "1": 9135,
+            "0": 3192,
+            "2": 12206,
+            "3": 9143,
+            "4": 3188
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11675,
+          "nnz_hist": {
+            "1": 9196,
+            "2": 13456,
+            "0": 2537,
+            "3": 9080,
+            "4": 2595
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11712,
+          "nnz_hist": {
+            "2": 13414,
+            "4": 2461,
+            "1": 9303,
+            "3": 9251,
+            "0": 2435
+          }
+        },
+        {
+          "name": "layer3.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47556,
+          "nnz_hist": {
+            "3": 36995,
+            "1": 36731,
+            "2": 52476,
+            "0": 10693,
+            "4": 10561
+          }
+        },
+        {
+          "name": "layer3.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47457,
+          "nnz_hist": {
+            "3": 36750,
+            "1": 37092,
+            "2": 52371,
+            "0": 10536,
+            "4": 10707
+          }
+        },
+        {
+          "name": "layer3.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46943,
+          "nnz_hist": {
+            "2": 53714,
+            "1": 36734,
+            "4": 9921,
+            "0": 10065,
+            "3": 37022
+          }
+        },
+        {
+          "name": "layer3.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46666,
+          "nnz_hist": {
+            "2": 54151,
+            "3": 37076,
+            "1": 37022,
+            "0": 9617,
+            "4": 9590
+          }
+        },
+        {
+          "name": "layer3.4.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46372,
+          "nnz_hist": {
+            "2": 54750,
+            "1": 36709,
+            "3": 36785,
+            "0": 9625,
+            "4": 9587
+          }
+        },
+        {
+          "name": "layer3.5.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46757,
+          "nnz_hist": {
+            "3": 37166,
+            "2": 54023,
+            "1": 37004,
+            "4": 9591,
+            "0": 9672
+          }
+        },
+        {
+          "name": "layer4.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 196297,
+          "nnz_hist": {
+            "2": 199865,
+            "0": 49883,
+            "3": 149049,
+            "1": 143779,
+            "4": 47248
+          }
+        },
+        {
+          "name": "layer4.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 189009,
+          "nnz_hist": {
+            "1": 146784,
+            "3": 147600,
+            "2": 212214,
+            "0": 41817,
+            "4": 41409
+          }
+        },
+        {
+          "name": "layer4.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 190216,
+          "nnz_hist": {
+            "0": 42937,
+            "2": 211593,
+            "1": 145078,
+            "3": 149480,
+            "4": 40736
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 4.203232765197754
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_2_resnet50d.ra2_in1k\\epoch3.pt",
+      "file_size": 102821480,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.45986190902787616,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25522016,
+        "nnz": 13785413,
+        "linear_layers": 1,
+        "conv2d_layers": 55,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 54,
+        "conv_flat_2_4_exact_layers": 54,
+        "conv_flat_2_4_groups": 5868288,
+        "conv_flat_2_4_bad_groups": 0,
+        "conv_tensorrt_2_4_eligible_layers": 54,
+        "conv_tensorrt_2_4_exact_layers": 36,
+        "conv_tensorrt_2_4_groups": 5868288,
+        "conv_tensorrt_2_4_bad_groups": 904895,
+        "expected_kn_eligible_layers": 55,
+        "expected_kn_exact_layers": 54,
+        "expected_kn_groups": 6380288,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 2304,
+          "bad_groups": 754,
+          "nnz_hist": {
+            "1": 530,
+            "3": 556,
+            "2": 809,
+            "0": 211,
+            "4": 198
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4608,
+          "bad_groups": 1495,
+          "nnz_hist": {
+            "0": 342,
+            "1": 1158,
+            "2": 1613,
+            "3": 1148,
+            "4": 347
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2902,
+          "nnz_hist": {
+            "1": 2318,
+            "2": 3387,
+            "0": 609,
+            "3": 2268,
+            "4": 634
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2984,
+          "nnz_hist": {
+            "1": 2345,
+            "3": 2305,
+            "2": 3228,
+            "0": 659,
+            "4": 679
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2945,
+          "nnz_hist": {
+            "2": 3277,
+            "0": 602,
+            "1": 2392,
+            "4": 651,
+            "3": 2294
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11748,
+          "nnz_hist": {
+            "3": 9161,
+            "2": 13358,
+            "0": 2577,
+            "1": 9181,
+            "4": 2587
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11869,
+          "nnz_hist": {
+            "2": 13074,
+            "3": 9214,
+            "0": 2603,
+            "4": 2655,
+            "1": 9318
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11929,
+          "nnz_hist": {
+            "3": 9277,
+            "2": 12997,
+            "1": 9295,
+            "0": 2643,
+            "4": 2652
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11689,
+          "nnz_hist": {
+            "3": 9180,
+            "2": 13505,
+            "1": 9142,
+            "0": 2528,
+            "4": 2509
+          }
+        },
+        {
+          "name": "layer3.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47107,
+          "nnz_hist": {
+            "2": 53381,
+            "1": 36605,
+            "0": 10363,
+            "3": 36883,
+            "4": 10224
+          }
+        },
+        {
+          "name": "layer3.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47048,
+          "nnz_hist": {
+            "1": 36794,
+            "2": 53380,
+            "3": 36834,
+            "0": 10234,
+            "4": 10214
+          }
+        },
+        {
+          "name": "layer3.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46721,
+          "nnz_hist": {
+            "1": 36907,
+            "3": 36743,
+            "2": 53932,
+            "4": 9978,
+            "0": 9896
+          }
+        },
+        {
+          "name": "layer3.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46482,
+          "nnz_hist": {
+            "3": 36692,
+            "0": 9625,
+            "1": 37022,
+            "4": 9790,
+            "2": 54327
+          }
+        },
+        {
+          "name": "layer3.4.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46895,
+          "nnz_hist": {
+            "2": 53517,
+            "1": 37024,
+            "0": 10020,
+            "3": 36726,
+            "4": 10169
+          }
+        },
+        {
+          "name": "layer3.5.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46752,
+          "nnz_hist": {
+            "2": 53951,
+            "3": 36904,
+            "1": 36906,
+            "4": 9848,
+            "0": 9847
+          }
+        },
+        {
+          "name": "layer4.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 191664,
+          "nnz_hist": {
+            "0": 44423,
+            "1": 146146,
+            "3": 148336,
+            "2": 207591,
+            "4": 43328
+          }
+        },
+        {
+          "name": "layer4.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 185785,
+          "nnz_hist": {
+            "1": 147611,
+            "2": 217794,
+            "3": 146691,
+            "0": 38634,
+            "4": 39094
+          }
+        },
+        {
+          "name": "layer4.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 589824,
+          "bad_groups": 188126,
+          "nnz_hist": {
+            "0": 40748,
+            "1": 148039,
+            "2": 212911,
+            "3": 146717,
+            "4": 41409
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        },
+        {
+          "name": "fc.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 512000,
+          "bad_groups": 512000,
+          "nnz_hist": {
+            "4": 512000
+          }
+        }
+      ],
+      "seconds": 4.094022989273071
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_3_resnet101d.ra2_in1k\\epoch3.pt",
+      "file_size": 179326585,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.47696055411012395,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 44461920,
+        "nnz": 23255338,
+        "linear_layers": 1,
+        "conv2d_layers": 106,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 105,
+        "conv_flat_2_4_exact_layers": 105,
+        "conv_flat_2_4_groups": 10603264,
+        "conv_flat_2_4_bad_groups": 0,
+        "conv_tensorrt_2_4_eligible_layers": 105,
+        "conv_tensorrt_2_4_exact_layers": 70,
+        "conv_tensorrt_2_4_groups": 10603264,
+        "conv_tensorrt_2_4_bad_groups": 1700005,
+        "expected_kn_eligible_layers": 106,
+        "expected_kn_exact_layers": 105,
+        "expected_kn_groups": 11115264,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 2304,
+          "bad_groups": 757,
+          "nnz_hist": {
+            "2": 784,
+            "1": 565,
+            "0": 198,
+            "3": 553,
+            "4": 204
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4608,
+          "bad_groups": 1477,
+          "nnz_hist": {
+            "1": 1090,
+            "3": 1164,
+            "2": 1691,
+            "0": 350,
+            "4": 313
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2952,
+          "nnz_hist": {
+            "0": 675,
+            "2": 3237,
+            "3": 2202,
+            "1": 2352,
+            "4": 750
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2994,
+          "nnz_hist": {
+            "3": 2301,
+            "0": 679,
+            "1": 2329,
+            "2": 3214,
+            "4": 693
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2941,
+          "nnz_hist": {
+            "1": 2320,
+            "2": 3328,
+            "3": 2308,
+            "0": 627,
+            "4": 633
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11832,
+          "nnz_hist": {
+            "1": 9134,
+            "3": 9222,
+            "2": 13244,
+            "0": 2654,
+            "4": 2610
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11845,
+          "nnz_hist": {
+            "3": 9108,
+            "2": 13119,
+            "0": 2682,
+            "1": 9218,
+            "4": 2737
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11889,
+          "nnz_hist": {
+            "0": 2638,
+            "1": 9334,
+            "2": 13003,
+            "3": 9168,
+            "4": 2721
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11887,
+          "nnz_hist": {
+            "1": 9224,
+            "2": 13103,
+            "3": 9250,
+            "0": 2650,
+            "4": 2637
+          }
+        },
+        {
+          "name": "layer3.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46996,
+          "nnz_hist": {
+            "2": 53477,
+            "1": 36712,
+            "3": 36738,
+            "0": 10271,
+            "4": 10258
+          }
+        },
+        {
+          "name": "layer3.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47047,
+          "nnz_hist": {
+            "1": 37036,
+            "0": 10210,
+            "2": 53163,
+            "3": 36638,
+            "4": 10409
+          }
+        },
+        {
+          "name": "layer3.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47506,
+          "nnz_hist": {
+            "4": 10691,
+            "1": 37069,
+            "2": 52317,
+            "0": 10564,
+            "3": 36815
+          }
+        },
+        {
+          "name": "layer3.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47399,
+          "nnz_hist": {
+            "0": 10631,
+            "2": 52644,
+            "1": 36782,
+            "3": 36754,
+            "4": 10645
+          }
+        },
+        {
+          "name": "layer3.4.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47387,
+          "nnz_hist": {
+            "1": 36880,
+            "0": 10523,
+            "2": 52666,
+            "3": 36848,
+            "4": 10539
+          }
+        },
+        {
+          "name": "layer3.5.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47246,
+          "nnz_hist": {
+            "1": 36810,
+            "3": 37132,
+            "2": 53125,
+            "4": 10114,
+            "0": 10275
+          }
+        },
+        {
+          "name": "layer3.6.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46939,
+          "nnz_hist": {
+            "1": 37100,
+            "2": 53329,
+            "4": 10337,
+            "3": 36602,
+            "0": 10088
+          }
+        },
+        {
+          "name": "layer3.7.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46749,
+          "nnz_hist": {
+            "1": 36839,
+            "3": 36799,
+            "2": 53938,
+            "0": 9930,
+            "4": 9950
+          }
+        },
+        {
+          "name": "layer3.8.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46785,
+          "nnz_hist": {
+            "2": 53770,
+            "1": 37046,
+            "3": 36814,
+            "0": 9855,
+            "4": 9971
+          }
+        },
+        {
+          "name": "layer3.9.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46781,
+          "nnz_hist": {
+            "2": 54038,
+            "4": 9842,
+            "1": 36651,
+            "0": 9986,
+            "3": 36939
+          }
+        },
+        {
+          "name": "layer3.10.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46823,
+          "nnz_hist": {
+            "1": 37010,
+            "0": 9919,
+            "2": 53704,
+            "3": 36798,
+            "4": 10025
+          }
+        },
+        {
+          "name": "layer3.11.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46645,
+          "nnz_hist": {
+            "1": 36641,
+            "2": 54182,
+            "3": 36673,
+            "0": 9988,
+            "4": 9972
+          }
+        },
+        {
+          "name": "layer3.12.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46393,
+          "nnz_hist": {
+            "2": 54564,
+            "1": 36939,
+            "3": 36727,
+            "4": 9666,
+            "0": 9560
+          }
+        },
+        {
+          "name": "layer3.13.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46401,
+          "nnz_hist": {
+            "2": 54490,
+            "1": 36833,
+            "0": 9732,
+            "3": 36505,
+            "4": 9896
+          }
+        },
+        {
+          "name": "layer3.14.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46866,
+          "nnz_hist": {
+            "3": 36917,
+            "2": 53791,
+            "0": 10016,
+            "1": 36783,
+            "4": 9949
+          }
+        },
+        {
+          "name": "layer3.15.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46398,
+          "nnz_hist": {
+            "2": 54723,
+            "3": 36760,
+            "1": 36634,
+            "4": 9638,
+            "0": 9701
+          }
+        }
+      ],
+      "seconds": 8.122512817382812
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\4resnet_2_4_cert_4_resnet152d.ra2_in1k\\epoch3.pt",
+      "file_size": 242388654,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.48294304473591254,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": true,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 60059488,
+        "nnz": 31054176,
+        "linear_layers": 1,
+        "conv2d_layers": 157,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 156,
+        "conv_flat_2_4_exact_layers": 156,
+        "conv_flat_2_4_groups": 14502656,
+        "conv_flat_2_4_bad_groups": 0,
+        "conv_tensorrt_2_4_eligible_layers": 156,
+        "conv_tensorrt_2_4_exact_layers": 104,
+        "conv_tensorrt_2_4_groups": 14502656,
+        "conv_tensorrt_2_4_bad_groups": 2356907,
+        "expected_kn_eligible_layers": 157,
+        "expected_kn_exact_layers": 156,
+        "expected_kn_groups": 15014656,
+        "expected_kn_bad_groups": 512000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 2304,
+          "bad_groups": 762,
+          "nnz_hist": {
+            "0": 210,
+            "1": 519,
+            "3": 585,
+            "2": 813,
+            "4": 177
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4608,
+          "bad_groups": 1486,
+          "nnz_hist": {
+            "1": 1154,
+            "4": 318,
+            "3": 1168,
+            "2": 1643,
+            "0": 325
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 3003,
+          "nnz_hist": {
+            "1": 2379,
+            "4": 654,
+            "2": 3195,
+            "3": 2349,
+            "0": 639
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2936,
+          "nnz_hist": {
+            "4": 689,
+            "3": 2247,
+            "1": 2313,
+            "2": 3311,
+            "0": 656
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2993,
+          "nnz_hist": {
+            "3": 2307,
+            "0": 680,
+            "1": 2319,
+            "2": 3224,
+            "4": 686
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11877,
+          "nnz_hist": {
+            "0": 2628,
+            "2": 13146,
+            "1": 9213,
+            "3": 9285,
+            "4": 2592
+          }
+        },
+        {
+          "name": "layer2.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11888,
+          "nnz_hist": {
+            "1": 9227,
+            "4": 2701,
+            "3": 9187,
+            "2": 13068,
+            "0": 2681
+          }
+        },
+        {
+          "name": "layer2.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11883,
+          "nnz_hist": {
+            "1": 9241,
+            "2": 13090,
+            "3": 9225,
+            "0": 2650,
+            "4": 2658
+          }
+        },
+        {
+          "name": "layer2.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11918,
+          "nnz_hist": {
+            "0": 2665,
+            "1": 9253,
+            "2": 13028,
+            "3": 9253,
+            "4": 2665
+          }
+        },
+        {
+          "name": "layer2.4.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11997,
+          "nnz_hist": {
+            "2": 12922,
+            "3": 9331,
+            "1": 9227,
+            "0": 2718,
+            "4": 2666
+          }
+        },
+        {
+          "name": "layer2.5.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11813,
+          "nnz_hist": {
+            "2": 13263,
+            "3": 9244,
+            "0": 2594,
+            "1": 9194,
+            "4": 2569
+          }
+        },
+        {
+          "name": "layer2.6.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11828,
+          "nnz_hist": {
+            "2": 13194,
+            "1": 9144,
+            "0": 2698,
+            "3": 9116,
+            "4": 2712
+          }
+        },
+        {
+          "name": "layer2.7.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11823,
+          "nnz_hist": {
+            "2": 13233,
+            "1": 9198,
+            "0": 2610,
+            "3": 9228,
+            "4": 2595
+          }
+        },
+        {
+          "name": "layer3.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47213,
+          "nnz_hist": {
+            "1": 36736,
+            "3": 37030,
+            "2": 53177,
+            "0": 10330,
+            "4": 10183
+          }
+        },
+        {
+          "name": "layer3.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47126,
+          "nnz_hist": {
+            "0": 10319,
+            "1": 37077,
+            "2": 52934,
+            "3": 36537,
+            "4": 10589
+          }
+        },
+        {
+          "name": "layer3.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47319,
+          "nnz_hist": {
+            "3": 36716,
+            "1": 36976,
+            "0": 10473,
+            "2": 52688,
+            "4": 10603
+          }
+        },
+        {
+          "name": "layer3.3.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47383,
+          "nnz_hist": {
+            "1": 36847,
+            "3": 36547,
+            "2": 52540,
+            "0": 10686,
+            "4": 10836
+          }
+        },
+        {
+          "name": "layer3.4.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47453,
+          "nnz_hist": {
+            "3": 36956,
+            "1": 36960,
+            "2": 52548,
+            "0": 10495,
+            "4": 10497
+          }
+        },
+        {
+          "name": "layer3.5.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46894,
+          "nnz_hist": {
+            "2": 53429,
+            "3": 36746,
+            "1": 37224,
+            "0": 9909,
+            "4": 10148
+          }
+        },
+        {
+          "name": "layer3.6.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46951,
+          "nnz_hist": {
+            "1": 36918,
+            "3": 36832,
+            "0": 10076,
+            "2": 53511,
+            "4": 10119
+          }
+        },
+        {
+          "name": "layer3.7.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46855,
+          "nnz_hist": {
+            "1": 36830,
+            "2": 53707,
+            "3": 36752,
+            "0": 10064,
+            "4": 10103
+          }
+        },
+        {
+          "name": "layer3.8.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46999,
+          "nnz_hist": {
+            "1": 36836,
+            "3": 36672,
+            "2": 53376,
+            "4": 10327,
+            "0": 10245
+          }
+        },
+        {
+          "name": "layer3.9.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46905,
+          "nnz_hist": {
+            "2": 53565,
+            "0": 10147,
+            "3": 36677,
+            "1": 36839,
+            "4": 10228
+          }
+        },
+        {
+          "name": "layer3.10.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 47001,
+          "nnz_hist": {
+            "2": 53518,
+            "1": 36772,
+            "0": 10165,
+            "4": 10101,
+            "3": 36900
+          }
+        },
+        {
+          "name": "layer3.11.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 147456,
+          "bad_groups": 46892,
+          "nnz_hist": {
+            "0": 9912,
+            "1": 36972,
+            "3": 36988,
+            "2": 53680,
+            "4": 9904
+          }
+        }
+      ],
+      "seconds": 13.101595640182495
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50.tv_in1k\\student_final.pt",
+      "file_size": 102550346,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.45966327296271103,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25502912,
+        "nnz": 13780160,
+        "linear_layers": 1,
+        "conv2d_layers": 53,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 52,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 5861376,
+        "conv_flat_2_4_bad_groups": 3704161,
+        "conv_tensorrt_2_4_eligible_layers": 52,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 5861376,
+        "conv_tensorrt_2_4_bad_groups": 1755920,
+        "expected_kn_eligible_layers": 53,
+        "expected_kn_exact_layers": 52,
+        "expected_kn_groups": 1593344,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 1024,
+          "bad_groups": 338,
+          "nnz_hist": {
+            "2": 368,
+            "3": 270,
+            "1": 230,
+            "4": 68,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 656,
+          "nnz_hist": {
+            "2": 368,
+            "3": 270,
+            "1": 230,
+            "4": 68,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2725,
+          "nnz_hist": {
+            "4": 453,
+            "3": 2272,
+            "1": 2238,
+            "2": 3783,
+            "0": 470
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 6306,
+          "nnz_hist": {
+            "1": 2054,
+            "2": 2910,
+            "4": 1129,
+            "3": 2014,
+            "0": 1109
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1673,
+          "nnz_hist": {
+            "3": 1128,
+            "4": 545,
+            "1": 794,
+            "0": 712,
+            "2": 917
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 3179,
+          "nnz_hist": {
+            "3": 1128,
+            "4": 545,
+            "1": 794,
+            "0": 712,
+            "2": 917
+          }
+        },
+        {
+          "name": "layer1.0.downsample.0.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1323,
+          "nnz_hist": {
+            "4": 307,
+            "2": 1422,
+            "1": 1072,
+            "3": 1016,
+            "0": 279
+          }
+        },
+        {
+          "name": "layer1.0.downsample.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2674,
+          "nnz_hist": {
+            "4": 307,
+            "2": 1422,
+            "1": 1072,
+            "3": 1016,
+            "0": 279
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "3": 1187,
+            "1": 911,
+            "2": 1162,
+            "4": 349,
+            "0": 487
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2934,
+          "nnz_hist": {
+            "3": 1187,
+            "1": 911,
+            "2": 1162,
+            "4": 349,
+            "0": 487
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2739,
+          "nnz_hist": {
+            "0": 487,
+            "3": 2288,
+            "1": 2216,
+            "2": 3774,
+            "4": 451
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 6195,
+          "nnz_hist": {
+            "1": 1999,
+            "2": 3021,
+            "4": 1100,
+            "3": 1997,
+            "0": 1099
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1260,
+          "nnz_hist": {
+            "2": 1559,
+            "0": 214,
+            "3": 1029,
+            "1": 1063,
+            "4": 231
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2537,
+          "nnz_hist": {
+            "2": 1559,
+            "0": 214,
+            "3": 1029,
+            "1": 1063,
+            "4": 231
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1449,
+          "nnz_hist": {
+            "2": 1212,
+            "3": 1048,
+            "1": 1020,
+            "4": 401,
+            "0": 415
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2884,
+          "nnz_hist": {
+            "2": 1212,
+            "3": 1048,
+            "1": 1020,
+            "4": 401,
+            "0": 415
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2924,
+          "nnz_hist": {
+            "2": 3406,
+            "1": 2278,
+            "3": 2354,
+            "0": 608,
+            "4": 570
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5591,
+          "nnz_hist": {
+            "3": 2265,
+            "2": 3625,
+            "0": 514,
+            "1": 2287,
+            "4": 525
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1215,
+          "nnz_hist": {
+            "3": 996,
+            "2": 1656,
+            "1": 1016,
+            "4": 219,
+            "0": 209
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2440,
+          "nnz_hist": {
+            "3": 996,
+            "2": 1656,
+            "1": 1016,
+            "4": 219,
+            "0": 209
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 8192,
+          "bad_groups": 2828,
+          "nnz_hist": {
+            "3": 2166,
+            "2": 2693,
+            "1": 1852,
+            "4": 662,
+            "0": 819
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 8192,
+          "bad_groups": 5499,
+          "nnz_hist": {
+            "3": 2166,
+            "2": 2693,
+            "1": 1852,
+            "4": 662,
+            "0": 819
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 36864,
+          "bad_groups": 11383,
+          "nnz_hist": {
+            "2": 14166,
+            "1": 9167,
+            "3": 9303,
+            "0": 2148,
+            "4": 2080
+          }
+        },
+        {
+          "name": "layer2.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 36864,
+          "bad_groups": 23326,
+          "nnz_hist": {
+            "3": 9087,
+            "1": 9231,
+            "2": 13538,
+            "4": 2540,
+            "0": 2468
+          }
+        },
+        {
+          "name": "layer2.0.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 16384,
+          "bad_groups": 4750,
+          "nnz_hist": {
+            "2": 6861,
+            "3": 4016,
+            "0": 711,
+            "1": 4062,
+            "4": 734
+          }
+        }
+      ],
+      "seconds": 5.314205169677734
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet50d.ra2_in1k\\student_final.pt",
+      "file_size": 102631930,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.45986085111771735,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 25522016,
+        "nnz": 13785440,
+        "linear_layers": 1,
+        "conv2d_layers": 55,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 54,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 5868288,
+        "conv_flat_2_4_bad_groups": 3704198,
+        "conv_tensorrt_2_4_eligible_layers": 54,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 5868288,
+        "conv_tensorrt_2_4_bad_groups": 1742537,
+        "expected_kn_eligible_layers": 55,
+        "expected_kn_exact_layers": 54,
+        "expected_kn_groups": 1595072,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 2304,
+          "bad_groups": 738,
+          "nnz_hist": {
+            "2": 840,
+            "1": 549,
+            "0": 177,
+            "3": 573,
+            "4": 165
+          }
+        },
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 2304,
+          "bad_groups": 1545,
+          "nnz_hist": {
+            "2": 759,
+            "1": 527,
+            "3": 525,
+            "0": 246,
+            "4": 247
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4608,
+          "bad_groups": 1381,
+          "nnz_hist": {
+            "0": 256,
+            "2": 1832,
+            "1": 1139,
+            "3": 1111,
+            "4": 270
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4608,
+          "bad_groups": 3075,
+          "nnz_hist": {
+            "2": 1533,
+            "1": 1160,
+            "3": 1106,
+            "4": 418,
+            "0": 391
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 1024,
+          "bad_groups": 309,
+          "nnz_hist": {
+            "1": 264,
+            "3": 256,
+            "2": 402,
+            "0": 49,
+            "4": 53
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 622,
+          "nnz_hist": {
+            "1": 264,
+            "3": 256,
+            "2": 402,
+            "0": 49,
+            "4": 53
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2761,
+          "nnz_hist": {
+            "2": 3686,
+            "3": 2256,
+            "1": 2272,
+            "0": 497,
+            "4": 505
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5975,
+          "nnz_hist": {
+            "1": 2251,
+            "3": 2301,
+            "2": 3241,
+            "0": 724,
+            "4": 699
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1327,
+          "nnz_hist": {
+            "2": 1384,
+            "3": 976,
+            "1": 1092,
+            "0": 293,
+            "4": 351
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2712,
+          "nnz_hist": {
+            "2": 1384,
+            "3": 976,
+            "1": 1092,
+            "0": 293,
+            "4": 351
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1295,
+          "nnz_hist": {
+            "2": 1495,
+            "3": 1021,
+            "0": 263,
+            "1": 1043,
+            "4": 274
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2601,
+          "nnz_hist": {
+            "2": 1495,
+            "3": 1021,
+            "0": 263,
+            "1": 1043,
+            "4": 274
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1347,
+          "nnz_hist": {
+            "4": 317,
+            "1": 1018,
+            "2": 1408,
+            "3": 1030,
+            "0": 323
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2688,
+          "nnz_hist": {
+            "4": 317,
+            "1": 1018,
+            "2": 1408,
+            "3": 1030,
+            "0": 323
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2774,
+          "nnz_hist": {
+            "4": 505,
+            "1": 2281,
+            "2": 3662,
+            "3": 2269,
+            "0": 499
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5958,
+          "nnz_hist": {
+            "2": 3258,
+            "1": 2409,
+            "3": 2265,
+            "4": 678,
+            "0": 606
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1206,
+          "nnz_hist": {
+            "2": 1682,
+            "1": 1001,
+            "3": 997,
+            "0": 207,
+            "4": 209
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2414,
+          "nnz_hist": {
+            "2": 1682,
+            "1": 1001,
+            "3": 997,
+            "0": 207,
+            "4": 209
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1203,
+          "nnz_hist": {
+            "3": 1007,
+            "1": 1025,
+            "4": 196,
+            "2": 1681,
+            "0": 187
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2415,
+          "nnz_hist": {
+            "3": 1007,
+            "1": 1025,
+            "4": 196,
+            "2": 1681,
+            "0": 187
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2758,
+          "nnz_hist": {
+            "1": 2316,
+            "0": 460,
+            "2": 3682,
+            "3": 2280,
+            "4": 478
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5876,
+          "nnz_hist": {
+            "3": 2219,
+            "2": 3340,
+            "1": 2299,
+            "4": 699,
+            "0": 659
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1241,
+          "nnz_hist": {
+            "1": 1020,
+            "4": 193,
+            "2": 1628,
+            "3": 1048,
+            "0": 207
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2468,
+          "nnz_hist": {
+            "1": 1020,
+            "4": 193,
+            "2": 1628,
+            "3": 1048,
+            "0": 207
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 8192,
+          "bad_groups": 2814,
+          "nnz_hist": {
+            "3": 2174,
+            "2": 2690,
+            "0": 766,
+            "4": 640,
+            "1": 1922
+          }
+        }
+      ],
+      "seconds": 4.403880596160889
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_results_2026_05_10\\pod3_4resnet_8_16_chain\\resnet101d.ra2_in1k\\student_final.pt",
+      "file_size": 178914370,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.4769593395876741,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 44461920,
+        "nnz": 23255392,
+        "linear_layers": 1,
+        "conv2d_layers": 106,
+        "linear_native_2_4_eligible_layers": 1,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 0,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 2048000,
+        "linear_native_2_4_groups": 512000,
+        "linear_native_2_4_bad_groups": 512000,
+        "conv_flat_2_4_eligible_layers": 105,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 10603264,
+        "conv_flat_2_4_bad_groups": 6710639,
+        "conv_tensorrt_2_4_eligible_layers": 105,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 10603264,
+        "conv_tensorrt_2_4_bad_groups": 3182676,
+        "expected_kn_eligible_layers": 106,
+        "expected_kn_exact_layers": 105,
+        "expected_kn_groups": 2778816,
+        "expected_kn_bad_groups": 128000
+      },
+      "sample_failing_layers": [
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 2304,
+          "bad_groups": 694,
+          "nnz_hist": {
+            "1": 566,
+            "2": 919,
+            "3": 572,
+            "4": 122,
+            "0": 125
+          }
+        },
+        {
+          "name": "conv1.3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 2304,
+          "bad_groups": 1566,
+          "nnz_hist": {
+            "2": 738,
+            "1": 473,
+            "3": 505,
+            "4": 286,
+            "0": 302
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4608,
+          "bad_groups": 1397,
+          "nnz_hist": {
+            "1": 1139,
+            "3": 1141,
+            "0": 257,
+            "2": 1815,
+            "4": 256
+          }
+        },
+        {
+          "name": "conv1.6.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4608,
+          "bad_groups": 3140,
+          "nnz_hist": {
+            "3": 1062,
+            "1": 1098,
+            "2": 1468,
+            "0": 481,
+            "4": 499
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 1024,
+          "bad_groups": 340,
+          "nnz_hist": {
+            "2": 376,
+            "1": 220,
+            "3": 284,
+            "4": 56,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1024,
+          "bad_groups": 648,
+          "nnz_hist": {
+            "2": 376,
+            "1": 220,
+            "3": 284,
+            "4": 56,
+            "0": 88
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2827,
+          "nnz_hist": {
+            "3": 2277,
+            "0": 529,
+            "1": 2319,
+            "2": 3541,
+            "4": 550
+          }
+        },
+        {
+          "name": "layer1.0.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5880,
+          "nnz_hist": {
+            "4": 679,
+            "2": 3336,
+            "1": 2327,
+            "3": 2239,
+            "0": 635
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1387,
+          "nnz_hist": {
+            "4": 356,
+            "2": 1312,
+            "0": 346,
+            "3": 1031,
+            "1": 1051
+          }
+        },
+        {
+          "name": "layer1.0.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2784,
+          "nnz_hist": {
+            "4": 356,
+            "2": 1312,
+            "0": 346,
+            "3": 1031,
+            "1": 1051
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1301,
+          "nnz_hist": {
+            "3": 1006,
+            "0": 279,
+            "2": 1478,
+            "1": 1038,
+            "4": 295
+          }
+        },
+        {
+          "name": "layer1.0.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2618,
+          "nnz_hist": {
+            "3": 1006,
+            "0": 279,
+            "2": 1478,
+            "1": 1038,
+            "4": 295
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1450,
+          "nnz_hist": {
+            "3": 1132,
+            "1": 924,
+            "4": 318,
+            "0": 422,
+            "2": 1300
+          }
+        },
+        {
+          "name": "layer1.1.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2796,
+          "nnz_hist": {
+            "3": 1132,
+            "1": 924,
+            "4": 318,
+            "0": 422,
+            "2": 1300
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2814,
+          "nnz_hist": {
+            "2": 3590,
+            "1": 2283,
+            "3": 2287,
+            "0": 529,
+            "4": 527
+          }
+        },
+        {
+          "name": "layer1.1.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5791,
+          "nnz_hist": {
+            "0": 589,
+            "3": 2260,
+            "2": 3425,
+            "1": 2322,
+            "4": 620
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1267,
+          "nnz_hist": {
+            "3": 1026,
+            "2": 1552,
+            "1": 1046,
+            "0": 231,
+            "4": 241
+          }
+        },
+        {
+          "name": "layer1.1.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2544,
+          "nnz_hist": {
+            "3": 1026,
+            "2": 1552,
+            "1": 1046,
+            "0": 231,
+            "4": 241
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1378,
+          "nnz_hist": {
+            "3": 1078,
+            "2": 1393,
+            "1": 972,
+            "4": 300,
+            "0": 353
+          }
+        },
+        {
+          "name": "layer1.2.conv1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2703,
+          "nnz_hist": {
+            "3": 1078,
+            "2": 1393,
+            "1": 972,
+            "4": 300,
+            "0": 353
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 9216,
+          "bad_groups": 2785,
+          "nnz_hist": {
+            "3": 2260,
+            "1": 2286,
+            "4": 525,
+            "2": 3633,
+            "0": 512
+          }
+        },
+        {
+          "name": "layer1.2.conv2.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 9216,
+          "bad_groups": 5827,
+          "nnz_hist": {
+            "1": 2311,
+            "2": 3389,
+            "3": 2273,
+            "0": 612,
+            "4": 631
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 4096,
+          "bad_groups": 1244,
+          "nnz_hist": {
+            "1": 1005,
+            "3": 1041,
+            "0": 221,
+            "4": 203,
+            "2": 1626
+          }
+        },
+        {
+          "name": "layer1.2.conv3.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 4096,
+          "bad_groups": 2470,
+          "nnz_hist": {
+            "1": 1005,
+            "3": 1041,
+            "0": 221,
+            "4": 203,
+            "2": 1626
+          }
+        },
+        {
+          "name": "layer2.0.conv1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 8192,
+          "bad_groups": 2736,
+          "nnz_hist": {
+            "4": 641,
+            "2": 2749,
+            "0": 670,
+            "3": 2095,
+            "1": 2037
+          }
+        }
+      ],
+      "seconds": 9.099394798278809
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_canonical\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_2to4_tome_r0_post_ft.pt",
+      "file_size": 439855072,
+      "expected_k": 2,
+      "expected_n": 4,
+      "sparsity_over_weight_tensors": 0.47939988158605207,
+      "linear_native_2_4_exact": true,
+      "linear_native_2_4_convertible_exact": true,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "native_linear_2_4_candidate_with_skipped_shapes",
+      "totals": {
+        "params": 88422016,
+        "nnz": 46032512,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 73,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 72,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 0,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "conv_tensorrt_2_4_eligible_layers": 3,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 688128,
+        "conv_tensorrt_2_4_bad_groups": 688128,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 73,
+        "expected_kn_groups": 21884416,
+        "expected_kn_bad_groups": 689664
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.2.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 131072,
+          "bad_groups": 131072,
+          "nnz_hist": {
+            "4": 131072
+          }
+        },
+        {
+          "name": "stages.2.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 131072,
+          "bad_groups": 131072,
+          "nnz_hist": {
+            "4": 131072
+          }
+        },
+        {
+          "name": "stages.2.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 131072,
+          "bad_groups": 131072,
+          "nnz_hist": {
+            "4": 131072
+          }
+        },
+        {
+          "name": "stages.3.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 524288,
+          "bad_groups": 524288,
+          "nnz_hist": {
+            "4": 524288
+          }
+        },
+        {
+          "name": "stages.3.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 524288,
+          "bad_groups": 524288,
+          "nnz_hist": {
+            "4": 524288
+          }
+        },
+        {
+          "name": "stages.3.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 524288,
+          "bad_groups": 524288,
+          "nnz_hist": {
+            "4": 524288
+          }
+        }
+      ],
+      "seconds": 10.35327410697937
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d1216\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d1216_tome_r0_post_ft.pt",
+      "file_size": 355038970,
+      "expected_k": 12,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.0,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 88422016,
+        "nnz": 88422016,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 21194752,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "conv_tensorrt_2_4_eligible_layers": 3,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 688128,
+        "conv_tensorrt_2_4_bad_groups": 688128,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 0,
+        "expected_kn_groups": 5471104,
+        "expected_kn_bad_groups": 5471104
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "12:16",
+          "groups": 384,
+          "bad_groups": 384,
+          "nnz_hist": {
+            "16": 384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "12:16",
+          "groups": 8192,
+          "bad_groups": 8192,
+          "nnz_hist": {
+            "16": 8192
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "12:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        }
+      ],
+      "seconds": 6.009322166442871
+    },
+    {
+      "path": "C:\\Users\\owner\\Downloads\\cast_2e_resnet_review\\checkpoints_for_drive\\convnextv2_d816\\convnextv2_base.fcmae_ft_in22k_in1k_cast2e_d816_tome_r0_post_ft.pt",
+      "file_size": 355038586,
+      "expected_k": 8,
+      "expected_n": 16,
+      "sparsity_over_weight_tensors": 0.0,
+      "linear_native_2_4_exact": false,
+      "linear_native_2_4_convertible_exact": false,
+      "conv_flat_2_4_exact": false,
+      "conv_tensorrt_2_4_exact": false,
+      "expected_kn_exact": false,
+      "native_deployability_interpretation": "not_native_linear_2_4",
+      "totals": {
+        "params": 88422016,
+        "nnz": 88422016,
+        "linear_layers": 73,
+        "conv2d_layers": 40,
+        "linear_native_2_4_eligible_layers": 73,
+        "linear_native_2_4_exact_layers": 0,
+        "linear_native_2_4_convertible_layers": 72,
+        "linear_native_2_4_exact_convertible_layers": 0,
+        "linear_native_2_4_unsupported_shape_layers": 1,
+        "linear_native_2_4_unsupported_shape_params": 1024000,
+        "linear_native_2_4_groups": 21194752,
+        "linear_native_2_4_bad_groups": 21194752,
+        "conv_flat_2_4_eligible_layers": 4,
+        "conv_flat_2_4_exact_layers": 0,
+        "conv_flat_2_4_groups": 689664,
+        "conv_flat_2_4_bad_groups": 689664,
+        "conv_tensorrt_2_4_eligible_layers": 3,
+        "conv_tensorrt_2_4_exact_layers": 0,
+        "conv_tensorrt_2_4_groups": 688128,
+        "conv_tensorrt_2_4_bad_groups": 688128,
+        "expected_kn_eligible_layers": 77,
+        "expected_kn_exact_layers": 0,
+        "expected_kn_groups": 5471104,
+        "expected_kn_bad_groups": 5471104
+      },
+      "sample_failing_layers": [
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 1536,
+          "bad_groups": 1536,
+          "nnz_hist": {
+            "4": 1536
+          }
+        },
+        {
+          "name": "stem.0.weight",
+          "layer_type": "conv2d_flat",
+          "check": "8:16",
+          "groups": 384,
+          "bad_groups": 384,
+          "nnz_hist": {
+            "16": 384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "4": 16384
+          }
+        },
+        {
+          "name": "stages.0.blocks.2.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 4096,
+          "bad_groups": 4096,
+          "nnz_hist": {
+            "16": 4096
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d",
+          "check": "TensorRT Conv2d 2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "2:4",
+          "groups": 32768,
+          "bad_groups": 32768,
+          "nnz_hist": {
+            "4": 32768
+          }
+        },
+        {
+          "name": "stages.1.downsample.1.weight",
+          "layer_type": "conv2d_flat",
+          "check": "8:16",
+          "groups": 8192,
+          "bad_groups": 8192,
+          "nnz_hist": {
+            "16": 8192
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.0.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc1.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "2:4",
+          "groups": 65536,
+          "bad_groups": 65536,
+          "nnz_hist": {
+            "4": 65536
+          }
+        },
+        {
+          "name": "stages.1.blocks.1.mlp.fc2.weight",
+          "layer_type": "linear",
+          "check": "8:16",
+          "groups": 16384,
+          "bad_groups": 16384,
+          "nnz_hist": {
+            "16": 16384
+          }
+        }
+      ],
+      "seconds": 6.252241373062134
+    }
+  ],
+  "errors": []
+}
