@@ -1,0 +1,142 @@
+[
+  {
+    "row_id": "vitb_cast_24_tome",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "64",
+    "dense_ips": "1191.8034783491407",
+    "sparse_ips": "1654.543676723073",
+    "speedup_x": "1.388268877193503",
+    "speedup_vs_bf16_x": "1.032292969098439",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_sweep_a40_b64.json"
+  },
+  {
+    "row_id": "vitl_cast_24_tome",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "64",
+    "dense_ips": "620.8190813579647",
+    "sparse_ips": "865.5668703837908",
+    "speedup_x": "1.3942336767266732",
+    "speedup_vs_bf16_x": "1.0599954919080057",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_sweep_a40_b64.json"
+  },
+  {
+    "row_id": "deitb_cast_24_tome",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "64",
+    "dense_ips": "1189.5588748195603",
+    "sparse_ips": "1646.686176298075",
+    "speedup_x": "1.3842830406757753",
+    "speedup_vs_bf16_x": "1.035363006346781",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_sweep_a40_b64.json"
+  },
+  {
+    "row_id": "deits_cast_24_tome",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "2708.55353568278",
+    "sparse_ips": "3715.5642310733615",
+    "speedup_x": "1.371789105189952",
+    "speedup_vs_bf16_x": "0.9949064183513777",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_full_a40_b128_with_dense_bf16.json"
+  },
+  {
+    "row_id": "deitt_cast_24_tome",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "5158.414786383937",
+    "sparse_ips": "6859.3754152389265",
+    "speedup_x": "1.3297448342744396",
+    "speedup_vs_bf16_x": "0.9750181529681943",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_full_a40_b128_with_dense_bf16.json"
+  },
+  {
+    "row_id": "convnextv2_cast_24",
+    "endpoint": "linear_native_2_4_best_a40",
+    "batch": "64",
+    "dense_ips": "499.2899858663797",
+    "sparse_ips": "646.5245101773794",
+    "speedup_x": "1.2948877976302988",
+    "speedup_vs_bf16_x": "0.8107040914644102",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\linear_sweep_a40_b64.json"
+  },
+  {
+    "row_id": "resnet50_cast_conv_perm",
+    "endpoint": "conv_im2col_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "469.4555085754765",
+    "sparse_ips": "797.9280106698491",
+    "speedup_x": "1.6996882475425519",
+    "speedup_vs_native_conv_x": "0.4373702587042686",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\conv_all_a40_b128.json"
+  },
+  {
+    "row_id": "resnet50d_cast_conv_perm",
+    "endpoint": "conv_im2col_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "445.186249815448",
+    "sparse_ips": "666.1859907619057",
+    "speedup_x": "1.4964208598941975",
+    "speedup_vs_native_conv_x": "0.37216554951476694",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\conv_all_a40_b128.json"
+  },
+  {
+    "row_id": "resnet101d_cast_conv_perm",
+    "endpoint": "conv_im2col_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "228.21874198449288",
+    "sparse_ips": "357.76801014711435",
+    "speedup_x": "1.5676539404087335",
+    "speedup_vs_native_conv_x": "0.38144524302833693",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\conv_all_a40_b128.json"
+  },
+  {
+    "row_id": "resnet152d_cast_conv_perm",
+    "endpoint": "conv_im2col_native_2_4_best_a40",
+    "batch": "128",
+    "dense_ips": "159.94641687648738",
+    "sparse_ips": "258.6874187111812",
+    "speedup_x": "1.617338004582765",
+    "speedup_vs_native_conv_x": "0.38585187228256035",
+    "source_file": "data\\runpod_a40_deploy_audit_20260512\\conv_all_a40_b128.json"
+  },
+  {
+    "row_id": "resnet50_cast_conv_perm",
+    "endpoint": "conv1x1_sparse_linear_control_a40",
+    "batch": "128",
+    "dense_ips": "1360.080013213935",
+    "sparse_ips": "1478.732096759501",
+    "speedup_x": "1.0872390465213775",
+    "speedup_vs_native_conv_x": "0.8128943655321036",
+    "source_file": "data/runpod_a40_deploy_audit_20260512/resnet_1x1_a40_b128.json"
+  },
+  {
+    "row_id": "resnet50d_cast_conv_perm",
+    "endpoint": "conv1x1_sparse_linear_control_a40",
+    "batch": "128",
+    "dense_ips": "1311.645940055808",
+    "sparse_ips": "1426.727430282425",
+    "speedup_x": "1.0877382277581102",
+    "speedup_vs_native_conv_x": "0.8021855172490036",
+    "source_file": "data/runpod_a40_deploy_audit_20260512/resnet_1x1_a40_b128.json"
+  },
+  {
+    "row_id": "resnet101d_cast_conv_perm",
+    "endpoint": "conv1x1_sparse_linear_control_a40",
+    "batch": "128",
+    "dense_ips": "674.6982757753984",
+    "sparse_ips": "729.5945655580571",
+    "speedup_x": "1.0813642064218543",
+    "speedup_vs_native_conv_x": "0.7879412447583217",
+    "source_file": "data/runpod_a40_deploy_audit_20260512/resnet_1x1_a40_b128.json"
+  },
+  {
+    "row_id": "resnet152d_cast_conv_perm",
+    "endpoint": "conv1x1_sparse_linear_control_a40",
+    "batch": "128",
+    "dense_ips": "477.52303505942245",
+    "sparse_ips": "516.6755128924694",
+    "speedup_x": "1.08199076266169",
+    "speedup_vs_native_conv_x": "0.7824517980781593",
+    "source_file": "data/runpod_a40_deploy_audit_20260512/resnet_1x1_a40_b128.json"
+  }
+]

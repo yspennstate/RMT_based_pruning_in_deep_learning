@@ -683,6 +683,44 @@ class Im2ColConv2d(nn.Module):
         )
 
 
+class Conv1x1AsLinear(nn.Module):
+    """Exact 1x1 Conv2d execution through Linear.
+
+    This avoids the full im2col materialization used for 3x3 convolutions and
+    lets the audit test a hybrid ResNet endpoint: native cuDNN Conv2d for
+    non-1x1 layers, native 2:4 Linear for exact 1x1 sparse weights.
+    """
+
+    def __init__(self, conv: nn.Conv2d, name: str = "") -> None:
+        super().__init__()
+        if conv.kernel_size != (1, 1) or conv.groups != 1 or conv.padding != (0, 0) or conv.dilation != (1, 1):
+            raise ValueError(f"{name} is not a supported exact 1x1 Conv2d")
+        self.name = name
+        self.out_channels = conv.out_channels
+        self.stride = conv.stride
+        flat = conv.weight.detach().reshape(conv.out_channels, conv.in_channels).contiguous()
+        self.linear = nn.Linear(conv.in_channels, conv.out_channels, bias=conv.bias is not None)
+        with torch.no_grad():
+            self.linear.weight.copy_(flat)
+            if conv.bias is not None and self.linear.bias is not None:
+                self.linear.bias.copy_(conv.bias.detach())
+        if hasattr(conv, "_cin_perm"):
+            self.register_buffer("_cin_perm", conv._cin_perm.detach().clone().long())
+        else:
+            self._cin_perm = None
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self._cin_perm is not None:
+            x = x.index_select(1, self._cin_perm.to(x.device))
+        sh, sw = self.stride
+        if sh != 1 or sw != 1:
+            x = x[:, :, ::sh, ::sw]
+        bsz, channels, h_out, w_out = x.shape
+        values = x.permute(0, 2, 3, 1).reshape(bsz * h_out * w_out, channels)
+        out = self.linear(values)
+        return out.reshape(bsz, h_out, w_out, self.out_channels).permute(0, 3, 1, 2).contiguous()
+
+
 def flattened_2_4_exact(weight: torch.Tensor) -> bool:
     flat = weight.detach().reshape(weight.shape[0], -1)
     if flat.shape[1] % 4 != 0:
@@ -727,6 +765,39 @@ def lower_convs_to_im2col(module: nn.Module, prefix: str = "") -> dict[str, Any]
     return {"lowered": lowered, "skipped": skipped}
 
 
+def lower_1x1_convs_to_linear(module: nn.Module, prefix: str = "") -> dict[str, Any]:
+    lowered: list[str] = []
+    skipped: list[dict[str, Any]] = []
+    for child_name, child in list(module.named_children()):
+        full_name = f"{prefix}.{child_name}" if prefix else child_name
+        if isinstance(child, nn.Conv2d):
+            flat = child.weight.detach().reshape(child.out_channels, -1)
+            if (
+                child.groups == 1
+                and child.kernel_size == (1, 1)
+                and child.padding == (0, 0)
+                and child.dilation == (1, 1)
+                and child.padding_mode == "zeros"
+                and flattened_2_4_exact(child.weight)
+                and sparse_convertible_shape(flat)
+            ):
+                setattr(module, child_name, Conv1x1AsLinear(child, name=full_name))
+                lowered.append(full_name)
+            else:
+                skipped.append(
+                    {
+                        "name": full_name,
+                        "shape": list(child.weight.shape),
+                        "reason": "not exact convertible 1x1 2:4 Conv2d",
+                    }
+                )
+        else:
+            sub = lower_1x1_convs_to_linear(child, full_name)
+            lowered.extend(sub["lowered"])
+            skipped.extend(sub["skipped"])
+    return {"lowered": lowered, "skipped": skipped}
+
+
 @torch.no_grad()
 def compare_native_vs_im2col(
     row: PaperRow,
@@ -738,6 +809,37 @@ def compare_native_vs_im2col(
     native, _ = load_model(row, device, attach_perms=True)
     lowered, _ = load_model(row, device, attach_perms=True)
     lowered_report = lower_convs_to_im2col(lowered)
+    lowered.to(device)
+    native.eval()
+    lowered.eval()
+    x = torch.randn((batch, *input_size), device=device)
+    y_native = native(x)
+    y_lowered = lowered(x)
+    diff = (y_native - y_lowered).detach().float()
+    result = {
+        "check_batch": batch,
+        "lowered_layers": len(lowered_report["lowered"]),
+        "skipped_layers": lowered_report["skipped"],
+        "max_abs_diff": float(diff.abs().max().item()),
+        "mean_abs_diff": float(diff.abs().mean().item()),
+        "native_output_norm": float(y_native.detach().float().norm().item()),
+    }
+    del native, lowered, x, y_native, y_lowered
+    clear_cuda()
+    return result
+
+
+@torch.no_grad()
+def compare_native_vs_1x1_linear(
+    row: PaperRow,
+    *,
+    device: torch.device,
+    batch: int,
+    input_size: tuple[int, int, int],
+) -> dict[str, Any]:
+    native, _ = load_model(row, device, attach_perms=True)
+    lowered, _ = load_model(row, device, attach_perms=True)
+    lowered_report = lower_1x1_convs_to_linear(lowered)
     lowered.to(device)
     native.eval()
     lowered.eval()
@@ -871,56 +973,131 @@ def benchmark_conv_row(row: PaperRow, args: argparse.Namespace, device: torch.de
             input_size=input_size,
         )
 
-    log(f"[{row.row_id}] loading dense im2col endpoint")
-    im2col_dense, _ = load_model(row, device, attach_perms=True)
-    lowered_dense = lower_convs_to_im2col(im2col_dense)
-    im2col_dense.to(device=device, dtype=torch.bfloat16)
-    im2col_dense_result = benchmark(
-        im2col_dense,
+    one_by_one_equivalence = None
+    if args.check_outputs:
+        log(f"[{row.row_id}] checking 1x1-linear equivalence")
+        one_by_one_equivalence = compare_native_vs_1x1_linear(
+            row,
+            device=device,
+            batch=args.check_batch,
+            input_size=input_size,
+        )
+
+    log(f"[{row.row_id}] loading dense 1x1-linear hybrid endpoint")
+    one_by_one_dense, _ = load_model(row, device, attach_perms=True)
+    one_by_one_dense_lowering = lower_1x1_convs_to_linear(one_by_one_dense)
+    one_by_one_dense.to(device=device, dtype=torch.bfloat16)
+    one_by_one_dense_result = benchmark(
+        one_by_one_dense,
         device=device,
         batch=args.batch,
         input_size=input_size,
         warmup=args.warmup,
         iters=args.iters,
-        label="im2col_dense_linear_bfloat16",
+        label="conv1x1_as_dense_linear_bfloat16",
         input_dtype=torch.bfloat16,
         autocast_bf16=False,
     )
-    log(f"[{row.row_id}] im2col dense {im2col_dense_result['median_images_per_second']:.2f} img/s")
-    del im2col_dense
+    log(f"[{row.row_id}] 1x1 dense-linear hybrid {one_by_one_dense_result['median_images_per_second']:.2f} img/s")
+    del one_by_one_dense
     clear_cuda()
 
-    log(f"[{row.row_id}] loading sparse im2col endpoint")
-    im2col_sparse, _ = load_model(row, device, attach_perms=True)
-    lowered_sparse = lower_convs_to_im2col(im2col_sparse)
-    im2col_sparse.to(device=device, dtype=torch.bfloat16)
-    im2col_linear_names = {f"{name}.linear" for name in lowered_sparse["lowered"]}
-    conversion = convert_linears_to_sparse(im2col_sparse, only_names=im2col_linear_names)
-    im2col_sparse_result = None
-    if conversion.get("converted", 0) > 0:
-        im2col_sparse_result = benchmark(
-            im2col_sparse,
+    log(f"[{row.row_id}] loading sparse 1x1-linear hybrid endpoint")
+    one_by_one_sparse, _ = load_model(row, device, attach_perms=True)
+    one_by_one_sparse_lowering = lower_1x1_convs_to_linear(one_by_one_sparse)
+    one_by_one_sparse.to(device=device, dtype=torch.bfloat16)
+    one_by_one_linear_names = {f"{name}.linear" for name in one_by_one_sparse_lowering["lowered"]}
+    one_by_one_conversion = convert_linears_to_sparse(one_by_one_sparse, only_names=one_by_one_linear_names)
+    one_by_one_sparse_result = None
+    if one_by_one_conversion.get("converted", 0) > 0:
+        one_by_one_sparse_result = benchmark(
+            one_by_one_sparse,
             device=device,
             batch=args.batch,
             input_size=input_size,
             warmup=args.warmup,
             iters=args.iters,
-            label="im2col_native_2_4_sparse_bfloat16",
+            label="conv1x1_as_native_2_4_sparse_linear_bfloat16",
             input_dtype=torch.bfloat16,
             autocast_bf16=False,
         )
-        log(f"[{row.row_id}] im2col sparse {im2col_sparse_result['median_images_per_second']:.2f} img/s")
+        log(f"[{row.row_id}] 1x1 sparse-linear hybrid {one_by_one_sparse_result['median_images_per_second']:.2f} img/s")
     else:
-        log(f"[{row.row_id}] sparse im2col conversion produced no converted layers")
-    del im2col_sparse
+        log(f"[{row.row_id}] sparse 1x1-linear conversion produced no converted layers")
+    del one_by_one_sparse
     clear_cuda()
+
+    lowered_dense = None
+    im2col_dense_result = None
+    lowered_sparse = None
+    conversion = None
+    im2col_sparse_result = None
+
+    if not args.skip_full_conv_im2col:
+        log(f"[{row.row_id}] loading dense im2col endpoint")
+        im2col_dense, _ = load_model(row, device, attach_perms=True)
+        lowered_dense = lower_convs_to_im2col(im2col_dense)
+        im2col_dense.to(device=device, dtype=torch.bfloat16)
+        im2col_dense_result = benchmark(
+            im2col_dense,
+            device=device,
+            batch=args.batch,
+            input_size=input_size,
+            warmup=args.warmup,
+            iters=args.iters,
+            label="im2col_dense_linear_bfloat16",
+            input_dtype=torch.bfloat16,
+            autocast_bf16=False,
+        )
+        log(f"[{row.row_id}] im2col dense {im2col_dense_result['median_images_per_second']:.2f} img/s")
+        del im2col_dense
+        clear_cuda()
+
+        log(f"[{row.row_id}] loading sparse im2col endpoint")
+        im2col_sparse, _ = load_model(row, device, attach_perms=True)
+        lowered_sparse = lower_convs_to_im2col(im2col_sparse)
+        im2col_sparse.to(device=device, dtype=torch.bfloat16)
+        im2col_linear_names = {f"{name}.linear" for name in lowered_sparse["lowered"]}
+        conversion = convert_linears_to_sparse(im2col_sparse, only_names=im2col_linear_names)
+        if conversion.get("converted", 0) > 0:
+            im2col_sparse_result = benchmark(
+                im2col_sparse,
+                device=device,
+                batch=args.batch,
+                input_size=input_size,
+                warmup=args.warmup,
+                iters=args.iters,
+                label="im2col_native_2_4_sparse_bfloat16",
+                input_dtype=torch.bfloat16,
+                autocast_bf16=False,
+            )
+            log(f"[{row.row_id}] im2col sparse {im2col_sparse_result['median_images_per_second']:.2f} img/s")
+        else:
+            log(f"[{row.row_id}] sparse im2col conversion produced no converted layers")
+        del im2col_sparse
+        clear_cuda()
 
     sparse_vs_native = None
     sparse_vs_im2col_dense = None
+    one_by_one_sparse_vs_native = None
+    one_by_one_sparse_vs_dense_1x1 = None
     if im2col_sparse_result is not None and native_result["median_images_per_second"]:
         sparse_vs_native = im2col_sparse_result["median_images_per_second"] / native_result["median_images_per_second"]
-    if im2col_sparse_result is not None and im2col_dense_result["median_images_per_second"]:
+    if (
+        im2col_sparse_result is not None
+        and im2col_dense_result is not None
+        and im2col_dense_result["median_images_per_second"]
+    ):
         sparse_vs_im2col_dense = im2col_sparse_result["median_images_per_second"] / im2col_dense_result["median_images_per_second"]
+    if one_by_one_sparse_result is not None and native_result["median_images_per_second"]:
+        one_by_one_sparse_vs_native = (
+            one_by_one_sparse_result["median_images_per_second"] / native_result["median_images_per_second"]
+        )
+    if one_by_one_sparse_result is not None and one_by_one_dense_result["median_images_per_second"]:
+        one_by_one_sparse_vs_dense_1x1 = (
+            one_by_one_sparse_result["median_images_per_second"]
+            / one_by_one_dense_result["median_images_per_second"]
+        )
     return {
         "row_id": row.row_id,
         "architecture": row.architecture,
@@ -931,6 +1108,14 @@ def benchmark_conv_row(row: PaperRow, args: argparse.Namespace, device: torch.de
         "checkpoint_meta": meta,
         "input_size": list(input_size),
         "native_dense_conv2d_autocast_bf16": native_result,
+        "conv1x1_linear_equivalence": one_by_one_equivalence,
+        "conv1x1_dense_lowering": one_by_one_dense_lowering,
+        "conv1x1_as_dense_linear_bfloat16": one_by_one_dense_result,
+        "conv1x1_sparse_lowering": one_by_one_sparse_lowering,
+        "conv1x1_semi_structured_conversion": one_by_one_conversion,
+        "conv1x1_as_native_2_4_sparse_linear_bfloat16": one_by_one_sparse_result,
+        "deployable_speedup_1x1_sparse_vs_native_conv": one_by_one_sparse_vs_native,
+        "deployable_speedup_1x1_sparse_vs_dense_1x1_linear": one_by_one_sparse_vs_dense_1x1,
         "im2col_equivalence": equivalence,
         "im2col_dense_lowering": lowered_dense,
         "im2col_dense_linear_bfloat16": im2col_dense_result,
@@ -998,6 +1183,7 @@ def main() -> None:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--include-dense-bf16", action="store_true")
     parser.add_argument("--skip-conv-im2col", action="store_true")
+    parser.add_argument("--skip-full-conv-im2col", action="store_true")
     parser.add_argument("--check-outputs", action="store_true")
     parser.add_argument("--check-batch", type=int, default=2)
     parser.add_argument("--continue-on-error", action="store_true")

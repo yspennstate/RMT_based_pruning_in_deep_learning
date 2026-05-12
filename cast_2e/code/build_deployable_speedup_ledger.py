@@ -22,6 +22,9 @@ A40_BACKEND_SUMMARY_CSV = (
     / "runpod_a40_deploy_audit_20260512"
     / "deployable_backend_summary_a40_20260512.csv"
 )
+A40_RESNET_1X1_CSV = (
+    DATA / "runpod_a40_deploy_audit_20260512" / "resnet_1x1_a40_b128.csv"
+)
 OUT_JSON = DATA / "paper_checkpoint_deployable_speedup_ledger_20260512.json"
 OUT_CSV = DATA / "paper_checkpoint_deployable_speedup_ledger_20260512.csv"
 
@@ -462,6 +465,7 @@ def main() -> None:
     audit = load_audit(AUDIT_CSV)
     conv_trt_audit = load_audit(CONV_TRT_AUDIT_CSV)
     a40_backend = load_rows_by_id(A40_BACKEND_SUMMARY_CSV)
+    a40_resnet_1x1 = load_rows_by_id(A40_RESNET_1X1_CSV)
     ledger: list[dict[str, Any]] = []
     for row in ROWS:
         out = dict(row)
@@ -573,6 +577,39 @@ def main() -> None:
             out["a40_equiv_max_abs_diff"] = None
             out["a40_equiv_mean_abs_diff"] = None
 
+        resnet_1x1_row = a40_resnet_1x1.get(row["row_id"])
+        out["a40_resnet_1x1_audit_available"] = bool(resnet_1x1_row)
+        if resnet_1x1_row:
+            out["a40_1x1_dense_linear_ips"] = round_or_none(
+                float(resnet_1x1_row["dense_1x1_linear_ips"]), 1
+            )
+            out["a40_1x1_sparse_linear_ips"] = round_or_none(
+                float(resnet_1x1_row["sparse_1x1_linear_ips"]), 1
+            )
+            out["a40_1x1_sparse_vs_dense_1x1_x"] = round_or_none(
+                float(resnet_1x1_row["speedup_1x1_sparse_vs_dense_1x1"]), 3
+            )
+            out["a40_1x1_sparse_vs_native_conv_x"] = round_or_none(
+                float(resnet_1x1_row["speedup_1x1_sparse_vs_native_conv"]), 3
+            )
+            out["a40_1x1_converted_layers"] = resnet_1x1_row[
+                "converted_1x1_layers"
+            ]
+            out["a40_1x1_equiv_max_abs_diff"] = round_or_none(
+                float(resnet_1x1_row["equiv_max_abs_diff"]), 6
+            )
+            out["a40_1x1_equiv_mean_abs_diff"] = round_or_none(
+                float(resnet_1x1_row["equiv_mean_abs_diff"]), 6
+            )
+        else:
+            out["a40_1x1_dense_linear_ips"] = None
+            out["a40_1x1_sparse_linear_ips"] = None
+            out["a40_1x1_sparse_vs_dense_1x1_x"] = None
+            out["a40_1x1_sparse_vs_native_conv_x"] = None
+            out["a40_1x1_converted_layers"] = None
+            out["a40_1x1_equiv_max_abs_diff"] = None
+            out["a40_1x1_equiv_mean_abs_diff"] = None
+
         ledger.append(out)
 
     OUT_JSON.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
@@ -605,6 +642,14 @@ def main() -> None:
         "a40_converted_layers",
         "a40_equiv_max_abs_diff",
         "a40_equiv_mean_abs_diff",
+        "a40_resnet_1x1_audit_available",
+        "a40_1x1_dense_linear_ips",
+        "a40_1x1_sparse_linear_ips",
+        "a40_1x1_sparse_vs_dense_1x1_x",
+        "a40_1x1_sparse_vs_native_conv_x",
+        "a40_1x1_converted_layers",
+        "a40_1x1_equiv_max_abs_diff",
+        "a40_1x1_equiv_mean_abs_diff",
         "deployability_class",
         "recommended_table_speedup",
         "checkpoint_exists",

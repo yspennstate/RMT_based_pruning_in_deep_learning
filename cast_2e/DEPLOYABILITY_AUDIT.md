@@ -15,6 +15,11 @@ throughput logs. It does not re-project, fine-tune, or rewrite any checkpoint.
   ledger.
 - `data/deployable_backend_comparison_20260512.csv`: A40/A100/H100 backend
   comparison and batch sweep summary.
+- `data/deployable_backend_best_observed_20260512.csv`: best observed A40
+  sparse-backend ratios from the batch sweep, plus ResNet 1x1-hybrid controls.
+- `data/runpod_a40_deploy_audit_20260512/resnet_1x1_a40_b128.csv`: A40
+  control that lowers only exact ResNet 1x1 Conv2d layers to Linear and applies
+  the native 2:4 Linear backend.
 - `data/conv_tensorrt_deployability_audit_20260512.csv`: Conv2d TensorRT-style
   2:4 audit for ResNet/ConvNeXt checkpoints.
 
@@ -71,9 +76,15 @@ native Conv2d speedups.
 
 Additional controls:
 
-- A40 batch sweep over 64/128/256 found slightly stronger sparse-over-autocast
-  ratios at batch 64 for ViT-B/ViT-L/DeiT-B/ConvNeXtV2, but the paper table
-  keeps the fixed batch-128 audit for consistency.
+- A40 batch sweep over 64/128/256 found stronger sparse-over-autocast ratios:
+  1.388x ViT-B, 1.394x ViT-L, 1.384x DeiT-B, 1.376x DeiT-S, 1.330x DeiT-T,
+  and 1.295x ConvNeXtV2. The fixed batch-128 audit remains archived for
+  row-to-row comparison.
+- ResNet 1x1-only hybrid control: converting only exact 1x1 Conv2d layers to
+  native 2:4 Linear gives 1.087x, 1.088x, 1.081x, and 1.082x over dense
+  1x1-linear hybrids for ResNet50/50d/101d/152d, but only 0.813x, 0.802x,
+  0.788x, and 0.782x of native cuDNN Conv2d throughput. These are controls, not
+  positive end-to-end ResNet speedup claims.
 - Dense-BF16 controls are archived. Against an already-BF16 dense endpoint, the
   native sparse Linear advantage is small or absent for several rows, so the
   table should be read as a backend switch against the dense-tensor autocast
