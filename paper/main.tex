@@ -92,27 +92,26 @@
 }
 \date{}
 
-% Cross-paper reference: points to a section in the companion methodology paper.
-% The argument is a topic key that the methodology paper's quick-reference
-% index (its Section~12) can be searched on.
+% Supplement and repository references.
 \newcommand{\mainpaper}{the main paper}
-\newcommand{\methref}[1]{the methodology paper, quick-reference key \texttt{#1}}
-\newcommand{\methurl}{\href{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning/blob/main/cast_2e/methodology.pdf}{\texttt{cast\_2e/methodology.pdf}}}
+\newcommand{\proofresource}{Online Resource 1}
+\newcommand{\numericresource}{Online Resource 2}
+\newcommand{\repoURL}{\url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning}}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-We study a Marchenko--Pastur (MP) random-matrix approach to pruning deep neural networks.  One theoretical component is a deterministic data-path certificate: if the removed component \(R\) has small propagated logit effect \(L_s\|R\psi_1(s)\|_\infty\), then pruning \(R\) decreases an elastic-net objective and preserves any sample whose dense margin exceeds twice this perturbation.  In the zero-budget limit this gives the ``perfect pruning'' statement: removing a component with no data-path logit effect does not reduce training-set accuracy.  A prune--restore extension splits removed mass into a kept reservoir and a finally removed part, modeling restoration while holding the final sparse-execution pattern fixed.  Separately, in a stylized additive model with \(L_2\) regularization and one-sided stationarity, admissible random-like components must vanish along the training limit; persistent signal spikes then stabilize while the MP bulk collapses.  MP enters as a sufficient condition: under iid-Gaussian admissible noise, the fitted edge \(\sigma_+\) gives a high-probability layerwise budget signal.
+We study a Marchenko--Pastur (MP) random-matrix approach to pruning deep neural networks with very small post-pruning fine-tuning budgets. The main practical contribution is accuracy retention under short calibration and fine-tuning schedules, rather than a long post-pruning reoptimization pipeline. The theory gives deterministic data-path certificates: if the removed component \(R\) has small propagated logit effect \(L_s\|R\psi_1(s)\|_\infty\), pruning decreases an elastic-net objective and preserves samples whose dense margin exceeds twice the perturbation. The zero-budget case gives perfect pruning; a prune--restore extension models weight restoration inside a fixed sparse-execution pattern; and an additive \(L_2\)-regularized model shows admissible random-like components vanish at the training limit, with persistent spikes stabilizing as the MP bulk collapses. Under iid-Gaussian sufficient conditions, the fitted MP edge \(\sigma_+\) gives a high-probability layerwise budget signal.
 
-On ImageNet-1k after three distillation epochs, ViT-B/16 \(2{:}4{+}\)ToMe reaches \(83.41\%\) top-1 (\(-1.70\) pp from dense) at \(59.81\%\) sparse-execution MAC reduction, with a \(1.365\times\) fixed-batch A40 native-\(2{:}4\) backend speedup (\(1.388\times\) best observed in the A40 batch sweep) for the same checkpoint and ToMe graph. A separate no-ToMe A100 endpoint comparison, not pooled with the ToMe-held-fixed result, gives \(2.705\times\) measured speedup. At structured sparsity, ViT-B/16 \(6{:}12\) reaches \(83.74\%\), ViT-L/16 \(8{:}16\) dense+permutation reaches \(85.33\%\) (\(-0.51\) pp), and ConvNeXtV2-Base \(12{:}16\) reaches \(86.35\%\) (\(-0.37\) pp). For CNNs, ResNet50 \(8{:}16\) dense+permutation reaches \(75.87\%\) (\(-0.26\) pp), and the ResNet152d CAST-conv+permutation row reaches \(81.33\%\) (\(-1.53\) pp) at \(\sim50\%\) MAC accounting with a \(1.62\times\) A40 im2col+\(2{:}4\) sparse-GEMM audit. The wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) rows are accuracy-focused \(N{:}M\) projections rather than native \(2{:}4\) sparse-kernel throughput claims; the ResNet speed audit is an im2col endpoint, not a cuDNN Conv2d speedup.\footnote{Code:
-\url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning}. Companion methodology
-paper:
-\url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning/blob/main/cast_2e/methodology.pdf}.
-Checkpoints and per-run evidence files:
-\url{https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd}.}
+On ImageNet-1k, after only three distillation epochs, ViT-B/16 \(2{:}4{+}\)ToMe reaches \(83.41\%\) top-1 (\(-1.70\) pp from dense) at \(59.81\%\) sparse-execution MAC reduction, with \(1.388\times\) best-observed A40 native-\(2{:}4\) backend speedup for the same checkpoint and ToMe graph; a separate no-ToMe A100 endpoint gives \(2.705\times\). At structured sparsity, ViT-B/16 \(6{:}12\) reaches \(83.74\%\), ViT-L/16 \(8{:}16\) dense+permutation reaches \(85.33\%\) (\(-0.51\) pp), and ConvNeXtV2-Base \(12{:}16\) reaches \(86.35\%\) (\(-0.37\) pp). For CNNs, ResNet50 \(8{:}16\) dense+permutation reaches \(75.87\%\) (\(-0.26\) pp), and ResNet152d CAST-conv+permutation reaches \(81.33\%\) (\(-1.53\) pp) at \(\sim50\%\) MAC accounting with a \(1.62\times\) A40 im2col+\(2{:}4\) sparse-GEMM audit.
 \end{abstract}
 
 \noindent\textbf{Keywords:} DNNs, ViTs, Random Matrix Theory, Marchenko--Pastur distribution, pruning, regularization
+
+
+\noindent\textbf{Supplementary information.}
+Full proofs, Gaussian/random-matrix specializations, and mathematical corollaries are provided in Online Resource 1. Full methodology, run recipes, checkpoint ledgers, timing-audit details, and the complete comparison table are provided in Online Resource 2. Mirror copies of the manuscript sources and PDFs are maintained at \repoURL.
+
 
 \noindent\textbf{Norm convention.}
 Throughout, \(\|x\|_\infty\) denotes the vector maximum norm, while \(\|A\|_\infty\) denotes the induced matrix norm
@@ -128,13 +127,11 @@ Throughout, \(\|x\|_\infty\) denotes the vector maximum norm, while \(\|A\|_\inf
 
 DNN compression is motivated by overfitting, regularization, and deployment constraints. Random Matrix Theory (RMT) has been used to study trained spectra, implicit self-regularization, generalization diagnostics, Jacobians, and initialization \cite{martin2021implicit,mahoney2019traditional,meng2023impact,xiao2023heavy,thamm2022random,pastur2020random,pastur2023random,saada2023initialisation,martin2021predicting,martin2020heavy}. For fixed pruning hyperparameters, this paper uses MP spectral diagnostics to allocate masks without validation or test access at mask-construction time.
 
-The empirical target is sparsity inside dense affine maps of Vision Transformers and related ImageNet models \cite{dosovitskiy2021image,vaswani2017attention}. Trained spectra are heterogeneous: the method treats MP-like layers as candidates for larger pruning budgets, while protecting non-MP or heavy-tailed layers. The main numerical results are deliberately front-loaded. On ImageNet-1k, Hybrid Magnitude--SER keeps ViT-B/16 at \(83.37\%\) top-1 at \(50\%\) unstructured sparsity, while the deployable CAST \(2{:}4{+}\)ToMe row reaches \(83.41\%\) after only three distillation epochs at \(59.81\%\) sparse-execution MAC reduction. The same checkpoint and ToMe graph gives a measured \(1.365\times\) fixed-batch A40 native-\(2{:}4\) speedup (\(1.388\times\) best batch-sweep value); a separate no-ToMe ViT-B/16 dense-to-\(2{:}4\) A100 endpoint gives \(2.705\times\). Wider structured projections improve the accuracy side: ViT-B/16 \(6{:}12\) reaches \(83.74\%\), ViT-L/16 \(8{:}16\) dense+permutation reaches \(85.33\%\) (\(-0.51\) pp), and ConvNeXtV2-Base \(12{:}16\) reaches \(86.35\%\) (\(-0.37\) pp). For CNNs, ResNet50 \(8{:}16\) dense+permutation reaches \(75.87\%\), only \(0.26\) pp below dense, and ResNet152d CAST-conv+permutation reaches \(81.33\%\), \(1.53\) pp below dense, with a \(1.62\times\) A40 im2col+\(2{:}4\) sparse-GEMM audit. The wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) rows are accuracy/MAC-accounting rows, not native sparse Tensor Core throughput claims.
+A main contribution is that the reported drops are obtained with little post-pruning fine-tuning: one epoch per unstructured pruning cycle and three distillation epochs for CAST/CAST-conv, rather than long retraining schedules. The empirical target is sparsity inside dense affine maps of Vision Transformers and related ImageNet models \cite{dosovitskiy2021image,vaswani2017attention}. Trained spectra are heterogeneous: the method treats MP-like layers as candidates for larger pruning budgets, while protecting non-MP or heavy-tailed layers. The main numerical results are deliberately front-loaded. On ImageNet-1k, Hybrid Magnitude--SER keeps ViT-B/16 at \(83.37\%\) top-1 at \(50\%\) unstructured sparsity, while the deployable CAST \(2{:}4{+}\)ToMe row reaches \(83.41\%\) after only three distillation epochs at \(59.81\%\) sparse-execution MAC reduction. The same checkpoint and ToMe graph gives a measured \(1.36\times\) fixed-batch A40 native-\(2{:}4\) speedup (\(1.388\times\) best batch-sweep value); a separate no-ToMe ViT-B/16 dense-to-\(2{:}4\) A100 endpoint gives \(2.705\times\). Wider structured projections improve the accuracy side: ViT-B/16 \(6{:}12\) reaches \(83.74\%\), ViT-L/16 \(8{:}16\) dense+permutation reaches \(85.33\%\) (\(-0.51\) pp), and ConvNeXtV2-Base \(12{:}16\) reaches \(86.35\%\) (\(-0.37\) pp). For CNNs, ResNet50 \(8{:}16\) dense+permutation reaches \(75.87\%\), only \(0.26\) pp below dense, and ResNet152d CAST-conv+permutation reaches \(81.33\%\), \(1.53\) pp below dense, with a \(1.62\times\) A40 im2col+\(2{:}4\) sparse-GEMM audit. The wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) rows are accuracy/MAC-accounting rows, not native sparse Tensor Core throughput claims.
 
-The theoretical contribution has three headline pieces. First, the deterministic data-path certificate says that if the removed component \(R\) has small propagated logit effect \(L_s\|R\psi_1(s)\|_\infty\), then pruning decreases an elastic-net objective and preserves every training sample whose dense margin is larger than twice this perturbation (Lemma~\ref{lem:deterministic_ce_path_bound}, Corollary~\ref{cor:deterministic_margin_stability}, Theorem~\ref{thm:deterministic_mask_certificate}). In the zero-budget or ``perfect pruning'' case, the margin bound gives no accuracy loss on the training set. Second, the prune--restore certificate models structured \(k{:}n\) sparsity: restoring entries inside an already-paid sparse-execution group can improve the certificate while leaving the final sparse-execution pattern unchanged (Theorem~\ref{thm:deterministic_prune_restore_certificate}). Third, the additive \(L_2\)-regularized theory shows that, under one-sided stationarity and local-path convergence, admissible random-like components vanish at the training limit; the associated MP bulk collapses while persistent signal spikes stabilize (Theorem~\ref{main_result_reducing_noise}, Corollaries~\ref{cor:variance_scale_collapse}--\ref{cor:gaussian_BBP_persistent_spikes}, and the generalized Theorem~\ref{main_result_reducing_noise_general}). The MP edge enters as a sufficient random-matrix condition for data-path budgets and as the empirical layer-allocation signal used by SER/CAST. Table~\ref{tab:result_comparison} gives literature context; Tables~\ref{tab:vitb_current_methods}, \ref{tab:multi_arch_hybrid}, \ref{tab:param_to_flop_followup}, \ref{tab:projection_controls}, and~\ref{tab:deployability_audit_compact} report the main unstructured, structured, projection-control, and deployability results. Prior pruning taxonomies and ViT/CNN compression citations are collected in Appendix~\ref{app:prior_pruning_context}.
+We also present three main theoretical results. First, the deterministic data-path certificate says that if the removed component \(R\) has small propagated logit effect \(L_s\|R\psi_1(s)\|_\infty\), then pruning decreases an elastic-net objective and preserves every training sample whose dense margin is larger than twice this perturbation (Lemma~\ref{lem:deterministic_ce_path_bound}, Corollary~\ref{cor:deterministic_margin_stability}, Theorem~\ref{thm:deterministic_mask_certificate}). In the zero-budget or ``perfect pruning'' case, the margin bound gives no accuracy loss on the training set. Second, the prune--restore certificate models structured \(k{:}n\) sparsity: restoring entries inside an already-paid sparse-execution group can improve the certificate while leaving the final sparse-execution pattern unchanged (Theorem~\ref{thm:deterministic_prune_restore_certificate}). Third, the additive \(L_2\)-regularized theory shows that, under one-sided stationarity and local-path convergence, admissible random-like components vanish at the training limit; the associated MP bulk collapses while persistent signal spikes stabilize (Theorem~\ref{thm:main_gaussian_stationarity_collapse}, Corollaries~\ref{cor:main_variance_scale_collapse}--\ref{cor:main_gaussian_BBP_persistent_spikes}, and the generalized Theorem~\ref{main_result_reducing_noise_general}). The MP edge enters as a sufficient random-matrix condition for data-path budgets and as the empirical layer-allocation signal used by SER/CAST. Tables~\ref{tab:vitb_current_methods}, \ref{tab:multi_arch_hybrid}, \ref{tab:param_to_flop_followup}, and~\ref{tab:deployability_audit_compact} report the main unstructured, structured, MAC-reduction, and deployability results; Table~\ref{tab:result_comparison} gives literature context. Prior pruning taxonomies and ViT/CNN compression citations are collected in Online Resource 2.
 
-The theory supplies deterministic mask certificates and random sufficient conditions; these state the assumptions behind the pruning analysis rather than end-to-end correctness of the full ViT pipeline.
-
-Section~\ref{sec:randomness} gives DNN and MP preliminaries. Section~\ref{sec:pruning_VITs} reports the numerical evidence. Sections~\ref{sec:abstract_additive_extensions} and~\ref{Main_theory_gen} state the additive and deterministic certificates. Appendices contain provenance, proof, algorithm, and supplementary numerical material.
+Section~\ref{sec:randomness} gives DNN and MP preliminaries. Section~\ref{sec:pruning_VITs} reports the numerical evidence. Sections~\ref{sec:abstract_additive_extensions} and~\ref{Main_theory_gen} state the additive and deterministic certificates. Full proofs and mathematical details are in Online Resource 1; full protocols, algorithms, provenance notes, and supplementary numerical material are in Online Resource 2.
 
 % =================================================
 \section{Randomness in Deep Neural Networks}
@@ -171,7 +168,7 @@ L_{\mathrm{CE}}(\alpha)=-\frac{1}{|T|}\sum_{s\in T}\log\big(\phi_{C(s)}(s,\alpha
 \subsection{The MP distribution in machine learning contexts}
 \label{sec:MP_distribution}
 
-The Marchenko--Pastur distribution is a basic object in RMT with applications in signal processing, statistics, wireless communication, and machine learning \cite{vershynin2018high,ge2021large,serdobolskii2000multivariate,couillet2011random}. We first define the relevant empirical spectral distributions.
+The Marchenko--Pastur distribution is a basic object in RMT \cite{marchenko1967distribution}; high-dimensional random-matrix methods more broadly have applications in signal processing, statistics, wireless communication, and machine learning \cite{vershynin2018high,ge2021large,serdobolskii2000multivariate,couillet2011random}. We first define the relevant empirical spectral distributions.
 
 \begin{defn}[Eigenvalue and singular-value empirical spectral distributions]
 \label{ESD_Definition}
@@ -208,7 +205,7 @@ where
 \lambda_\pm=\sigma^2(1\pm \sqrt c)^2.
 \end{equation}
 \end{thm}
-\proofloc{This is a classical cited random-matrix input rather than a new theorem of the paper; see Appendix~\ref{app:external_rmt_inputs} for source notes.}
+\proofloc{This is a classical cited random-matrix input rather than a new theorem of the paper; see Online Resource 1 for source notes.}
 
 \begin{rem}
 If \(M_N\le N\) for all \(N\), then \(c\in(0,1]\) and the atom at zero in \eqref{MP_distribution} vanishes. When discussing the singular-value scale of \(W_N\), we write
@@ -258,14 +255,28 @@ These suppositions are modeling devices for the MP-budget argument, not assertio
 \label{sec:pruning_VITs}
 % =================================================
 
-This section reports empirical pruning evidence; protocol/provenance details and the theory--algorithm mapping are in Appendices~\ref{app:splus_budget} and~\ref{app:multi_arch_cert} and the companion methodology paper.
+This section reports empirical pruning evidence and gives the minimum algorithmic context needed to read the tables.  Full run recipes, scripts, checkpoint ledgers, calibration details, and migrated numerical appendices are in Online Resource 2.  All ImageNet-1k top-1 values in this section are measured after the stated pruning and fine-tuning recipe on the corresponding dense checkpoint; validation labels are not used to construct masks.  The dense baseline in a row is therefore part of the row's protocol, and comparisons to external work should be read through the reported drop, compression axis, training budget, and deployment note rather than through raw top-1 alone.
+
+The simplest baseline is magnitude pruning.  For a target sparsity \(s\), it removes the entries with the smallest absolute weights in the prunable tensors, either globally or within the layer set specified by the experiment.  Magnitude pruning is useful because it is deterministic, cheap, and hard to dismiss: if an RMT-guided method cannot beat it under the same checkpoint, layer set, and fine-tuning budget, then the spectral signal has not added evidence.  It is also incomplete for this setting.  At high sparsity it can spend too much budget in layers whose small entries still matter along the data path, and it has no mechanism for allocating different budgets from the layer spectra.
+
+The ``classical RMT'' baseline is different.  It fits a Marchenko--Pastur bulk to a weight matrix or to a reshaped convolutional tensor, estimates an upper bulk edge \(\sigma_+\), and treats the sub-edge component as the random-like part suggested by the fitted spectrum.  In its direct pruning form, the method removes or sparsifies this component by singular-vector reconstruction rather than by weight magnitude alone.  This is an important diagnostic baseline because it asks whether the MP edge by itself identifies removable directions.  Table~\ref{tab:vitb_current_methods} shows that it helps relative to magnitude at some higher sparsities, but it is not the final method: a literal sub-edge reconstruction is too coarse for modern ViT weights, and the paper does not claim that every sub-edge direction is noise.
+
+The practical unstructured method is SER, short for sparsify--estimate--restore.  SER starts from an over-pruned candidate, evaluates the lost mass through the same MP-guided budget view, and restores entries that are most useful for the target sparse model.  The point is not to keep the smallest MP-bulk entries automatically; it is to use the MP fit as a layerwise budget signal, then let the restoration step decide which entries should return.  Hybrid Magnitude--SER uses plain magnitude pruning at low sparsity, where it is strong and stable, then switches to SER once the pruning level is high enough that layer allocation and restoration matter.  In the canonical ViT-B/16 row this gives \(83.37\%\) top-1 at \(50\%\) unstructured sparsity, compared with \(81.67\%\) for magnitude and \(82.57\%\) for the direct RMT baseline under the same dense checkpoint and short post-pruning fine-tuning convention.
+
+CAST is the structured-sparsity version of this idea.  The target is a fixed \(k{:}n\) pattern: in every group of \(n\) weights, \(k\) entries are kept and the rest are zeroed.  A \(2{:}4\) pattern is the deployable NVIDIA sparse-tensor-core case; wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) patterns are accuracy/MAC-accounting probes unless a native backend for that exact pattern is explicitly audited.  CAST scores candidate group patterns using a certificate-inspired objective: preserve entries that matter for the propagated data-path perturbation while respecting the final group sparsity.  The ``free restoration'' terminology means that, inside a group whose final sparse-execution cost is already fixed, restoring a kept entry can improve the certificate without changing the number of executed sparse weights.
+
+The CAST rows should therefore be split into two categories.  Rows marked \(2{:}4\) with native sparse-kernel audits are deployment evidence: the same final pattern can be represented by a backend that has a real sparse execution path.  The ViT-B/16 \(2{:}4{+}\)ToMe checkpoint, for example, reaches \(83.41\%\) top-1 at \(59.81\%\) sparse-execution MAC reduction and has a measured A40 native-\(2{:}4\) speedup for the same checkpoint and ToMe graph.  The ResNet rows use a different audit: convolution is lowered to im2col and then timed as a \(2{:}4\) sparse GEMM endpoint, so those numbers are evidence that the weight pattern can accelerate the lowered matrix multiply, not proof of an end-to-end cuDNN Conv2d speedup.  The wider \(k{:}n\) rows answer a separate question: how much accuracy is available if the structured group is less constrained than \(2{:}4\), or if a future backend exposes a wider pattern.
+
+Token merging is another axis and is held separate in the interpretation.  ToMe reduces the number of tokens processed by the ViT graph; \(2{:}4\) pruning reduces the executed weights inside eligible linear maps.  The \(2{:}4{+}\)ToMe rows report their combined sparse-execution MAC accounting because that is the graph being evaluated, but the backend speedup claims in Table~\ref{tab:deployability_audit_compact} specify whether ToMe is held fixed.  This distinction is why the different no-ToMe A100 dense-to-\(2{:}4\) endpoint is reported separately in Online Resource 2 rather than pooled with the A40 ToMe-held-fixed audits.
+
+The result blocks have the following roles.  Table~\ref{tab:vitb_current_methods} is the matched ViT-B/16 ablation comparing magnitude, direct RMT, SER, and Hybrid Magnitude--SER.  Table~\ref{tab:multi_arch_hybrid} tests whether the Hybrid pattern survives across ViT, Swin, ConvNeXt, ResNet, and Hiera checkpoints at the same sparsity grid.  Table~\ref{tab:param_to_flop_followup} reports the structured \(k{:}n\) rows used for the main MAC-reduction claims.  Table~\ref{tab:deployability_audit_compact} is the speed audit.  The comparison table gives the closest available published contexts without treating them as a controlled leaderboard.  The full theory-to-numerics map is in Online Resource 2; it matches each CAST/SER implementation step to the lemma, theorem, corollary, or empirical proxy it is meant to instantiate, and it states explicitly where the link is motivational rather than a verified certificate.  The theoretical sections then explain why the algorithms are phrased as certificate-inspired pruning: the deterministic lemmas control the data-path effect of a removed component, while MP provides a sufficient random-matrix condition and a practical layerwise signal, not a complete certified transformer bound.
 
 \subsection{ViT-B/16 results}
 \label{subsec:vitb_current_results}
 
 \begin{table}[!htbp]
 \centering
-\caption{ViT-B/16 pruning results on ImageNet-1k validation under this paper's matched checkpoint, prunable-layer set, sparsity grid, evaluation pipeline, and short fine-tuning budget. Entries are top-1 accuracy (\%) at sparsity \(s\); the dense baseline is \(85.11\%\). A dash denotes no completed full-validation checkpoint.}
+\caption{ViT-B/16 pruning results on ImageNet-1k validation under this paper's matched checkpoint, prunable-layer set, sparsity grid, evaluation pipeline, and short fine-tuning budget. Entries are top-1 accuracy (\%) at sparsity \(s\); the dense baseline is \(85.11\%\). Bold marks the highest entry in each sparsity column.}
 \label{tab:vitb_current_methods}
 \scriptsize
 \setlength{\tabcolsep}{2.5pt}
@@ -273,24 +284,24 @@ This section reports empirical pruning evidence; protocol/provenance details and
 \toprule
 Method & \(0.05\) & \(0.10\) & \(0.15\) & \(0.20\) & \(0.25\) & \(0.30\) & \(0.35\) & \(0.40\) & \(0.45\) & \(0.50\) & \(0.55\) & \(0.60\) & \(0.65\) & \(0.70\) \\
 \midrule
-Classical magnitude   & 85.21 & 85.16 & 85.08 & 84.87 & 84.65 & 84.46 & 84.08 & 83.53 & 82.86 & 81.67 & 80.17 & 77.98 & 74.30 & 67.44 \\
-Classical RMT         & 85.21 & 85.14 & 85.01 & 84.97 & 84.77 & 84.55 & 84.31 & 83.98 & 83.31 & 82.57 & 81.31 & 79.13 & 76.46 & 71.53 \\
-SER                   & 84.94 & 84.98 & 84.82 & 84.76 & 84.66 & 84.55 & 84.41 & 84.24 & 83.73 & 83.27 & 82.65 & 81.33 & 79.95 & 77.94 \\
-Hybrid Magnitude--SER & 85.23 & 85.17 & 85.06 & 84.89 & 84.81 & 84.64 & 84.55 & 84.28 & 83.80 & 83.37 & 82.76 & 81.39 & 79.95 & 78.01 \\
+Classical magnitude   & 85.21 & 85.16 & \textbf{85.08} & 84.87 & 84.65 & 84.46 & 84.08 & 83.53 & 82.86 & 81.67 & 80.17 & 77.98 & 74.30 & 67.44 \\
+Classical RMT         & 85.21 & 85.14 & 85.01 & \textbf{84.97} & 84.77 & 84.55 & 84.31 & 83.98 & 83.31 & 82.57 & 81.31 & 79.13 & 76.46 & 71.53 \\
+SER                   & 84.94 & 84.98 & 84.82 & 84.76 & 84.66 & 84.55 & 84.41 & 84.24 & 83.73 & 83.27 & 82.65 & 81.33 & \textbf{79.95} & 77.94 \\
+Hybrid Magnitude--SER & \textbf{85.23} & \textbf{85.17} & 85.06 & 84.89 & \textbf{84.81} & \textbf{84.64} & \textbf{84.55} & \textbf{84.28} & \textbf{83.80} & \textbf{83.37} & \textbf{82.76} & \textbf{81.39} & \textbf{79.95} & \textbf{78.01} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Layerwise interpretation and mask-only results are in Appendix~\ref{app:vitb_interpretation} and the companion methodology paper.
+Layerwise interpretation and mask-only results are in Online Resource 2.
 
 \subsection{Broader architecture sweep}
 \label{subsec:architecture_validation}
 
-Table~\ref{tab:multi_arch_hybrid} gives the Hybrid Magnitude--SER sweep; Appendix~\ref{app:multi_arch_cert} and \methref{sec:seb-protocols} give architecture provenance, adaptive-variant details, slope/certificate-audit analyses, aggregate statistics, and checkpoint ledgers.
+Table~\ref{tab:multi_arch_hybrid} gives the Hybrid Magnitude--SER sweep; Online Resource 2 gives architecture provenance, adaptive-variant details, slope/certificate-audit analyses, aggregate statistics, and checkpoint ledgers.
 
 \begin{table}[!htbp]
 \centering
-\caption{Hybrid Magnitude--SER results across ImageNet-1k checkpoints. Entries are post-FT top-1 accuracy (\%) at sparsity \(s\). ``Base.'' is the dense top-1 measured in this paper's evaluation pipeline; \(\ddagger\) marks the adaptive drop-threshold variant.}
+\caption{Hybrid Magnitude--SER results across ImageNet-1k checkpoints. Entries are post-FT top-1 accuracy (\%) at sparsity \(s\). ``Base.'' is the dense top-1 measured in this paper's evaluation pipeline. Bold marks selected notable \(s=0.50\) entries: small drops from dense, high-accuracy large-model rows, or strong CNN coverage. Online Resource 2 retains the protocol markers and detailed notes for the adaptive rows.}
 \label{tab:multi_arch_hybrid}
 \tiny
 \setlength{\tabcolsep}{1.0pt}
@@ -298,27 +309,30 @@ Table~\ref{tab:multi_arch_hybrid} gives the Hybrid Magnitude--SER sweep; Appendi
 \toprule
 Architecture (timm checkpoint) & Base. & \(0.05\) & \(0.10\) & \(0.15\) & \(0.20\) & \(0.25\) & \(0.30\) & \(0.35\) & \(0.40\) & \(0.45\) & \(0.50\) & \(0.55\) & \(0.60\) & \(0.65\) & \(0.70\) \\
 \midrule
-ViT-B/16 \texttt{augreg2\_in21k\_ft\_in1k} & 85.11 & 85.23 & 85.17 & 85.06 & 84.89 & 84.81 & 84.64 & 84.55 & 84.28 & 83.80 & 83.37 & 82.76 & 81.39 & 79.95 & 78.01 \\
-ViT-B/16/384 \texttt{augreg\_in21k\_ft}    & 86.01 & 86.05 & 86.09 & 86.07 & 85.99 & 86.00 & 85.90 & 85.81 & 85.78 & 85.48 & 85.15 & 84.64 & 83.35 & 82.50 & 81.33 \\
-ViT-Large/16 \texttt{augreg\_in21k\_ft}    & 85.84 & 85.80 & 85.84 & 85.88 & 85.75 & 84.98 & 85.32 & 85.64 & 85.04 & 85.08 & 84.52 & 84.34 & 83.81 & 83.02 & 82.13 \\
+ViT-B/16 \texttt{augreg2\_in21k\_ft\_in1k} & 85.11 & 85.23 & 85.17 & 85.06 & 84.89 & 84.81 & 84.64 & 84.55 & 84.28 & 83.80 & \textbf{83.37} & 82.76 & 81.39 & 79.95 & 78.01 \\
+ViT-B/16/384 \texttt{augreg\_in21k\_ft}    & 86.01 & 86.05 & 86.09 & 86.07 & 85.99 & 86.00 & 85.90 & 85.81 & 85.78 & 85.48 & \textbf{85.15} & 84.64 & 83.35 & 82.50 & 81.33 \\
+ViT-Large/16 \texttt{augreg\_in21k\_ft}    & 85.84 & 85.80 & 85.84 & 85.88 & 85.75 & 84.98 & 85.32 & 85.64 & 85.04 & 85.08 & \textbf{84.52} & 84.34 & 83.81 & 83.02 & 82.13 \\
 DeiT-Tiny \texttt{patch16\_224.fb\_in1k}   & 72.21 & 72.41 & 72.38 & 72.18 & 71.86 & 71.99 & 71.75 & 71.35 & 70.66 & 68.97 & 67.74 & 65.91 & 61.17 & 55.58 & 52.55 \\
 DeiT-Small \texttt{patch16\_224.fb\_in1k}  & 79.85 & 79.82 & 79.78 & 79.62 & 79.37 & 79.31 & 79.21 & 79.00 & 78.61 & 78.06 & 77.22 & 76.25 & 74.14 & 72.05 & 68.55 \\
 DeiT-Base \texttt{patch16\_224.fb\_in1k}   & 81.80 & 81.76 & 81.70 & 81.58 & 81.46 & 81.42 & 81.28 & 81.17 & 80.99 & 80.62 & 80.12 & 79.49 & 78.16 & 76.72 & 74.90 \\
 Swin-Tiny \texttt{patch4\_window7\_224}    & 81.20 & 81.32 & 81.28 & 81.25 & 81.05 & 81.09 & 80.91 & 80.78 & 80.37 & 80.14 & 79.80 & 78.98 & 78.06 & 76.64 & 74.47 \\
-ConvNeXt-Base \texttt{in22k\_ft\_in1k}     & 85.84 & 85.72 & 85.58 & 85.51 & 85.26 & 85.35 & 85.39 & 85.26 & 85.04 & 84.94 & 84.80 & 84.09 & 83.70 & 83.11 & 81.21 \\
+ConvNeXt-Base \texttt{in22k\_ft\_in1k}     & 85.84 & 85.72 & 85.58 & 85.51 & 85.26 & 85.35 & 85.39 & 85.26 & 85.04 & 84.94 & \textbf{84.80} & 84.09 & 83.70 & 83.11 & 81.21 \\
 ResNet50d \texttt{ra2\_in1k}               & 80.55 & 79.90 & 80.01 & 80.02 & 80.12 & 80.09 & 80.12 & 80.06 & 79.90 & 79.48 & 79.16 & 78.93 & 77.93 & 77.25 & 76.32 \\
-ResNet101d \texttt{ra2\_in1k}              & 82.26 & 82.06 & 82.05 & 82.15 & 82.15 & 82.06 & 82.07 & 81.93 & 81.97 & 81.61 & 81.56 & 81.47 & 80.45 & 80.15 & 79.82 \\
+ResNet101d \texttt{ra2\_in1k}              & 82.26 & 82.06 & 82.05 & 82.15 & 82.15 & 82.06 & 82.07 & 81.93 & 81.97 & 81.61 & \textbf{81.56} & 81.47 & 80.45 & 80.15 & 79.82 \\
 Hiera-Base+ \texttt{mae\_in1k\_ft\_in1k}   & 84.40 & 85.04 & 84.94 & 84.76 & 84.39 & 77.95 & 83.12 & 82.15 & 82.37 & 82.29 & 82.25 & 82.00 & 80.03 & 80.55 & 78.96 \\
-ResNet18 \texttt{tv\_in1k}$^{\ddagger}$    & 69.76 & 69.73 & 69.52 & 69.18 & 68.94 & 69.02 & 69.28 & 69.50 & 69.50 & 69.39 & 69.12 & 69.00 & 68.31 & 67.82 & 67.23 \\
-ResNet34 \texttt{tv\_in1k}$^{\ddagger}$    & 73.28 & 73.00 & 72.67 & 72.39 & 72.62 & 73.06 & 73.09 & 73.16 & 73.16 & 73.00 & 72.88 & 72.74 & 72.12 & 71.59 & 71.44 \\
-ResNet50 \texttt{tv\_in1k}$^{\ddagger}$    & 76.13 & 75.85 & 75.33 & 75.72 & 76.07 & 76.17 & 76.13 & 76.13 & 76.14 & 75.75 & 75.76 & 75.70 & 74.83 & 74.62 & 74.15 \\
-DeiT-Base \texttt{patch16\_224.fb\_in1k}$^{\ddagger}$ & 81.97 & 81.79 & 81.69 & 81.54 & 81.44 & 81.25 & 81.35 & 81.18 & 80.95 & 80.68 & 80.12 & 79.48 & 78.24 & 76.70 & 74.78 \\
-Swin-Tiny \texttt{patch4\_window7\_224}$^{\ddagger}$ & 81.39 & 81.32 & 81.29 & 81.26 & 81.05 & 80.77 & 80.47 & 80.58 & 80.43 & 80.11 & 79.80 & 78.94 & 78.03 & 76.53 & 74.31 \\
-ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}$^{\ddagger}$ & 86.72 & 86.67 & 86.58 & 86.43 & 86.27 & 85.93 & 85.97 & 85.96 & 85.71 & 85.58 & 85.33 & 84.81 & 84.61 & 83.83 & 81.40 \\
+ResNet18 \texttt{tv\_in1k}    & 69.76 & 69.73 & 69.52 & 69.18 & 68.94 & 69.02 & 69.28 & 69.50 & 69.50 & 69.39 & \textbf{69.12} & 69.00 & 68.31 & 67.82 & 67.23 \\
+ResNet34 \texttt{tv\_in1k}    & 73.28 & 73.00 & 72.67 & 72.39 & 72.62 & 73.06 & 73.09 & 73.16 & 73.16 & 73.00 & \textbf{72.88} & 72.74 & 72.12 & 71.59 & 71.44 \\
+ResNet50 \texttt{tv\_in1k}    & 76.13 & 75.85 & 75.33 & 75.72 & 76.07 & 76.17 & 76.13 & 76.13 & 76.14 & 75.75 & \textbf{75.76} & 75.70 & 74.83 & 74.62 & 74.15 \\
+DeiT-Base \texttt{patch16\_224.fb\_in1k} & 81.97 & 81.79 & 81.69 & 81.54 & 81.44 & 81.25 & 81.35 & 81.18 & 80.95 & 80.68 & 80.12 & 79.48 & 78.24 & 76.70 & 74.78 \\
+Swin-Tiny \texttt{patch4\_window7\_224} & 81.39 & 81.32 & 81.29 & 81.26 & 81.05 & 80.77 & 80.47 & 80.58 & 80.43 & 80.11 & 79.80 & 78.94 & 78.03 & 76.53 & 74.31 \\
+ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k} & 86.72 & 86.67 & 86.58 & 86.43 & 86.27 & 85.93 & 85.97 & 85.96 & 85.71 & 85.58 & \textbf{85.33} & 84.81 & 84.61 & 83.83 & 81.40 \\
 \bottomrule
 \end{tabular}
 \end{table}
-\begin{figure}[ht]
+
+Figures~\ref{fig:param_vs_drop} and~\ref{fig:flop_top1_vs_params} show the same size trend in two views: at matched nominal sparsity or MAC reduction, larger dense checkpoints tend to pay a smaller top-1 penalty.  This is theoretically plausible for RMT-guided pruning, because the MP edge is an asymptotic spectral object that is better resolved in larger matrices, and because wider overparameterized layers can contain a larger random-like bulk reservoir whose removal has small data-path effect under the certificate model.  The figures are descriptive finite-model evidence for this scaling intuition, not a theorem that size alone guarantees pruneability.
+
+\begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures_param_vs_drop.pdf}
 \caption{\(\Delta\)Top-1 relative to each dense baseline after Hybrid Magnitude--SER pruning vs.\ dense parameter count. Points are Table~\ref{tab:multi_arch_hybrid} entries; marker style encodes architecture family. Dashed lines are OLS fits at the plotted sparsity levels.}
@@ -329,11 +343,11 @@ ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}$^{\ddagger}$ & 86.72 & 86.67 & 8
 \subsection{Cert-aware structured sparsity: the FLOP / speedup table}
 \label{subsec:flop_table}
 
-Table~\ref{tab:param_to_flop_followup} summarizes structured sparsity; Algorithm~\ref{alg:cast_kn} and source/checkpoint recipes are in Appendices~\ref{app:cast} and~\ref{app:cast_recipe_table}.
+Table~\ref{tab:param_to_flop_followup} summarizes structured sparsity; The CAST algorithm and source/checkpoint recipes are in Online Resource 2.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
-\caption{CAST \(k{:}n\) structured-projection results. ``MAC red.'' is dense-equivalent MAC-accounting reduction; for rows without a deploy-speed entry this is not an audited sparse-backend wall-clock claim. ``Th. spd.'' is \(1/(1-\mathrm{MAC\ red.})\), and \(\Delta\) is top-1 minus the corresponding dense baseline. ``Deploy spd.'' is a measured sparse-backend speedup only when listed; Table~\ref{tab:deployability_audit_compact} reports endpoint, batch, and best-observed audit details. A dash means no exact sparse-backend wall-clock speedup is claimed.}
+\caption{CAST \(k{:}n\) structured-projection results. ``MAC red.'' is dense-equivalent MAC-accounting reduction; for rows without a deploy-speed entry this is not an audited sparse-backend wall-clock claim. ``Th. spd.'' is \(1/(1-\mathrm{MAC\ red.})\), and \(\Delta\) is top-1 minus the corresponding dense baseline. ``Deploy spd.'' lists the selected best-observed measured sparse-backend speedup when available; Table~\ref{tab:deployability_audit_compact} reports endpoint, batch, and audit details. Rows labeled ``(ours)'' are this paper's measurements. Bold marks notable accuracy or measured-speed entries, not row ownership. A dash means no exact sparse-backend wall-clock speedup is claimed.}
 \label{tab:param_to_flop_followup}
 \scriptsize
 \setlength{\tabcolsep}{1.1pt}
@@ -343,40 +357,47 @@ Table~\ref{tab:param_to_flop_followup} summarizes structured sparsity; Algorithm
 Architecture & Source \(s\) & Method & Dense MACs & MAC red. & Th. spd. & Deploy spd. & Top-1 (\%) & \(\Delta\) (pp) \\
 \midrule
 \multicolumn{9}{l}{\textit{ViT family}} \\
-ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\)\textsuperscript{*} & 82.92 & \(-2.19\) \\
-ViT-B/16   & 0.35 & \textbf{CAST 2:4 + ToMe}        & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\) & \(\mathbf{83.41}\) & \(-1.70\) \\
-ViT-B/16   & 0.35 & \textbf{CAST 6:12 SER+\(\alpha\)=0.5} (no ToMe) & 17.56G & 50\% & \(2.00\times\) & -- & \(\mathbf{83.74}\)\textsuperscript{\S} & \(-1.37\) \\
-ViT-L/16   & 0.35 & CAST 2:4 + ToMe                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(2.50\times\) & \(1.37\times\) & \(\mathbf{84.37}\) & \(-1.47\) \\
-ViT-L/16   & dense & \textbf{CAST 8:16 dense+perm} (no ToMe) & 61.55G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.33}\)\textsuperscript{\S} & \(-0.51\) \\
-DeiT-B     & 0.35 & CAST 2:4 + ToMe                 & 17.56G & 59.81\% & \(2.49\times\) & \(1.36\times\) & 80.48 & \(-1.32\) \\
-DeiT-S     & 0.35 & CAST 2:4 + ToMe                 & 4.61G  & 59.81\% & \(2.49\times\) & \(1.38\times\) & 76.96 & \(-2.89\) \\
-DeiT-T     & 0.35 & CAST 2:4 + ToMe                 & 1.26G  & 59.81\% & \(2.49\times\) & \(1.33\times\) & 65.93 & \(-6.28\) \\
+ViT-B/16   & 0.35 & Magnitude 2:4 + ToMe (ours) & 17.56G & 59.81\% & \(2.49\times\) & \(1.388\times\)\textsuperscript{*} & 82.92 & \(-2.19\) \\
+ViT-B/16   & 0.35 & CAST 2:4 + ToMe (ours)        & 17.56G & 59.81\% & \(2.49\times\) & \(\mathbf{1.388\times}\) & \(\mathbf{83.41}\) & \(-1.70\) \\
+ViT-B/16   & 0.35 & CAST 6:12 SER+\(\alpha\)=0.5 (ours, no ToMe) & 17.56G & 50\% & \(2.00\times\) & -- & \(\mathbf{83.74}\)\textsuperscript{\S} & \(\mathbf{-1.37}\) \\
+ViT-L/16   & 0.35 & CAST 2:4 + ToMe (ours)                 & 61.55G\textsuperscript{\dag} & \(\sim\)60\%\textsuperscript{\dag} & \(2.50\times\) & \(\mathbf{1.394\times}\) & \(\mathbf{84.37}\) & \(-1.47\) \\
+ViT-L/16   & dense & CAST 8:16 dense+perm (ours, no ToMe) & 61.55G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.33}\)\textsuperscript{\S} & \(\mathbf{-0.51}\) \\
+DeiT-B     & 0.35 & CAST 2:4 + ToMe                 & 17.56G & 59.81\% & \(2.49\times\) & \(1.384\times\) & 80.48 & \(-1.32\) \\
+DeiT-S     & 0.35 & CAST 2:4 + ToMe                 & 4.61G  & 59.81\% & \(2.49\times\) & \(1.376\times\) & 76.96 & \(-2.89\) \\
+DeiT-T     & 0.35 & CAST 2:4 + ToMe                 & 1.26G  & 59.81\% & \(2.49\times\) & \(1.330\times\) & 65.93 & \(-6.28\) \\
 \midrule
 \multicolumn{9}{l}{\textit{ResNet family}} \\
 ResNet50   & 0.35 & CAST-conv          & 4.09G  & 48.5\%   & \(1.94\times\) & -- & 73.14 & \(-2.99\) \\
-ResNet50   & 0.35 & \textbf{CAST-conv+perm} & 4.09G  & 48.5\%   & \(1.94\times\) & \(1.70\times\)\textsuperscript{\ddag} & \(\mathbf{75.67}\)\textsuperscript{\ddag} & \(-0.46\) \\
-ResNet50   & dense & \textbf{CAST 8:16 dense+perm} & 4.09G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{75.87}\)\textsuperscript{\S} & \(-0.26\) \\
+ResNet50   & 0.35 & CAST-conv+perm (ours) & 4.09G  & 48.5\%   & \(1.94\times\) & \(\mathbf{1.700\times}\)\textsuperscript{\ddag} & \(\mathbf{75.67}\)\textsuperscript{\ddag} & \(\mathbf{-0.46}\) \\
+ResNet50   & dense & CAST 8:16 dense+perm (ours) & 4.09G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{75.87}\)\textsuperscript{\S} & \(\mathbf{-0.26}\) \\
 ResNet50d  & 0.35 & CAST-conv          & 4.33G  & 49.85\%  & \(1.99\times\) & -- & 78.08 & \(-2.47\) \\
-ResNet50d  & 0.35 & \textbf{CAST-conv+perm} & 4.33G  & 49.85\%  & \(1.99\times\) & \(1.50\times\)\textsuperscript{\ddag} & \(\mathbf{78.00}\)\textsuperscript{\ddag} & \(-2.55\) \\
-ResNet50d  & dense & \textbf{CAST 8:16 dense+perm} & 4.33G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{78.57}\)\textsuperscript{\S} & \(-1.98\) \\
+ResNet50d  & 0.35 & CAST-conv+perm (ours) & 4.33G  & 49.85\%  & \(1.99\times\) & \(1.496\times\)\textsuperscript{\ddag} & 78.00\textsuperscript{\ddag} & \(-2.55\) \\
+ResNet50d  & dense & CAST 8:16 dense+perm (ours) & 4.33G  & 50\%     & \(2.00\times\) & -- & \(\mathbf{78.57}\)\textsuperscript{\S} & \(-1.98\) \\
 ResNet101d & 0.35 & CAST-conv          & 8.0G   & \(\sim\)50\% & \(2.00\times\) & -- & 80.13 & \(-2.13\) \\
-ResNet101d & 0.35 & \textbf{CAST-conv+perm} & 8.0G   & \(\sim\)50\% & \(2.00\times\) & \(1.57\times\)\textsuperscript{\ddag} & \(\mathbf{80.59}\)\textsuperscript{\ddag} & \(-1.67\) \\
-ResNet101d & dense & \textbf{CAST 8:16 dense+perm} & 8.0G   & 50\%     & \(2.00\times\) & -- & \(\mathbf{80.92}\)\textsuperscript{\S} & \(-1.34\) \\
-ResNet152d & 0.35 & \textbf{CAST-conv+perm} & 11.8G  & \(\sim\)50\% & \(2.00\times\) & \(1.62\times\)\textsuperscript{\ddag} & \(\mathbf{81.33}\)\textsuperscript{\ddag} & \(-1.53\) \\
+ResNet101d & 0.35 & CAST-conv+perm (ours) & 8.0G   & \(\sim\)50\% & \(2.00\times\) & \(\mathbf{1.568\times}\)\textsuperscript{\ddag} & \(\mathbf{80.59}\)\textsuperscript{\ddag} & \(-1.67\) \\
+ResNet101d & dense & CAST 8:16 dense+perm (ours) & 8.0G   & 50\%     & \(2.00\times\) & -- & \(\mathbf{80.92}\)\textsuperscript{\S} & \(-1.34\) \\
+ResNet152d & 0.35 & CAST-conv+perm (ours) & 11.8G  & \(\sim\)50\% & \(2.00\times\) & \(\mathbf{1.617\times}\)\textsuperscript{\ddag} & \(\mathbf{81.33}\)\textsuperscript{\ddag} & \(-1.53\) \\
 \midrule
 \multicolumn{9}{l}{\textit{ConvNeXt family}} \\
 % ConvNeXt-Base canonical CAST run not completed; ConvNeXtV2-Base rows below cover the deployed ConvNeXt-family results.
-ConvNeXtV2-Base & 0.35 & \textbf{CAST 2:4 cert + free-restore} & 15.4G & 50\% & \(2.00\times\) & \(1.26\times\) & \(\mathbf{85.47}\) & \(-1.25\) \\
-ConvNeXtV2-Base & dense & \textbf{CAST 12:16 dense+perm} (25\% sparse) & 15.4G & 25\% & \(1.33\times\) & -- & \(\mathbf{86.35}\)\textsuperscript{\S} & \(-0.37\) \\
-ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.85}\)\textsuperscript{\S} & \(-0.87\) \\
+ConvNeXtV2-Base & 0.35 & CAST 2:4 cert + free-restore (ours) & 15.4G & 50\% & \(2.00\times\) & \(1.295\times\) & \(\mathbf{85.47}\) & \(-1.25\) \\
+ConvNeXtV2-Base & dense & CAST 12:16 dense+perm (ours, 25\% sparse) & 15.4G & 25\% & \(1.33\times\) & -- & \(\mathbf{86.35}\)\textsuperscript{\S} & \(\mathbf{-0.37}\) \\
+ConvNeXtV2-Base & dense & CAST 8:16 dense+perm (ours, 50\% sparse) & 15.4G & 50\% & \(2.00\times\) & -- & \(\mathbf{85.85}\)\textsuperscript{\S} & \(\mathbf{-0.87}\) \\
 \bottomrule
 \end{tabularx}\\[2pt]
-{\footnotesize \textsuperscript{\dag}Analytical ViT-L/16 ToMe+2:4 estimate. \textsuperscript{\ddag}Exact im2col+\(2{:}4\) sparse-GEMM audit, not faster cuDNN Conv2d. \textsuperscript{\S}Accuracy/MAC-accounting probe unless a measured endpoint is listed; dense-source wider-pattern rows are not incremental comparisons to the \(s=0.35\) source rows. \textsuperscript{*}Magnitude row shares the ViT-B 2:4+ToMe deployment path; see Appendix~\ref{app:comparison_provenance_scope}.}
+{\footnotesize \textsuperscript{\dag}Analytical ViT-L/16 ToMe+2:4 estimate. \textsuperscript{\ddag}Exact im2col+\(2{:}4\) sparse-GEMM audit, not faster cuDNN Conv2d. \textsuperscript{\S}Accuracy/MAC-accounting probe unless a measured endpoint is listed; dense-source wider-pattern rows are not incremental comparisons to the \(s=0.35\) source rows. \textsuperscript{*}Magnitude row shares the ViT-B 2:4+ToMe deployment path; see Online Resource 2.}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{figure}[H]
 \centering
-\caption{Deployability audit for the main measured checkpoints, reporting best-observed A40 batch-sweep values. Accuracy is fixed by the saved post-FT checkpoint; no weights are rewritten, and only the in-memory execution endpoint changes. Linear rows use the PyTorch/NVIDIA native 2:4 backend on A40. ResNet rows use exact im2col+\(2{:}4\) sparse GEMM relative to dense im2col; these rows do not claim a faster cuDNN Conv2d endpoint.}
+\includegraphics[width=0.82\textwidth]{fig_top1_vs_params_at_50pct_MAC.pdf}
+\caption{Top-1 drop from dense vs.\ original dense parameter count for rows of Table~\ref{tab:param_to_flop_followup} at 48.5--50\% dense-equivalent sparse-execution MAC reduction. The y-axis is dense top-1 minus post-FT top-1, so lower is better. The dashed line is an OLS fit in \(\log_{10}\) parameters.}
+\label{fig:flop_top1_vs_params}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Deployability audit for the main measured checkpoints, reporting best-observed A40 batch-sweep values. Accuracy is fixed by the saved post-FT checkpoint; no weights are rewritten, and only the in-memory execution endpoint changes. Linear rows use the PyTorch/NVIDIA native \(2{:}4\) backend on A40. ResNet rows use exact im2col+\(2{:}4\) sparse GEMM relative to dense im2col; these rows do not claim a faster cuDNN Conv2d endpoint. Bold marks notable measured speedups, including the strongest endpoints within the Linear and ResNet audit groups.}
 \label{tab:deployability_audit_compact}
 \scriptsize
 \setlength{\tabcolsep}{2.1pt}
@@ -385,163 +406,78 @@ ConvNeXtV2-Base & dense & \textbf{CAST 8:16 dense+perm} (50\% sparse) & 15.4G & 
 \toprule
 Checkpoint & Audited endpoint & Batch & Dense im/s & Sparse im/s & Speedup & Status \\
 \midrule
-ViT-B/16 + ToMe & native Linear 2:4 & 64 & 1191.8 & 1654.5 & \(1.388\times\) & native sparse Tensor Core path \\
-ViT-L/16 + ToMe & native Linear 2:4 & 64 & 620.8 & 865.6 & \(1.394\times\) & native sparse Tensor Core path \\
+ViT-B/16 + ToMe & native Linear 2:4 & 64 & 1191.8 & 1654.5 & \(\mathbf{1.388\times}\) & native sparse Tensor Core path \\
+ViT-L/16 + ToMe & native Linear 2:4 & 64 & 620.8 & 865.6 & \(\mathbf{1.394\times}\) & native sparse Tensor Core path \\
 DeiT-B + ToMe & native Linear 2:4 & 64 & 1189.6 & 1646.7 & \(1.384\times\) & native sparse Tensor Core path \\
 DeiT-S + ToMe & native Linear 2:4 & 128 & 2708.5 & 3725.8 & \(1.376\times\) & native sparse Tensor Core path \\
 DeiT-T + ToMe & native Linear 2:4 & 128 & 5158.4 & 6859.4 & \(1.330\times\) & native sparse Tensor Core path \\
 ConvNeXtV2-B & native Linear 2:4 & 64 & 499.3 & 646.5 & \(1.295\times\) & pointwise Linear layers accelerated; dense convs unchanged \\
-ResNet50 & im2col sparse GEMM & 128 & 469.5 & 797.9 & \(1.700\times\) & im2col \(2{:}4\) sparse GEMM \\
-ResNet50d & im2col sparse GEMM & 128 & 445.2 & 666.2 & \(1.496\times\) & im2col \(2{:}4\) sparse GEMM \\
-ResNet101d & im2col sparse GEMM & 128 & 228.2 & 357.8 & \(1.568\times\) & im2col \(2{:}4\) sparse GEMM \\
-ResNet152d & im2col sparse GEMM & 128 & 159.9 & 258.7 & \(1.617\times\) & im2col \(2{:}4\) sparse GEMM \\
+ResNet50 & im2col sparse GEMM & 128 & 469.5 & 797.9 & \(\mathbf{1.700\times}\) & im2col \(2{:}4\) sparse GEMM \\
+ResNet50d & im2col sparse GEMM & 128 & 445.2 & 666.2 & \(\mathbf{1.496\times}\) & im2col \(2{:}4\) sparse GEMM \\
+ResNet101d & im2col sparse GEMM & 128 & 228.2 & 357.8 & \(\mathbf{1.568\times}\) & im2col \(2{:}4\) sparse GEMM \\
+ResNet152d & im2col sparse GEMM & 128 & 159.9 & 258.7 & \(\mathbf{1.617\times}\) & im2col \(2{:}4\) sparse GEMM \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \paragraph{Deployability interpretation.}
-Endpoint coverage and the separate A100 no-ToMe ViT-B benchmark are documented in Appendix~\ref{app:comparison_provenance_scope}.
+Endpoint coverage and the separate A100 no-ToMe ViT-B benchmark are documented in Online Resource 2.
 
-\begin{table}[!htbp]
-\centering
-\caption{Projection controls inside this paper. Each row compares an original/control projection to the later projection under the same accuracy convention as Table~\ref{tab:param_to_flop_followup}. ``FT ep.'' is the post-projection distillation budget for the two rows being compared. Wider dense-source rows are accuracy/MAC probes and should not be read as native sparse-kernel speedups.}
-\label{tab:projection_controls}
-\scriptsize
-\setlength{\tabcolsep}{1.8pt}
-\renewcommand{\arraystretch}{1.05}
-\begin{tabularx}{\textwidth}{l X X c c c}
-\toprule
-Architecture & Original/control projection & Compared projection & FT ep. & Top-1 change & MAC/speed change \\
-\midrule
-ViT-B/16 & Magnitude \(2{:}4{+}\)ToMe & CAST \(2{:}4{+}\)ToMe & \(3\to3\) & \(82.92\to83.41\) (\(+0.49\)) & same \(59.81\%\) MAC red.; same native \(2{:}4\) path \\
-ViT-B/16 & CAST \(2{:}4{+}\)ToMe & CAST \(6{:}12\) no ToMe & \(3\to3\) & \(83.41\to83.74\) (\(+0.33\)) & \(59.81\%\to50\%\) MAC red.; no native \(6{:}12\) audit \\
-ViT-L/16 & CAST \(2{:}4{+}\)ToMe & CAST \(8{:}16\) dense+perm & \(3\to3\) & \(84.37\to85.33\) (\(+0.96\)) & \(\sim60\%\to50\%\) MAC red.; no native \(8{:}16\) audit \\
-ResNet50 & CAST-conv & CAST-conv+perm & \(3\to3\) & \(73.14\to75.67\) (\(+2.53\)) & same \(48.5\%\) MAC red.; \(1.70\times\) im2col audit \\
-ResNet50 & CAST-conv+perm & CAST \(8{:}16\) dense+perm & \(3\to3\) & \(75.67\to75.87\) (\(+0.20\)) & \(48.5\%\to50\%\) MAC red.; no native \(8{:}16\) audit \\
-ResNet50d & CAST-conv & CAST-conv+perm & \(3\to3\) & \(78.08\to78.00\) (\(-0.08\)) & same \(49.85\%\) MAC red.; \(1.50\times\) im2col audit \\
-ResNet50d & CAST-conv+perm & CAST \(8{:}16\) dense+perm & \(3\to3\) & \(78.00\to78.57\) (\(+0.57\)) & \(49.85\%\to50\%\) MAC red.; no native \(8{:}16\) audit \\
-ResNet101d & CAST-conv & CAST-conv+perm & \(3\to3\) & \(80.13\to80.59\) (\(+0.46\)) & same \(\sim50\%\) MAC red.; \(1.57\times\) im2col audit \\
-ResNet101d & CAST-conv+perm & CAST \(8{:}16\) dense+perm & \(3\to3\) & \(80.59\to80.92\) (\(+0.33\)) & same \(50\%\) MAC red.; no native \(8{:}16\) audit \\
-ConvNeXtV2-B & CAST \(2{:}4\) cert+free & CAST \(8{:}16\) dense+perm & \(3\to3\) & \(85.47\to85.85\) (\(+0.38\)) & same \(50\%\) MAC red.; no native \(8{:}16\) audit \\
-ConvNeXtV2-B & CAST \(2{:}4\) cert+free & CAST \(12{:}16\) dense+perm & \(3\to3\) & \(85.47\to86.35\) (\(+0.88\)) & \(50\%\to25\%\) MAC red.; no native \(12{:}16\) audit \\
-\bottomrule
-\end{tabularx}
-\end{table}
+Several CAST rows start from denser, higher-accuracy checkpoints than the cited ResNet references. In that regime the remaining weights are plausibly carrying more useful signal, so the relevant comparison is the reported drop together with the training budget and measured endpoint, not raw top-1 alone. The wider \(6{:}12\), \(8{:}16\), and \(12{:}16\) accuracy/MAC probes remain in Table~\ref{tab:param_to_flop_followup}; Table~\ref{tab:result_comparison} carries the closest published unstructured and structured-sparsity context; the complete comparison table is provided in Online Resource 2.
 
 
 
-\subsection{Comparison with published structured-sparsity and ViT pruning baselines}
+\subsection{Comparison with published pruning and structured-sparsity baselines}
 \label{subsec:result_comparison}
 
-Table~\ref{tab:result_comparison} is literature context, not matched baseline evidence; matched evidence is Table~\ref{tab:vitb_current_methods}, the author-run AlphaPruning-style row, and the caveats in Appendix~\ref{app:comparison_provenance_scope}. Table~\ref{tab:cnn_pruning_comparison} gives the corresponding CNN pruning context.
+Table~\ref{tab:result_comparison} is literature context, not matched baseline evidence. Its main purpose is to show that the small accuracy drops reported here are obtained with very limited fine-tuning compared with many published pruning pipelines; matched evidence is Table~\ref{tab:vitb_current_methods}, Table~\ref{tab:multi_arch_hybrid}, and the caveats in Online Resource 2. We separate unstructured or fine-grained weight sparsity from deployable sparse-kernel claims: parameter sparsity and FLOP accounting are useful compression proxies, but do not by themselves imply latency or throughput gains on a given backend \cite{gale2019state,blalock2020state,hoefler2021sparsity}.
 
-\begingroup
-\scriptsize
-\setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{0.95}
-\begin{longtable}{>{\raggedright\arraybackslash}p{2.35cm}
-                  >{\raggedright\arraybackslash}p{1.85cm}
-                  >{\raggedright\arraybackslash}p{2.25cm}
-                  r
-                  r
-                  >{\raggedright\arraybackslash}p{1.35cm}
-                  >{\raggedright\arraybackslash}p{3.2cm}}
-\caption{Selected ImageNet-1k pruning and structured-sparsity results. This is not an apples-to-apples ranking: rows start from different dense accuracies, checkpoints, architectures, compression axes, and fine-tuning budgets. Non-bold rows are cited results or author-run reimplementations; bold marks this paper's rows only, not better performance. ``FT/train'' is the reported training or post-pruning fine-tuning budget.}
-\label{tab:result_comparison}\\
-\toprule
-Method & Architecture & Compression & Top-1 & \(\Delta\) vs.\ dense & FT/train & Notes \\
-\midrule
-\endfirsthead
-\caption[]{Selected ImageNet-1k pruning and structured-sparsity results (continued).}\\
-\toprule
-Method & Architecture & Compression & Top-1 & \(\Delta\) vs.\ dense & FT/train & Notes \\
-\midrule
-\endhead
-\midrule
-\multicolumn{7}{r}{\footnotesize Continued on next page}\\
-\endfoot
-\bottomrule
-\endlastfoot
-\multicolumn{7}{l}{\textit{Published ViT-family weight-pruning baselines}} \\
-NViT \cite{yang2023nvit}      & DeiT-Base & global structured (34M params, 6.8G FLOPs) & 83.29 & $-0.07$ & 480 steps + 300 ep. & Hessian-aware structured pruning \\
-SViTE \cite{chen2021svite}    & DeiT/SViTE-Base & 50\% unstructured & 81.51 & $-0.29$ & 600 (train) & sparse-training from scratch \\
-Spartan \cite{tai2022spartan} & ViT-B/16 & 90\% unstructured & 81.18 & $+1.12^{\dag}$ & 300 (train) & soft top-$k$ + dual averaging \\
-\textbf{Hybrid Mag--SER} & \textbf{ViT-B/16} & \textbf{50\% unstructured} & $\mathbf{83.37}$ & $\mathbf{-1.7}$ & \textbf{1/cycle} & Table~\ref{tab:multi_arch_hybrid}, \(s=0.50\) \\
-\textbf{CAST 2:4+ToMe} & \textbf{ViT-B/16} & \textbf{2:4 + ToMe} & $\mathbf{83.41}$ & $\mathbf{-1.7}$ & \textbf{3} & native 2:4 sparse-kernel path \\
-\textbf{CAST 6:12 SER+$\alpha$} & \textbf{ViT-B/16} & \textbf{6:12 = 50\%} & $\mathbf{83.74}$ & $\mathbf{-1.4}$ & \textbf{3} & ViT-B 6:12 structured row \\
-\textbf{CAST 8:16 dense+perm} & \textbf{ViT-L/16} & \textbf{8:16 = 50\%} & $\mathbf{85.33}$ & $\mathbf{-0.51}$ & \textbf{3} & dense-source wider-pattern row \\
-\midrule
-\multicolumn{7}{l}{\textit{DeiT head-to-head (fine-tuned, reproduced by CP-ViT \cite{song2022cp})}} \\
-VTP \cite{zhu2021visual}             & DeiT-Base & projection-dim. pruning & 80.70 & $-1.12$ & 30 & $-43.20\%$ FLOPs \\
-PoWER-BERT \cite{goyal2020powerbert} & DeiT-Base & token-vector elim.   & 80.17 & $-1.65$ & 30 & $-39.24\%$ FLOPs \\
-HVT \cite{pan2021scalable}           & DeiT-Base & hierarchical pooling & 79.94 & $-1.88$ & 30 & $-44.78\%$ FLOPs \\
-CP-ViT \cite{song2022cp}             & DeiT-Base & cascade pruning      & 81.13 & $-0.69$ & 30 & $-41.62\%$ FLOPs (CP-ViT Table~4) \\
-\midrule
-\multicolumn{7}{l}{\textit{Hardware-friendly structured-sparsity baselines and context rows}} \\
-GPUSQ-ViT \cite{gpusq_vit2023} & DeiT-Base + INT8 & 2:4 + 8-bit quant & 82.90 & $+1.10$ & \makecell[l]{300\\QAT/KD} & -- \\
-GPUSQ-ViT \cite{gpusq_vit2023} & DeiT-Base + INT4 & 2:4 + 4-bit quant & 81.60 & $-0.20$ & \makecell[l]{300\\QAT/KD} & -- \\
-Beyond 2:4 \cite{beyond_24_2024} & DeiT-Base & V:N:M = 64:2:8 (300 ep) & 81.08 & $-0.76$ & 300 & -- \\
-Beyond 2:4 \cite{beyond_24_2024} & DeiT-Base & V:N:M = 64:2:8 (600 ep) & 81.76 & $-0.08$ & 600 (train) & -- \\
-ELSA \cite{elsa2024} & DeiT-Base & Uniform 2:4 (9.2G FLOPs) & 81.80 & $+0.00$ & 150 (train) & -- \\
-SERo \cite{sero2025} & DeiT-Base & sparse + re-optimization (5.4G FLOPs) & 80.25 & $-1.55$ & 200 (50 explore + 150 re-opt) & sparse exploration + re-optimization \\
-\textbf{CAST-conv+perm} & \textbf{ResNet152d} & \textbf{$\sim$50\% MAC-accounting} & $\mathbf{81.33}$ & $\mathbf{-1.5}$ & \textbf{3} & im2col audit; not cuDNN Conv2d speedup \\
-\textbf{CAST 8:16} & \makecell[l]{\textbf{ConvNeXt}\\\textbf{V2-B}} & \textbf{50\% MAC-accounting} & $\mathbf{85.85}$ & $\mathbf{-0.9}$ & \textbf{3} & accuracy/MAC probe; no native 8:16 kernel \\
-\textbf{CAST 12:16} & \makecell[l]{\textbf{ConvNeXt}\\\textbf{V2-B}} & \textbf{$\sim$25\% MAC-accounting} & $\mathbf{86.35}$ & $\mathbf{-0.4}$ & \textbf{3} & accuracy/MAC probe; no native 12:16 kernel \\
-\midrule
-\multicolumn{7}{l}{\textit{Author-run baseline on this paper's protocol}} \\
-AlphaPruning-style (ours) \cite{lu2024alphapruning} & ViT-B/16 & 50\% layerwise-$\alpha$ + short FT & $\sim$82.9 & $\sim$$-2.2$ & $\sim$3 & layerwise $\alpha$ allocation \\
-\end{longtable}
-\noindent{\footnotesize \(^{\dag}\)Spartan reports \(\Delta\) against its own dense baseline; see Appendix~\ref{app:comparison_provenance_scope} for row provenance and author-run baseline notes.}
-\endgroup
 
 \begin{table}[!htbp]
 \centering
-\caption{CNN ImageNet pruning context. Positive ``drop'' means lower top-1 than the row's dense baseline; negative drop means the pruned row is above that baseline. External rows use each cited paper's checkpoint, pruning axis, and training recipe, so the table is context rather than a matched leaderboard. ``FT/train'' is the reported post-pruning fine-tuning or training budget; \(n/r\) means the cited table/protocol does not give a single epoch count for that row.}
-\label{tab:cnn_pruning_comparison}
+\caption{Closest ImageNet-1k unstructured and structured-sparsity context for the main rows. This compact table keeps the most comparable representation classes from the full comparison table: unstructured/fine-grained pruning, \(2{:}4\) or \(N{:}M\) semi-structured sparsity, and audited endpoint rows. The complete literature-context table is provided in Online Resource 2. Rows labeled ``ours'' are this paper's measurements; ``FT/train'' is the reported training or post-pruning fine-tuning budget.}
+\label{tab:result_comparison}
 \scriptsize
-\setlength{\tabcolsep}{1.6pt}
-\renewcommand{\arraystretch}{1.05}
-\begin{tabularx}{\textwidth}{l l c c c c X}
+\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.04}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.35cm}
+                  >{\raggedright\arraybackslash}p{1.9cm}
+                  >{\raggedright\arraybackslash}p{2.3cm}
+                  r r
+                  >{\raggedright\arraybackslash}p{1.25cm}
+                  X}
 \toprule
-Method & Model & Compute red. & Top-1 & Drop & FT/train & Speed/deploy note \\
+Method & Architecture & Compression & Top-1 & \(\Delta\) & FT/train & Main comparison point \\
 \midrule
-SFP \cite{he2018softfilter} & ResNet-50 & \(41.8\%\) FLOPs & 74.61 & 1.54 & \(n/r\) & filter/channel-pruned CNN \\
-HRank \cite{lin2020hrank} & ResNet-50 & \(43.8\%\) FLOPs & 74.98 & 1.17 & \(n/r\) & feature-map-rank filter pruning \\
-FPGM \cite{he2019fpgm} & ResNet-50 & \(53.5\%\) FLOPs & 74.83 & 1.32 & \(n/r\) & geometric-median filter pruning \\
-ResRep \cite{ding2021resrep} & ResNet-50 & \(54.5\%\) FLOPs & 76.15 & 0.00 & 180 train & structural re-parameterization; narrowed dense CNN \\
-DepGraph \cite{fang2023depgraph} & ResNet-50 & \(51.8\%\) MACs & 75.83 & 0.32 & \(n/r\) & automatic structural pruning \\
-Isomorphic \cite{fang2024isomorphic} & ResNet-50 & \(50.1\%\) MACs & 75.91 & 0.22 & 300 FT & structural pruning; cited paper reports real latency caveats \\
-Isomorphic \cite{fang2024isomorphic} & ResNet-101 & \(50.9\%\) MACs & 77.43 & -0.05 & 300 FT & structural pruning, above its dense baseline \\
-Isomorphic \cite{fang2024isomorphic} & ResNet-152 & \(64.9\%\) MACs & 77.84 & 0.47 & 300 FT & structural pruning with narrowed dense kernels \\
-Isomorphic \cite{fang2024isomorphic} & ConvNeXt-B\(\to\)S-width & \(44.8\%\) MACs & 83.17 & 0.66 & 300 FT & pruned ConvNeXt-style dense model \\
-Isomorphic \cite{fang2024isomorphic} & ConvNeXt-B\(\to\)T-width & \(72.7\%\) MACs & 82.19 & 1.64 & 300 FT & pruned ConvNeXt-style dense model \\
-\midrule
-\textbf{CAST-conv+perm} & \textbf{ResNet50} & \(\mathbf{48.5\%}\) MACs & \(\mathbf{75.67}\) & \(\mathbf{0.46}\) & \(\mathbf{3}\) & \(\mathbf{1.70\times}\) A40 im2col+\(2{:}4\) audit; not cuDNN Conv2d \\
-\textbf{CAST \(8{:}16\) dense+perm} & \textbf{ResNet50} & \(\mathbf{50.0\%}\) MACs & \(\mathbf{75.87}\) & \(\mathbf{0.26}\) & \(\mathbf{3}\) & no native \(8{:}16\) sparse-kernel claim \\
-\textbf{CAST-conv+perm} & \textbf{ResNet152d} & \(\mathbf{\sim50\%}\) MACs & \(\mathbf{81.33}\) & \(\mathbf{1.53}\) & \(\mathbf{3}\) & \(\mathbf{1.62\times}\) A40 im2col+\(2{:}4\) audit; stronger timm dense baseline \\
-\textbf{CAST \(8{:}16\) dense+perm} & \textbf{ConvNeXtV2-B} & \(\mathbf{50.0\%}\) MACs & \(\mathbf{85.85}\) & \(\mathbf{0.87}\) & \(\mathbf{3}\) & no native \(8{:}16\) sparse-kernel claim \\
-\textbf{CAST \(12{:}16\) dense+perm} & \textbf{ConvNeXtV2-B} & \(\mathbf{25.0\%}\) MACs & \(\mathbf{86.35}\) & \(\mathbf{0.37}\) & \(\mathbf{3}\) & no native \(12{:}16\) sparse-kernel claim \\
+Hybrid Mag--SER (ours) & ViT-B/16 & 50\% unstructured & \(83.37\) & \(-1.74\) & 1/cycle & MP-budgeted unstructured row with short-cycle FT. \\
+CAST 2:4+ToMe (ours) & ViT-B/16 & \(2{:}4\)+ToMe & \(83.41\) & \(-1.70\) & 3 & Native A40 \(2{:}4\) endpoint \(1.388\times\); separate no-ToMe A100 endpoint \(2.705\times\). \\
+SNOWS \cite{lucas2025snows} & ViT-B/16 & \(2{:}4\) QKV+Out+MLP & 76.57 & \(-3.85\) & 0 & Closest one-shot ViT \(2{:}4\) row; MiniImageNet-1k subset, no endpoint speed row. \\
+MaskLLM-4V \cite{fang2024maskllm} & ViT-B/16 & \(2{:}4\) learned mask & 79.46 & \(+0.31\) & 20 mask ep. & Learned-mask ViT \(2{:}4\) context; weights frozen, no ViT endpoint speed reported. \\
+SparseFormer \cite{gao2024sparseformer} & ViT-B/16 AugReg & latent-token reduction & 83.40 & \(-1.20\) & 20+5 ep. & Similar accuracy but token reduction, not weight sparsity; \(1.85\times\) throughput. \\
+CAST 8:16 dense+perm (ours) & ViT-L/16 & 8:16 = 50\% & \(85.33\) & \(-0.51\) & 3 & Main wider-pattern accuracy/MAC row; no native 8:16 endpoint audit. \\
+ToMe \cite{bolya2023tome} & ViT-L/16 MAE & token merging & 85.05 & \(-0.61\) & MAE FT & Closest token-merging accuracy/speed context; not weight sparsity. \\
+UniPTS \cite{xie2024unipts} & ResNet-50 & 50/60/70\% unstructured & 75.76/75.37/74.73 & \(-0.36/-0.75/-1.39\) & 16k iters & Closest post-training unstructured ResNet row with limited calibration. \\
+AC/DC \cite{peste2021acdc} & ResNet-50 & 50\% unstructured & 77.05 & \(+0.21\) & 100 train & Strong global sparse-training baseline; much longer training. \\
+Mishra et al. \cite{mishra2021accelerating} & ResNet-50 & 2:4 FP16 & 76.20 & \(+0.10\) & repeated train & Original \(2{:}4\) sparse Tensor Core reference; up to \(2\times\) sparse math. \\
+Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4\)+perm & 76.29 & \(+0.13\) & 90 FT & Closest channel-permutation semi-structured ResNet context. \\
+CAST-conv+perm (ours) & ResNet152d & 2:4 im2col & 81.33 & \(-1.53\) & 3 & Main CNN sparse-GEMM audit; \(1.617\times\) A40 im2col, not cuDNN Conv2d. \\
+CAP \cite{kuznedelev2023cap} & ConvNeXt-L CLIP & 50/60/70\% unstructured & 87.5/87.1/86.8 & \(-0.3/-0.7/-1.0\) & 0 & Closest high-accuracy ConvNeXt unstructured one-shot context; no endpoint speed row. \\
+CAST 12:16 (ours) & ConvNeXtV2-B & \(\sim\)25\% MAC-accounting & 86.35 & \(-0.37\) & 3 & Main ConvNeXtV2 wider-pattern accuracy/MAC row; no native 12:16 endpoint audit. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.95\linewidth]{comparison_top1_vs_macred.png}
-\caption{Descriptive comparison against the original methods under their own protocols. Each external point uses the cited paper's dense baseline, compression axis, and reported FT/training budget; this paper's larger markers use the budgets in Tables~\ref{tab:result_comparison} and~\ref{tab:cnn_pruning_comparison} (\(3\) post-projection epochs for CAST rows and about one epoch per Hybrid pruning cycle). The y-axis is the drop from that row's own dense baseline, so lower is a smaller accuracy loss and negative values are above the row's dense baseline. Because checkpoints, pruning axes, and FT budgets differ, the figure is provenance-normalized context rather than a matched leaderboard.}
-\label{fig:comparison_top1_vs_macred}
-\end{figure}
 
 \subsection{Limitations and scope}
 \label{subsec:limitations}
 
-The main empirical scope qualifications are wider-pattern deployability, ResNet Conv2d endpoint support, artifact-bundle coverage, matched-ablation scope beyond ViT-B/16, and single-seed CAST row estimates; details are in Appendix~\ref{app:comparison_provenance_scope}. The main theory limitation is the unestimated analytic \(L_s\) for modern transformer blocks; see Remark~\ref{rem:lipschitz_local}.
+The main empirical scope qualifications are wider-pattern deployability, ResNet Conv2d endpoint support, artifact-bundle coverage, matched-ablation scope beyond ViT-B/16, and single-seed CAST row estimates; details are in Online Resource 2. The main theory limitation is the unestimated analytic \(L_s\) for modern transformer blocks; see Online Resource 1 for the local-Lipschitz discussion.
 
 \FloatBarrier
 \section{Abstract Additive Perturbation Extensions}
 \label{sec:abstract_additive_extensions}
 
-This section gives the abstract \(W=S+R\) additive analogue of the deterministic data-path framework in Section~\ref{Main_theory_gen}. Gaussian/RMT specializations and proofs are in Appendices~\ref{Main_theory}, \ref{app:abstract_additive_notes}, \ref{app:proof_perturb}, and~\ref{app:proofs_abstract_generalizations}.
+This section gives the abstract \(W=S+R\) additive analogue of the deterministic data-path framework in Section~\ref{Main_theory_gen}. Gaussian/RMT specializations and proofs are in Online Resource 1.
 
 \subsection{Assumptions for the generalized perturbation framework}
 \label{gen_ass_for_R}
@@ -640,7 +576,7 @@ L(\alpha_S)=L(\alpha_W)-\lambda_{\mathrm{reg}}\|R\|_F^2+o_{\PP}(1)
 \]
 \end{thm}
 
-Secondary loss and finite-rank deformation corollaries are stated in Appendix~\ref{app:abstract_relocated_corollaries}.
+Secondary loss and finite-rank deformation corollaries, with proofs, are stated in Online Resource 1.
 
 \begin{thm}[Multi-layer telescoping loss reduction]
 \label{thm:multilayer_telescoping}
@@ -731,13 +667,90 @@ then
 \]
 \end{thm}
 
+
+\subsection{Main Gaussian/RMT corollaries}
+\label{subsec:main_gaussian_rmt_corollaries}
+
+The following corollaries record the Gaussian/RMT specialization used in the MP interpretation. They are stated here because they are main mathematical consequences of the framework; their proofs and the detailed Gaussian assumptions are in Online Resource 1.
+
+\begin{thm}[Gaussian stationarity collapse]
+\label{thm:main_gaussian_stationarity_collapse}
+Consider the square iid-Gaussian specialization of the additive framework for a trained limit layer
+\[
+W_2^*(N)=S_2^*(N)+R_2^*(N),
+\qquad
+R_2^*(N)_{ij}\sim N\!\left(0,\frac{g_*(N)}{N}\right),
+\]
+with the same local-path, cross-term, and one-sided stationarity hypotheses as Theorem~\ref{main_result_reducing_noise_general}. If the propagated perturbation scale and stationarity error vanish, then
+\[
+\|R_2^*(N)\|_F\to0
+\qquad\text{in probability.}
+\]
+If an admissible training-path decomposition converges locally to this limit decomposition, then for every \(\epsilon>0\),
+\[
+\lim_{N\to\infty}\lim_{t\to\infty}
+\PP\big(\|R_2(t,N)\|_F\le\epsilon\big)=1.
+\]
+\end{thm}
+\proofloc{See Online Resource 1, proof of the Gaussian stationarity-collapse theorem.}
+
+\begin{cor}[Variance-scale collapse at the limit point]
+\label{cor:main_variance_scale_collapse}
+Under the hypotheses of Theorem~\ref{thm:main_gaussian_stationarity_collapse}, the Gaussian variance scale satisfies
+\[
+g_*(N)N\to0.
+\]
+Consequently, in the square case the MP singular-value edge of the admissible limit perturbation satisfies
+\[
+\sigma_{+,*}^{\mathrm{bulk}}(N)=2\sqrt{g_*(N)}\to0.
+\]
+For a rectangular \(N\times M_N\) perturbation with entries \(N(0,g_*(N)/N)\), the corresponding Frobenius collapse condition is \(g_*(N)M_N\to0\), equivalent to \(g_*(N)N\to0\) when \(M_N/N\to c\in(0,\infty)\).
+\end{cor}
+
+\begin{cor}[Bulk collapse and spike stabilization at the limit point]
+\label{cor:main_bulk_collapse_spike_stabilization}
+Under the hypotheses of Theorem~\ref{thm:main_gaussian_stationarity_collapse}, assume the structured component is spectrally admissible, with singular values \(\sigma_i^*(N)\) and approximate rank scale \(k_N=o(N)\). If \(s_i(W_2^*(N))\) are the singular values of the full layer, then \(\|R_2^*(N)\|_{\op}\to0\) in probability, each fixed spike satisfies
+\[
+|s_i(W_2^*(N))-\sigma_i^*(N)|\to0
+\qquad\text{in probability},
+\]
+the tail energy \(\sum_{i>k_N}s_i(W_2^*(N))^2\to0\) in probability, and the singular-value empirical distribution has no mass above any fixed \(\epsilon>0\) asymptotically. If \(\sigma_i^*(N)\to\bar\sigma_i\), then \(s_i(W_2^*(N))\to\bar\sigma_i\) for each fixed \(i\).
+\end{cor}
+
+\begin{cor}[Singular-subspace stabilization under an asymptotic gap condition]
+\label{cor:main_subspace_stabilization}
+Under the hypotheses of Theorem~\ref{thm:main_gaussian_stationarity_collapse}, fix \(k\ge1\) and let \(\delta_k(N)=\sigma_k^*(N)-\sigma_{k+1}^*(N)\). If \(\PP(\delta_k(N)>0)\to1\) and
+\[
+\frac{\|R_2^*(N)\|_{\op}}{\delta_k(N)}\to0
+\qquad\text{in probability},
+\]
+then the top-\(k\) left and right singular-subspace projectors of \(W_2^*(N)\) converge in operator norm to those of \(S_2^*(N)\).
+\end{cor}
+
+\begin{cor}[Eventual Gaussian supercriticality of persistent spikes]
+\label{cor:main_gaussian_BBP_persistent_spikes}
+Under the hypotheses of Theorem~\ref{thm:main_gaussian_stationarity_collapse}, assume a square finite-rank Gaussian deformation regime and fixed persistent spikes
+\[
+\sigma_i^*(N)\to\bar\sigma_i>0,
+\qquad 1\le i\le k.
+\]
+Then \(\PP(\sigma_i^*(N)>\sqrt{g_*(N)})\to1\), so these spikes are eventually supercritical above the Gaussian bulk edge \(2\sqrt{g_*(N)}\). With the usual spike-separation condition, the corresponding spectral projectors of \(W_2^*(N)\) converge to those of \(S_2^*(N)\), and the inverse-BBP estimator
+\[
+\widehat\sigma_i^{\mathrm{BBP}}(N)
+:=
+\frac12\left(s_i(W_2^*(N))+
+\sqrt{s_i(W_2^*(N))^2-4g_*(N)}\right)
+\]
+is consistent in probability.
+\end{cor}
+
 % =================================================
 \FloatBarrier
 \section{Main Theoretical Results: Deterministic Pruning Certificates}
 \label{Main_theory_gen}
 % =================================================
 
-This section states deterministic data-path certificates based on \(B_T(R)\). The mask-specific results concern fixed kept/removed supports and do not assume an additive Gaussian decomposition; random models only supply sufficient bounds for that budget. Proofs are collected in Appendix~\ref{app:proof_perturb}.
+This section states deterministic data-path certificates based on \(B_T(R)\). The mask-specific results concern fixed kept/removed supports and do not assume an additive Gaussian decomposition; random models only supply sufficient bounds for that budget. Proofs are collected in Online Resource 1.
 
 \subsection{Deterministic data-path certificates for mask pruning}
 \label{subsec:deterministic_mask_certificate}
@@ -945,7 +958,7 @@ B_T(R)-B_T(P)
 \]
 \end{cor}
 
-Coordinatewise weighted variants are stated in Appendix~\ref{app:deterministic_relocated_corollaries}.
+Coordinatewise weighted variants are stated in Online Resource 1.
 
 \begin{thm}[One-sided stationarity controls removable masks]
 \label{thm:deterministic_mask_stationarity}
@@ -998,7 +1011,7 @@ and let \(B_j(R_j)\) be its data-path budget in that intermediate network. If \(
 where \(\lambda_{2,j}\) and \(\lambda_{1,j}\) are the elastic-net weights applied to layer \(j\).
 \end{thm}
 
-The corresponding multi-layer margin-stability corollary is stated in Appendix~\ref{app:deterministic_relocated_corollaries}.
+The corresponding multi-layer margin-stability corollary is stated in Online Resource 1.
 
 \begin{thm}[Multi-layer stationarity controls jointly removable masks]
 \label{thm:deterministic_multilayer_mask_stationarity}
@@ -1063,2430 +1076,31 @@ B_T(R)
 \]
 \end{cor}
 
-Sub-Gaussian and simultaneous multi-layer budget corollaries are stated in Appendix~\ref{app:deterministic_relocated_corollaries}.
+Sub-Gaussian and simultaneous multi-layer budget corollaries are stated in Online Resource 1.
 
 \subsection*{Acknowledgments}
 LB, HO, and YS acknowledge support from NASA via the AIST program (Kernel Flows: Emulating Complex Models for Massive Data Sets). This work started during LB's sabbatical stay at Caltech hosted by H.\ Owhadi; LB and YS are grateful for the hospitality during their NASA-supported visit.
 
-The work of LB was partially supported by NSF grant DMS-2005262 and NSF grant IMPRESS-U 2401227. TB and HO acknowledge support from the Air Force Office of Scientific Research under MURI award number FA9550-20-1-0358 (Machine Learning and Physics-Based Modeling and Simulation) and FOA-AFRL-AFOSR-2023-0004 (Mathematics of Digital Twins), and from the Department of Energy under award number DE-SC0023163 (SEA-CROGS: Scalable, Efficient, and Accelerated Causal Reasoning Operators, Graphs and Spikes for Earth and Embedded Systems). HO and TB also acknowledge support from the DoD Vannevar Bush Faculty Fellowship Program under award number ONR-N000142512035.
+\section*{Statements and Declarations}
 
-The work of YS was partially supported by the European Research Council under the European Union's Horizon 2022 research and innovation program (grant agreement No.~101041711), the Simons Foundation, the Israel Science Foundation (grant number 2258/19), and the Israel Science Foundation (ISF Grant~4101/25).
+\subsection*{Funding}
+The work of LB was partially supported by NSF grant DMS-2005262 and NSF grant IMPRESS-U 2401227. TB and HO acknowledge support from the Air Force Office of Scientific Research under MURI award number FA9550-20-1-0358 (Machine Learning and Physics-Based Modeling and Simulation) and FOA-AFRL-AFOSR-2023-0004 (Mathematics of Digital Twins), and from the Department of Energy under award number DE-SC0023163 (SEA-CROGS: Scalable, Efficient, and Accelerated Causal Reasoning Operators, Graphs and Spikes for Earth and Embedded Systems). HO and TB also acknowledge support from the DoD Vannevar Bush Faculty Fellowship Program under award number ONR-N000142512035. The work of YS was partially supported by the European Research Council under the European Union's Horizon 2022 research and innovation program (grant agreement No.~101041711), the Simons Foundation, the Israel Science Foundation (grant number 2258/19), and the Israel Science Foundation (ISF Grant~4101/25).
 
-\section*{Declaration of generative AI and AI-assisted technologies\\ in the manuscript preparation process}
+\subsection*{Competing interests}
+The authors declare that they have no competing interests relevant to the content of this article.
+
+\subsection*{Author contributions}
+All authors contributed to the mathematical development, interpretation of results, manuscript revision, and approval of the submitted version. YS led the implementation and numerical evidence assembly.
+
+\subsection*{Data, code, and supplementary information availability}
+Code, plotting scripts, pruning recipes, manuscript artifacts, and mirror copies of Online Resource 1 and Online Resource 2 are available at \repoURL. The checkpoints, validation ledgers, sparse-backend timing evidence, and per-run files supporting the main ImageNet-1k tables are available at
+\url{https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd}. ImageNet-1k images are not redistributed; ImageNet is identified by \cite{5206848}, and users must obtain the dataset under the official download terms \cite{imagenet_download_terms}. Online Resource 2 identifies the source checkpoints, recipes, evidence files, timing audits, and complete numerical ledgers for the reported rows.
+
+\subsection*{Declaration of generative AI and AI-assisted technologies in the manuscript preparation process}
 During the preparation of this work the author(s) used generative AI tools to accelerate drafting and revision. All mathematical claims, proofs, numerical interpretations, and bibliographic information were subsequently reviewed and edited by the author(s), who take full responsibility for the content of the manuscript.
 
-\section*{Data availability}
-Code, plotting scripts, pruning recipes, and manuscript artifacts are available at
-\url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning}. The checkpoints, validation ledgers, sparse-backend timing evidence, and per-run files supporting the main ImageNet-1k tables are available at
-\url{https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd}. ImageNet-1k images are not redistributed; users must obtain the dataset under its own terms \cite{5206848}. Appendices~\ref{app:cast_recipe_table} and~\ref{app:comparison_provenance_scope} and the companion methodology paper identify the source checkpoints, recipes, and evidence files for the reported rows.
-
-% Bibliography is printed before appendices, so appendix-only citation keys are kept visible here.
-\nocite{kuznedelev2023ovit, chen2021svite, tai2022spartan,
-        yang2023nvit, zheng2022savit, zhang2022minivit, fang2024isomorphic,
-        rao2021dynamicvit, liang2022evit, yin2022avit, kong2022spvit,
-        yu2023xpruner, zhang2024dcvit, sun2025mdp, lu2024alphapruning}
 
 \bibliographystyle{plainnat}
 \bibliography{rmt_vit_pruning}
-
-% =================================================
-\FloatBarrier
-\appendix
-% =================================================
-
-% =================================================
-
-\section{CAST/CAST-2E Recipe Table}
-\label{app:cast_recipe_table}
-
-Table~\ref{tab:reproduce_recipe} records the compact recipe summary for the main structured-projection rows.
-
-\begin{table}[!htbp]
-\centering
-\caption{Hyperparameters for representative CAST/CAST-2E rows of Table~\ref{tab:param_to_flop_followup}. The table lists the source checkpoint for each run and the post-projection distillation schedule. The CAST projection (Algorithm~\ref{alg:cast_kn}) is gradient-free.}
-\label{tab:reproduce_recipe}
-\scriptsize
-\setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{1.05}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm} *{4}{>{\centering\arraybackslash}X}}
-\toprule
-& \textbf{ViT-B/16 6:12} & \textbf{ViT-B/16 2:4+ToMe} & \textbf{ViT-L/16 2:4+ToMe} & \textbf{ResNet50d 8:16} \\
-\midrule
-Source ckpt & SER $s=0.35$ & SER $s=0.35$ & SER $s=0.35$ & dense (no SER) \\
-Calibration set $|\mathcal{C}|$ & 256 & 256 & 256 & 64 \\
-Permute align & yes & no & no & yes \\
-Free restoration & yes & yes & yes & yes \\
-$\alpha_{\rm ser}$ & 0.5 & 0.1 & 0.1 & 0.0 \\
-ToMe $r$ & --- & 8 & 8 & --- \\
-\midrule
-\textit{Stage~2 distillation:} & & & & \\
-Optimiser & AdamW & AdamW & AdamW & SGD+momentum 0.9 \\
-Base LR & $1{\times}10^{-4}$ & $1{\times}10^{-5}$ & $1{\times}10^{-5}$ & $1{\times}10^{-3}$ \\
-Weight decay & 0.05 & 0.01 & 0.01 & $1{\times}10^{-4}$ \\
-LR schedule & cosine + warmup & cosine + warmup & cosine + warmup & cosine + warmup \\
-Warmup steps & 1000 & 1000 & 1000 & 500 \\
-Train batch & 256 & 32 & 8 & 256 \\
-Val batch & 128 & 64 & 16 & 128 \\
-Label smoothing $\epsilon$ & 0.1 & 0.1 & 0.1 & 0.1 \\
-Distill $(\alpha, \tau)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ & $(0.5, 2.0)$ \\
-Epochs & 3 & 3 & 3 & 3 \\
-Mask re-zero & every step & every step & every step & every step \\
-\midrule
-\textbf{Post-FT top-1} & \multicolumn{4}{c}{Reported in Table~\ref{tab:param_to_flop_followup}} \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\section{Prior-Pruning Context}
-\label{app:prior_pruning_context}
-
-Classical applications motivating DNN compression include handwriting recognition \cite{LBD}, image classification \cite{krizhevsky2017imagenet}, speech recognition \cite{hinton2012deep}, and natural language processing \cite{sutskever2014sequence}. Standard overfitting countermeasures include dropout \cite{srivastava2014dropout}, early stopping \cite{prechelt2012early}, and weight decay \cite{krogh1991simple,Park2023}. DNN training searches a high-dimensional nonconvex loss landscape with local minima, saddle points, and flat regions \cite{dauphin2014identifying,choromanska2015loss}. RMT has also been used for stopping criteria and other deep-learning diagnostics. Vadera and Ameen group pruning methods into magnitude pruning, redundancy/clustering, and sensitivity analysis \cite{vadera2022methods}; Cheng et al.\ organize the broader field by speedup, pruning timing, pruning criterion, and interaction with other compression techniques \cite{cheng2023survey}; PruneNet is a representative channel-pruning method \cite{khetan2020prunenet}. Prior SVD-based compression uses low-rank restructuring or singular-value truncation, with rank choices ranging from fixed/data-driven singular-value rules to energy or validation heuristics \cite{xue2013restructuring,cai2014fast,anhao2016svd,yang2020learning,xu2019trained}. Earlier work by our group reported MP-based compression on small fully connected DNNs and MNIST-scale spectral pruning \cite{berlyand2023enhancing,berlyand2025marchenko_regularization,shmalo2023deep}.
-
-ViT compression spans several axes. Token-level methods reduce sequence length through dynamic token pruning \cite{rao2021dynamicvit,liang2022evit,yin2022avit,kong2022spvit} or token merging \cite{bolya2023tome} without changing dense projection weights, while block/head/low-rank and multi-granularity methods alter other structural axes. oViT studies second-order ViT weight sparsification \cite{kuznedelev2023ovit}; block/head/module-level structured pruning is studied in \cite{zheng2022savit,yang2023nvit,fang2024isomorphic,yu2023xpruner,zhang2024dcvit}; MiniViT studies weight multiplexing \cite{zhang2022minivit}; SViTE and Spartan study sparse training from scratch \cite{chen2021svite,tai2022spartan}; MDP studies multi-granularity latency-aware pruning \cite{sun2025mdp}. Recent unstructured pruning at scale uses Hessian-based one-shot signals \cite{frantar2023sparsegpt}, magnitude-weighted-by-activation signals \cite{sun2024wanda}, and heavy-tailed self-regularization signals \cite{lu2024alphapruning,martin2020heavy}.
-
-\section{Theory--Algorithm--Result Mapping}
-\label{app:algorithm_rmt_map}
-
-\begin{table}[!htbp]
-\centering
-\caption{Algorithms, associated RMT/certificate statements, inputs, and reported empirical rows.}
-\label{tab:algorithm_rmt_map}
-\scriptsize
-\setlength{\tabcolsep}{2pt}
-\begin{tabular}{p{0.18\textwidth}p{0.30\textwidth}p{0.30\textwidth}p{0.13\textwidth}}
-\toprule
-Algorithm & Associated RMT / certificate statement & Inputs / what it computes & Reported row \\
-\midrule
-Spectral Edge Reallocation (SER, Algorithm~\ref{alg:ser}) &
-Corollary~\ref{cor:mp_edge_data_path_budget}; Theorem~\ref{thm:deterministic_prune_restore_certificate}. &
-BEMA MP edges \(\sigma_+(\ell)\) \(\to\) standardized layer signal \(z_\ell\) \(\to\) over-pruned reservoir \(\to\) RMT-ranked reinsertion \(\to\) frozen-mask short FT. &
-Hybrid Mag--SER multi-arch row, Table~\ref{tab:multi_arch_hybrid}. \\
-\midrule
-Hybrid Magnitude--SER &
-SER plus the empirical sweep result that magnitude pruning remains competitive at \(s\le0.20\), so RMT modulation is activated for \(s\ge0.25\). &
-Exact magnitude through \(s=0.20\), then SER continuation with one FT epoch per pruning cycle. &
-ViT-B/16 and 17-checkpoint rows in Tables~\ref{tab:vitb_current_methods} and~\ref{tab:multi_arch_hybrid}. \\
-\midrule
-CAST \(k{:}n\) projection (Algorithm~\ref{alg:cast_kn}) &
-Lemma~\ref{lem:deterministic_ce_path_bound}; Theorem~\ref{thm:deterministic_prune_restore_certificate}; Corollary~\ref{cor:restoration_improves_certificate}. &
-SER source mask \(M^{\rm SER}\), dense pretrained \(W^{\rm dense}\), calibration set \(\mathcal C\), within-group covariance \(C_g\), per-row argmin over \(\binom{n}{k}\) patterns, and optional free restoration. &
-CAST rows in Table~\ref{tab:param_to_flop_followup}. \\
-\midrule
-Cin permutation alignment &
-Empirical importance-balanced input-channel ordering before the per-row argmin; consistent with the layerwise sum form of Theorem~\ref{thm:deterministic_multilayer_mask_certificate}. &
-Score \(s_j=\sum_i |W^{\rm dense}_{i,j}|\overline{|h_j|}\), quartile-interleave channels, solve in permuted basis, invert permutation. &
-ResNet and ConvNeXtV2 dense+perm rows. \\
-\midrule
-\(2{:}4\) deployable backend audit &
-The certificate framework requires only a fixed mask; NVIDIA Sparse Tensor Cores execute the fixed \(2{:}4\) structure \cite{mishra2021accelerating}. &
-Load checkpoint, convert eligible Linear layers with \texttt{torch.sparse.to\_sparse\_semi\_structured}; ResNet audit lowers Conv2d to im2col+\texttt{Linear}. &
-Table~\ref{tab:deployability_audit_compact}. \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\section{Comparison Provenance and Scope Notes}
-\label{app:comparison_provenance_scope}
-
-Training budgets already shown in Table~\ref{tab:result_comparison} are not repeated here. The AlphaPruning-style row is an author reimplementation under this paper's data, checkpoint, layer set, and evaluation protocol because \cite{lu2024alphapruning} does not report that exact ViT-B/16 ImageNet cell. Zero-fine-tuning author-run one-shot baselines and external rows without a reported training/fine-tuning budget are omitted from the main comparison table; the omitted values are SparseGPT-style \(50\%\) unstructured ViT-B/16 no-FT at \(\sim81.1\%\) (\(\sim-4.0\) pp), Wanda-style at \(\sim81.3\%\) (\(\sim-3.8\) pp), and LPViT's DeiT-Base \(50\%\) FLOP block-sparse row at \(80.81\%\) (\(-0.99\) pp) with no FT budget reported in the cited table. Spartan reports its positive \(\Delta\) against its own \(80.06\%\) ViT-B/16 dense model at the tabled training budget; against the DeiT-B baseline used elsewhere in the paper, the gap would be \(-0.62\) pp.
-
-CP-ViT's DeiT-B row and its VTP/PoWER-BERT/HVT reproductions are the CP-ViT-reported entries in Table~\ref{tab:result_comparison}; its dense DeiT-B baseline is \(81.82\%\). ELSA's main uniform row is the one listed in Table~\ref{tab:result_comparison}; its Table~1 also reports layer-wise \(N{:}4\) entries at \(7.0\)G/\(81.6\%\) and \(6.0\)G/\(81.4\%\). These rows evaluate structured FLOP-reduction methods rather than \(k{:}n\) weight sparsity, so they are DeiT-family context rather than a matched weight-sparsity benchmark. For this paper's rows, the prunable-layer list is fixed across the multi-architecture sweep; masks are constructed without ImageNet validation access; validation is used only to report completed checkpoints and in documented global-protocol sweeps. Results are reported against the corresponding \texttt{timm} dense checkpoint.
-
-Table~\ref{tab:deployability_audit_compact} reports the selected best-observed A40 batch-sweep endpoints; batch \(256\) was also swept but not selected. The older A100 no-ToMe ViT-B endpoint remains separate: \(463.6\to1254.1\) images/s, \(2.705\times\), and should not be pooled with the ToMe-held-fixed A40 audits. ToMe-only AugReg references from \cite{bolya2023tome} are \(83.94\%\) at \(r=8\) and \(82.86\%\) at \(r=12\).
-
-Extending the ResNet endpoint caveat in Table~\ref{tab:deployability_audit_compact}, the im2col+\(2{:}4\) rows do not establish TensorRT or cuDNN Conv2d acceleration. The \(1\times1\)-only controls remain below native cuDNN Conv2d throughput; see \methref{subsec:6to24}. A ResNet152d \(8{:}16\) dense+perm row is outside the reported fixed-calibration sweep: the wider-pattern certificate projection exceeded a single 80\,GB A100 at the default calibration batch.
-
-The wider \(8{:}16\) group expands the per-row search space from \(\binom{4}{2}=6\) to \(\binom{16}{8}=12{,}870\) patterns at the same nominal sparsity, and the dense source removes the SER-mask Hamming bias against weights previously discarded by unstructured pruning. The ViT-L/16 \(8{:}16\) row has released evidence and checkpoint-status metadata in \texttt{data/release\_manifest.json}.
-
-The public artifact bundle is indexed by \texttt{data/release\_manifest.json}; the companion methodology paper gives protocol-level provenance and ledger details. CAST row estimates are primarily single-seed; the available replicate summaries provide the repeatability check for the reported CAST setting.
-
-\section{Additional Deterministic Certificate Corollaries}
-\label{app:deterministic_relocated_corollaries}
-
-\begin{cor}[Weighted elastic-net mask certificate]
-\label{cor:weighted_mask_certificate}
-Under the hypotheses of Theorem~\ref{thm:deterministic_mask_certificate}, let \(\Gamma_2=(\gamma_{2,ij})\) and \(\Gamma_1=(\gamma_{1,ij})\) be nonnegative coordinatewise weights, and define
-\[
-\mathcal J_{\Gamma}(A):=
-\mathcal L_{\mathrm{CE}}(A)
-+
-\sum_{i,j}\gamma_{2,ij}A_{ij}^2
-+
-\sum_{i,j}\gamma_{1,ij}|A_{ij}|
-+
-\mathcal C.
-\]
-Then, for every \(\theta\in[0,1]\),
-\[
-\mathcal J_{\Gamma}(A_\theta)-\mathcal J_{\Gamma}(A_1)
-\le
-(1-\theta)B_T(R)
--
-(1-\theta^2)\sum_{i,j}\gamma_{2,ij}R_{ij}^2
--
-(1-\theta)\sum_{i,j}\gamma_{1,ij}|R_{ij}|.
-\]
-In particular, full pruning is certified to decrease the weighted elastic-net objective whenever
-\[
-B_T(R)
-<
-\sum_{i,j}\gamma_{2,ij}R_{ij}^2
-+
-\sum_{i,j}\gamma_{1,ij}|R_{ij}|.
-\]
-\end{cor}
-
-\begin{cor}[Weighted stationarity controls removable masks]
-\label{cor:weighted_mask_stationarity}
-Under the hypotheses of Corollary~\ref{cor:weighted_mask_certificate}, assume the one-sided directional stationarity condition
-\[
-\liminf_{h\downarrow0}
-\frac{\mathcal J_{\Gamma}(A_{1-h})-\mathcal J_{\Gamma}(A_1)}{h}
-\ge
--\varepsilon
-\]
-holds for some \(\varepsilon\ge0\). Then
-\[
-2\sum_{i,j}\gamma_{2,ij}R_{ij}^2
-+
-\sum_{i,j}\gamma_{1,ij}|R_{ij}|
-\le
-B_T(R)+\varepsilon.
-\]
-More generally, if
-\[
-\mathcal J_{\Gamma}(A_\theta)\ge \mathcal J_{\Gamma}(A_1)-\varepsilon(1-\theta)
-\qquad\forall\theta\in[0,1],
-\]
-then for every \(\theta<1\),
-\[
-(1+\theta)\sum_{i,j}\gamma_{2,ij}R_{ij}^2
-+
-\sum_{i,j}\gamma_{1,ij}|R_{ij}|
-\le
-B_T(R)+\varepsilon.
-\]
-\end{cor}
-
-\begin{cor}[Deterministic multi-layer margin stability]
-\label{cor:deterministic_multilayer_margin_stability}
-Use the ordered pruning sequence and notation of Theorem~\ref{thm:deterministic_multilayer_mask_certificate}. Let \(z^{(j)}(s)\) be the logit vector after the \(j\)-th mask operation, with \(z^{(0)}\) denoting the original network and \(z^{(M)}\) the final pruned network. Suppose that for each \(s\in T\) and each step \(j\) there is a deterministic bound \(\eta_{j,s}\ge0\) such that
-\[
-\|z^{(j)}(s)-z^{(j-1)}(s)\|_\infty\le \eta_{j,s}.
-\]
-Define \(\eta_s^{\mathrm{tot}}:=\sum_{j=1}^M\eta_{j,s}\). Then
-\[
-\big|\mathcal L_{\mathrm{CE}}(\alpha^{(M)})-\mathcal L_{\mathrm{CE}}(\alpha^{(0)})\big|
-\le
-\frac{2}{|T|}\sum_{s\in T}\eta_s^{\mathrm{tot}}.
-\]
-Moreover, if \(p_0(s)\in\arg\max_j z^{(0)}_j(s)\) and
-\[
-\Delta_0^{\mathrm{pred}}(s):=
-z_{p_0(s)}^{(0)}(s)-\max_{j\ne p_0(s)}z_j^{(0)}(s),
-\]
-then the predicted label at \(s\) can change between the original and final networks only if
-\[
-\Delta_0^{\mathrm{pred}}(s)\le2\eta_s^{\mathrm{tot}}.
-\]
-For the true-label margin
-\[
-\Delta_0^{\mathrm{true}}(s):=
-z_{C(s)}^{(0)}(s)-\max_{j\ne C(s)}z_j^{(0)}(s),
-\]
-the accuracy change obeys
-\[
-\big|\acc_{\alpha^{(M)}}(T)-\acc_{\alpha^{(0)}}(T)\big|
-\le
-\frac1{|T|}
-\#\{s\in T:|\Delta_0^{\mathrm{true}}(s)|\le2\eta_s^{\mathrm{tot}}\}.
-\]
-\end{cor}
-
-\begin{cor}[Sub-Gaussian sufficient condition for the data-path budget]
-\label{cor:subgaussian_data_path_budget}
-Let \(v_s=\psi_1(s)\), and assume \(L_s\) are nonnegative upper bounds for the post-layer Lipschitz constants, deterministic or measurable with respect to variables independent of \(R\). Let the rows \(r_1,\dots,r_n\) of \(R\) be independent and centered conditionally on those variables, and suppose that for some \(c,g>0\),
-\[
-\PP\!\left(
-|\langle r_i,v\rangle|>t\,\middle|\,v
-\right)
-\le
-2\exp\!\left(
--\frac{c n t^2}{g\|v\|_2^2}
-\right)
-\]
-for all \(i\), \(v\), and \(t>0\). Then, with probability at least \(1-\delta\),
-\[
-B_T(R)
-\le
-\frac2{|T|}
-\sum_{s\in T}
-L_s\|v_s\|_2
-\sqrt{
-\frac{g}{c n}\log\frac{2n|T|}{\delta}
-}.
-\]
-\end{cor}
-
-\begin{cor}[Simultaneous multi-layer Gaussian data-path budget]
-\label{cor:multilayer_gaussian_data_path_budget}
-Consider the ordered finite pruning sequence in Theorem~\ref{thm:deterministic_multilayer_mask_certificate}. At step \(j\), let the removed component be modeled by \(R_j\in\R^{n_j\times m_j}\) with independent \(N(0,g_j/n_j)\) entries, conditionally independent of the intermediate pre-layer vectors \(v_{j,s}\) and Lipschitz bounds \(L_{j,s}\). Let \(\delta_1,\dots,\delta_M>0\) satisfy \(\sum_{j=1}^M\delta_j\le\delta\). Then, with probability at least \(1-\delta\), all layerwise budgets satisfy
-\[
-B_j(R_j)
-\le
-\frac2{|T|}
-\sum_{s\in T}
-L_{j,s}\|v_{j,s}\|_2
-\sqrt{
-\frac{2g_j}{n_j}\log\frac{2n_j|T|}{\delta_j}
-}
-\qquad
-(1\le j\le M).
-\]
-Consequently, on the same event, Theorem~\ref{thm:deterministic_multilayer_mask_certificate} holds with \(\sum_jB_j(R_j)\) replaced by the sum of the displayed right-hand sides.
-\end{cor}
-
-\begin{cor}[Simultaneous multi-layer sub-Gaussian data-path budget]
-\label{cor:multilayer_subgaussian_data_path_budget}
-Use the ordered pruning sequence and notation of Corollary~\ref{cor:multilayer_gaussian_data_path_budget}, but at each step \(j\) replace the Gaussian model by the row-concentration hypothesis of Corollary~\ref{cor:subgaussian_data_path_budget} with \((R,n,c,g,v_s,L_s)\) replaced by \((R_j,n_j,c_j,g_j,v_{j,s},L_{j,s})\). Let \(\delta_1,\dots,\delta_M>0\) satisfy \(\sum_{j=1}^M\delta_j\le\delta\). Then, with probability at least \(1-\delta\),
-\[
-B_j(R_j)
-\le
-\frac2{|T|}
-\sum_{s\in T}
-L_{j,s}\|v_{j,s}\|_2
-\sqrt{
-\frac{g_j}{c_jn_j}\log\frac{2n_j|T|}{\delta_j}
-}
-\qquad
-(1\le j\le M).
-\]
-Consequently, the same deterministic multi-layer certificate applies with the displayed sub-Gaussian bounds.
-\end{cor}
-
-\section{Notes on the Abstract Additive Framework}
-\label{app:abstract_additive_notes}
-
-\subsection{Relocated abstract additive corollaries}
-\label{app:abstract_relocated_corollaries}
-
-\begin{cor}[Growing-set abstract loss reduction]
-\label{cor:growing_set_abstract_loss}
-Let \(T_N\) be a finite labeled set that may depend on \(N\). Let \(L_{\cancel{\mathrm{reg}},T_N}\) denote cross-entropy averaged over \(T_N\), and let \(L_{T_N}\) denote the corresponding regularized objective with the same Frobenius penalty as in \eqref{loss_noise_det_2}. Assume Assumptions~\ref{as4}--\ref{as5},
-\[
-\langle S,R\rangle_F=o_{\PP}(1),
-\qquad
-|T_N|d_2(N)\to0,
-\]
-and
-\[
-\frac{1}{|T_N|}\sum_{s\in T_N}a_\phi(N,s)\to0
-\]
-in probability. Then
-\[
-L_{T_N}(\alpha_S)
-=
-L_{T_N}(\alpha_W)
--\lambda_{\mathrm{reg}}\|R\|_F^2
-+o_{\PP}(1).
-\]
-\end{cor}
-
-\begin{cor}
-\label{cor:scaled_reduction_of_loss_general}
-Under the hypotheses of Theorem~\ref{theorem_reduction_of_loss_general}, for any fixed \(\vartheta\in[0,1]\), define \(W(\vartheta)=S+\vartheta R\). Then
-\[
-L(\alpha_{W(\vartheta)})
-=
-L(\alpha_W)-\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R\|_F^2+o_{\PP}(1)
-\qquad(N\to\infty).
-\]
-The same asymptotic statement holds along any deterministic sequence \(\vartheta_N\in[0,1]\).
-\end{cor}
-
-\begin{cor}[Finite-\(N\) scaled loss bound along the denoising path]
-\label{cor:scaled_reduction_of_loss_general_finiteN}
-Assume the hypotheses of Theorem~\ref{theorem_reduction_of_loss_general}, and define \(W(\vartheta)=S+\vartheta R\) for \(\vartheta\in[0,1]\). Then for every \(\eta>0\) there exists an event \(E_{N,\eta}\) with
-\[
-\PP(E_{N,\eta})\ge 1-|T|d_2(N)-\PP\!\big(|\langle S,R\rangle_F|>\eta\big)
-\]
-such that on \(E_{N,\eta}\),
-\[
-L(\alpha_{W(\vartheta)})
-\le
-L(\alpha_W)
--\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R\|_F^2
-+(1-\vartheta)\frac{2}{|T|}\sum_{s\in T}a_\phi(N,s)
-+2\lambda_{\mathrm{reg}}(1-\vartheta)\eta
-\]
-for every \(\vartheta\in[0,1]\).
-\end{cor}
-
-\begin{cor}[Eventual supercriticality of persistent spike clusters in a BGN-type deformation regime]
-\label{cor:general_BGN_persistent_spikes}
-Under the hypotheses of Theorem~\ref{main_result_reducing_noise_general}, assume additionally that for each \(N\), \(W^*(N)=S^*(N)+R^*(N)\) lies in a finite-rank deformation regime satisfying all hypotheses of Theorem~\ref{thm:abstract_inverse_D} for the spikes considered below. Assume the regime has deterministic bulk edge \(b_+(N)\), critical threshold \(\theta_c(N)\), strictly decreasing outlier transform
-\[
-D_N:(b_+(N),\infty)\to (0,D_N(b_+(N)^+)),
-\]
-local Lipschitz/invertibility intervals around the outliers, and concentration of the relevant sample singular values in those intervals. Assume \(\theta_c(N)\to0\), \(b_+(N)\to0\), and that for some fixed \(k\ge1\) there exist constants \(\bar\sigma_1>\cdots>\bar\sigma_k>0\) such that \(\sigma_i^*(N)\to\bar\sigma_i\) in probability for each \(1\le i\le k\). Then:
-\begin{enumerate}[leftmargin=2em]
-\item \(\PP(\sigma_i^*(N)>\theta_c(N))\to1\) for each \(1\le i\le k\);
-\item these \(k\) spikes are eventually supercritical, so the corresponding singular values of \(W^*(N)\) form outlier clusters above \(b_+(N)\). If the \(i\)-th spike is separated from the other nonzero singular values of \(S^*(N)\) by a gap \(\Delta_i(N)>0\) with \(\|R^*(N)\|_{\op}/\Delta_i(N)\to0\) in probability, then the associated rank-one left and right spectral projectors converge in operator norm to the corresponding projectors of \(S^*(N)\);
-\item defining \(\widehat\sigma_i^{(D)}(N):=D_N(s_i(W^*(N)))^{-1/2}\) on the event \(s_i(W^*(N))>b_+(N)\), whose probability tends to one, and arbitrarily off that event, one has \(\widehat\sigma_i^{(D)}(N)-\sigma_i^*(N)\to0\) in probability.
-\end{enumerate}
-\end{cor}
-
-Assumptions~\ref{as4}--\ref{as5} are the abstract data-path version of the Gaussian conditions in Appendix~\ref{Main_theory}; Assumption~\ref{as2} gives the iid-Gaussian sufficient condition, while the optional ESD condition is used only for spectral conclusions.
-
-\begin{ex}
-The square iid-Gaussian case with variance \(1/N\) gives Assumption~\ref{as5} with \(J(v)=\|v\|_2\), \(d_1(N)=2\sqrt{2\log(2N)/N}\), and \(d_2(N)=1/N\); see Corollary~\ref{cor:gaussian_data_path_budget}. The conditional formulation also accommodates sub-Gaussian rows, orthogonally invariant perturbations, or moderate training-induced dependence when the concentration estimate survives.
-\end{ex}
-
-\begin{ex}[Sub-Gaussian rows]
-\label{ex:subgaussian_rows}
-The row-concentration variant in Corollary~\ref{cor:subgaussian_data_path_budget} gives the corresponding Assumption~\ref{as5} sufficient condition.
-\end{ex}
-
-Assumption~\ref{as6} is used only for spectral conclusions. Loss reduction uses the data-path smallness \(a_\phi(N,s)\to0\) and the cross-term condition; stationarity-collapse results additionally use the stated one-sided stationarity hypothesis.
-
-\begin{rem}[Regularisation scaling]
-\label{rem:lambda_reg_scaling}
-Throughout the loss-reduction statements, the elastic-net coefficients \(\lambda_1,\lambda_2\) are treated as specified constants. An iid-Gaussian admissible component \(R\in\mathbb R^{N\times N}\) with variance \(g/N\) has \(\|R\|_F^2=\Theta(gN)\) in expectation, so the loss-reduction term \(\lambda_2\|R\|_F^2\) scales as \(\Theta(\lambda_2 gN)\). The certificate inequality of Theorem~\ref{thm:deterministic_mask_certificate} holds for any specified coefficient scaling, including coefficients normalized by parameter count or layer width. The data-path budget \(B_T(R)\) is independent of \(\lambda_1,\lambda_2\), while the elastic-net reward is not; only the numerical certificate margin changes with regularizer scale.
-\end{rem}
-
-\begin{rem}[Beyond pure Frobenius regularization]
-\label{rem:bregman_regularizer}
-The quadratic penalty in \eqref{loss_noise_det_2} supplies a coercive lower bound of order \(\|R\|_F^2\). For a differentiable \(\mu\)-strongly convex regularizer \(\Omega\),
-\[
-\Omega(S+R)-\Omega(S)=\langle\nabla\Omega(S),R\rangle+D_\Omega(S+R,S),
-\qquad
-D_\Omega(S+R,S)\ge\frac{\mu}{2}\|R\|_F^2.
-\]
-The extension is valid when the first-order term is controlled or negligible. In the Frobenius case this term is \(2\langle S,R\rangle_F\). For elastic net, choose \(\xi\in\partial\|S\|_1\) and assume \(\langle\mu_1\xi+2\mu_2S,R\rangle=o_{\PP}(1)\); the quadratic part supplies the strong convexity.
-\end{rem}
-
-The stationarity theorem assumes only one-sided approximate stationarity at \(\vartheta=1\); exact local minimality is sufficient but stronger. Without the no-atom condition \(\PP(\|R^*(N)\|_F=\epsilon)=0\), the same proof gives limsup/liminf threshold bounds rather than exact convergence. Corollary~\ref{cor:general_BGN_persistent_spikes} is the corresponding abstract BBP persistence statement.
-
-Dependency map: deterministic mask certificates use the support condition
-\[
-S=M\odot A,\qquad R=(1-M)\odot A,
-\]
-so \(S\odot R=0\). Abstract additive loss statements replace that support condition by the relevant cross-term control, such as \(\langle S,R\rangle_F=o_{\PP}(1)\). Random budget corollaries provide sufficient conditions for \(B_T(R)\).
-
-\begin{rem}[Local Lipschitz constants $L_s$]
-\label{rem:lipschitz_local}
-The constants \(L_s\) in \eqref{eq:data_path_budget} are local post-layer \(\ell_\infty\)-Lipschitz bounds; for ViTs this paper treats them as architecture-dependent and uses the empirical proxy audit in Appendix~\ref{app:multi_arch_cert}.
-\end{rem}
-
-\section{Gaussian Specialization and Spectral Interpretation}
-\label{Main_theory}
-% =================================================
-
-The deterministic mask certificates in Section~\ref{Main_theory_gen} are closest to the implemented unstructured pruning operation; this appendix gives Gaussian sufficient conditions and spectral interpretations for admissible random-like components.
-
-\subsection{Assumptions for the Gaussian specialization}
-\label{assumptions}
-
-The finite-\(T\) convention from Section~\ref{sec:abstract_additive_extensions} remains in force unless stated otherwise.
-
-Whenever \(\lambda_+\) denotes the right MP edge for the eigenvalues of
-\[
-X_\ell=\frac1N W_\ell^\top W_\ell,
-\]
-we write
-\[
-\sigma_+ := \sqrt{N\lambda_+}
-\]
-for the corresponding edge on the singular-value scale.
-
-\begin{assumption}[Architecture and outer-layer scaling]
-\label{as1}
-We consider the simplified three-layer network
-\begin{align}
-X(\alpha,s) &= \lambda\circ W_3 \circ \lambda\circ W_2 \circ \lambda\circ W_1 s,\qquad s\in T,\\
-\phi(\alpha,s) &= \rho\circ X(\alpha,s),
-\end{align}
-where \(\lambda\) is the coordinatewise absolute value or ReLU, and \(W_1,W_2,W_3\) are the weight matrices. Biases are omitted for simplicity.
-
-For fixed training time \(t\), define
-\begin{equation}
-\label{eqans}
-a(N,s):=\|W_3\|_{\infty}\,\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}}.
-\end{equation}
-We assume that for every \(s\in T\), \(a(N,s)\to 0\) as \(N\to\infty\). The same assumption is imposed at any admissible limit point considered below.
-\end{assumption}
-
-\begin{rem}[Interpretation of Assumption~\ref{as1}]
-This is the concrete version of the abstract factorization Assumption~\ref{as4}.  The target layer is \(W_2\); the computations before \(W_2\) play the role of \(\psi_1\), and the computations after \(W_2\) play the role of \(\psi_2\).  The quantity \(a(N,s)\) is the Gaussian-model version of \(a_\phi(N,s)=h_\phi(s)d_1(N)\): it is the logit perturbation scale predicted by multiplying an \(N^{-1/2}\sqrt{\log N}\)-size random effect through the outer layer.  The assumption \(a(N,s)\to0\) is therefore the concrete data-path smallness condition needed for the loss and margin bounds.
-\end{rem}
-
-\begin{assumption}[Admissible Gaussian decomposition of the middle layer]
-\label{as2}
-For each training time \(t\), the middle layer \(W_2(t)\in\R^{N\times N}\) admits a decomposition
-\[
-W_2(t)=R_2(t)+S_2(t),
-\]
-where:
-\begin{enumerate}[leftmargin=2em]
-\item \(R_2(t)\) has i.i.d.\ centered Gaussian entries
-\[
-R_2(t)_{ij}\overset{\mathrm{i.i.d.}}{\sim}\mathcal N\!\left(0,\frac{g(t)}{N}\right),
-\qquad 0\le g(t)\le 1;
-\]
-where \(g(t)\) is a deterministic variance scale;
-\item \(R_2(t)\) is independent of \(S_2(t)\);
-\item \(R_2(t)\) is also independent of the outer-layer parameters \(W_1(t)\) and \(W_3(t)\).
-\end{enumerate}
-\end{assumption}
-
-\begin{rem}
-The variance scaling \(g(t)/N\) ensures that \(R_2(t)\) has bounded operator norm as \(N\to\infty\). Rectangular variants \(W_2(t)\in\R^{N\times M}\) with \(M/N\to c\in(0,\infty)\) can be treated similarly.
-\end{rem}
-
-\begin{rem}[Interpretation of Assumption~\ref{as2}]
-This is a stylized additive-noise model, not a claim that the implemented ViT mask literally samples an independent Gaussian matrix.  It is used to prove a sufficient condition: if the removed component behaves like an independent variance-\(g/N\) random matrix along the data path, then it satisfies the perturbation bounds required by the abstract theory.  In the notation of Assumption~\ref{as5}, it gives \(J(v)=\|v\|_2\), \(d_1(N)\asymp\sqrt{\log N/N}\), and \(d_2(N)\asymp1/N\).  The same variance scale has MP singular-value edge \(2\sqrt g\) in the square case, which is why the fitted MP edge is a natural diagnostic in the algorithms.
-\end{rem}
-
-\begin{assumption}[Sub-root-\(N\) structured component for the loss theorems]
-\label{as3}
-For each training time \(t\), the structured component \(S_2(t)\) satisfies
-\[
-\|S_2(t)\|_F\le B_N,
-\qquad
-B_N=o(\sqrt N),
-\]
-for some positive deterministic sequence \(B_N\) independent of \(t\). Equivalently, the normalized size condition \(\|S_2(t)\|_F^2/N\to0\) is enough. The loss-reduction theorems use this assumption only to prove
-\[
-\langle S_2(t),R_2(t)\rangle_F=o_{\PP}(1);
-\]
-one may replace it directly by this cross-term condition whenever it is known by another argument.
-\end{assumption}
-
-\begin{rem}[Interpretation of Assumption~\ref{as3}]
-This assumption is a convenient Gaussian sufficient condition for the cross-term bound \(\langle S_2,R_2\rangle_F=o_{\PP}(1)\).  Conditional on \(S_2\),
-\[
-\mathrm{Var}\!\left(\langle S_2,R_2\rangle_F\,\middle|\,S_2\right)
-=
-\frac{g(t)}{N}\|S_2\|_F^2.
-\]
-Thus \(B_N=o(\sqrt N)\) forces this variance to vanish; this is the Gaussian counterpart of the explicit cross-term hypothesis used in Section~\ref{sec:abstract_additive_extensions}.
-\end{rem}
-
-\begin{assumption}[Approximate low rank for the spectral corollaries]
-\label{as3spectral}
-Whenever a spectral conclusion is invoked, we additionally assume that the limit structured component \(S_2^*(N)\) is approximately low rank in the sense that there exists a sequence \(k_N=o(N)\) such that
-\[
-\sum_{i>k_N}s_i\!\big(S_2^*(N)\big)^2\to0
-\qquad\text{in probability as }N\to\infty.
-\]
-The exact fixed-rank regime is the special case \(k_N\equiv r\).
-\end{assumption}
-
-\begin{rem}[Interpretation of Assumption~\ref{as3spectral}]
-This is the Gaussian specialization of Assumption~\ref{as6} and is used only by the spectral corollaries.
-\end{rem}
-
-\begin{rem}[No spectral-separation assumption]
-Assumptions~\ref{as3}--\ref{as3spectral} do \emph{not} require the informative singular values of \(S_2\) to lie above the MP edge \(\sigma_+\). Thus signal directions may still be embedded in the bulk created by \(R_2\).
-\end{rem}
-
-\begin{defn}[Admissible decomposition]
-\label{def:admissible_decomposition}
-A decomposition \(W_2=S_2+R_2\) is called \emph{admissible} if it satisfies Assumptions~\ref{as2}--\ref{as3}. At a limit point \(W_2^*(N)\), an admissible decomposition \(W_2^*(N)=S_2^*(N)+R_2^*(N)\) additionally requires that the outer-layer scaling condition from Assumption~\ref{as1} holds for the corresponding limit outer layers \(W_1^*(N),W_3^*(N)\), i.e.
-\[
-a_*(N,s):=\|W_3^*(N)\|_\infty\|W_1^*(N)s\|_2\sqrt{\frac{\log(2N)}{N}}\to0
-\qquad \text{for each } s\in T.
-\]
-A \emph{spectrally admissible} decomposition is an admissible decomposition that also satisfies Assumption~\ref{as3spectral}.
-\end{defn}
-
-\begin{defn}[Local-path convergence of an admissible decomposition]
-\label{def:local_path_convergence}
-An admissible path decomposition
-\[
-W_2(t,N)=S_2(t,N)+R_2(t,N)
-\]
-is said to converge locally to an admissible limit decomposition
-\[
-W_2^*(N)=S_2^*(N)+R_2^*(N)
-\]
-if, for each fixed \(N\),
-\[
-\|S_2(t,N)-S_2^*(N)\|_F+\|R_2(t,N)-R_2^*(N)\|_F\to0
-\qquad\text{in probability as }t\to\infty.
-\]
-\end{defn}
-
-\subsection{Key perturbation lemma}
-\label{subsec:key_perturbation_lemma}
-
-\begin{lem}
-\label{lem:remove_R}
-Suppose Assumptions~\ref{as1} and \ref{as2} hold. Define
-\[
-\tau_N(s):=
-2\sqrt{2}\,\|W_3\|_\infty \|W_1s\|_2\sqrt{\frac{\log(2N)}{N}}
-=2\sqrt{2}\,a(N,s).
-\]
-If we replace \(W_2=S_2+R_2\) by \(S_2\), then
-\[
-\PP\!\left(
-\left\|X(s,\alpha_{S_2})-X(s,\alpha_{W_2})\right\|_\infty
-\le \tau_N(s)
-\right)
-\ge 1-\frac{1}{N}.
-\]
-\end{lem}
-\proofloc{See Appendix~\ref{app:proof_perturb}, Proof of Lemma~\ref{lem:remove_R}.}
-
-For later use, define the classification margin on a finite test set \(T'\):
-\[
-\delta X(s,\alpha):=
-X_{C(s)}(s,\alpha)-\max_{j\neq C(s)}X_j(s,\alpha),
-\]
-and the corresponding accuracy
-\[
-\acc_\alpha(T'):=\frac1{|T'|}\#\{s\in T':\delta X(s,\alpha)>0\}.
-\]
-
-\begin{cor}[Margin-sensitive label stability]
-\label{cor:margin_accuracy}
-Suppose Assumptions~\ref{as1} and \ref{as2} hold. Let \(T'\) be a finite test set. Then
-\[
-\PP\!\left(
-\big|\acc_{\alpha_{W_2}}(T')-\acc_{\alpha_{S_2}}(T')\big|
-\le
-\frac1{|T'|}
-\#\Big\{
-s\in T': |\delta X(s,\alpha_{W_2})|\le 2\tau_N(s)
-\Big\}
-\right)
-\ge
-1-\frac{|T'|}{N}.
-\]
-In particular, if
-\[
-\min_{s\in T'} |\delta X(s,\alpha_{W_2})|
->
-2\max_{s\in T'}\tau_N(s),
-\]
-then
-\[
-\acc_{\alpha_{W_2}}(T')=\acc_{\alpha_{S_2}}(T')
-\]
-with probability at least \(1-\frac{|T'|}{N}\).
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:margin_accuracy}.}
-
-\subsection{A theorem on how removing randomness reduces the regularized loss}
-
-We work with the \(\ell_2\)-regularized loss
-\begin{equation}
-\label{loss_noise_det_1}
-L(\alpha(t))
-=
--\frac{1}{|T|}\sum_{s\in T}\log\big(\phi_{C(s)}(s,\alpha(t))\big)
-+
-\lambda_{\mathrm{reg}}
-\sum_{i=1}^{L}\|W_i(t)\|_F^2,
-\qquad \lambda_{\mathrm{reg}}>0.
-\end{equation}
-
-We first isolate the unregularized perturbation term.
-
-\begin{lem}
-\label{lem:remove_R_loosandacc}
-Suppose Assumptions~\ref{as1}--\ref{as2} hold. Define the unregularized cross-entropy
-\[
-L_{\cancel{\mathrm{reg}}}(\alpha)
-:=
--\frac{1}{|T|}\sum_{s\in T}\log\big(\phi_{C(s)}(s,\alpha)\big).
-\]
-Then there exists \(N_0\) such that for all \(N\ge N_0\),
-\[
-\PP\!\left(
-\big|L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})\big|
-\le
-\frac{4\sqrt{2}}{|T|}\sum_{s\in T} a(N,s)
-\right)
-\ge
-1-\frac{|T|}{N}.
-\]
-In particular,
-\[
-L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})
-\to 0
-\qquad\text{in probability as }N\to\infty.
-\]
-\end{lem}
-\proofloc{See Appendix~\ref{app:proof_perturb}, Proof of Lemma~\ref{lem:remove_R_loosandacc}.}
-
-\begin{thm}[Confidence-parameter finite-sample perturbation bound]
-\label{thm:finite_confidence_gaussian}
-Suppose Assumptions~\ref{as1} and \ref{as2} hold, and fix a finite set \(T_0\) and \(\delta\in(0,1)\). Define
-\[
-\tau_{N,\delta}(s)
-:=
-\|W_3\|_\infty\|W_1s\|_2
-\sqrt{\frac{2g(t)\log(2N|T_0|/\delta)}{N}}.
-\]
-Then, with probability at least \(1-\delta\),
-\[
-\left\|X(s,\alpha_{S_2})-X(s,\alpha_{W_2})\right\|_\infty
-\le \tau_{N,\delta}(s)
-\qquad\forall s\in T_0.
-\]
-Consequently, for \(T_0=T\),
-\[
-\left|
-L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})
--
-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})
-\right|
-\le
-\frac{2}{|T|}\sum_{s\in T}\tau_{N,\delta}(s)
-\]
-with probability at least \(1-\delta\).
-If Assumption~\ref{as3} also holds, then for every \(\eta>0\),
-\[
-\PP\!\left(
-L(\alpha_{S_2})
-\le
-L(\alpha_{W_2})
--\lambda_{\mathrm{reg}}\|R_2\|_F^2
-+\frac{2}{|T|}\sum_{s\in T}\tau_{N,\delta}(s)
-+2\lambda_{\mathrm{reg}}\eta
-\right)
-\ge
-1-\delta-2e^{-N\eta^2/(2B_N^2)}.
-\]
-\end{thm}
-\proofloc{See Appendix~\ref{app:proof_perturb}, Proof of Theorem~\ref{thm:finite_confidence_gaussian}.}
-
-\begin{cor}[Growing-set Gaussian loss bound]
-\label{cor:growing_set_gaussian_loss}
-Suppose Assumptions~\ref{as1}--\ref{as2} hold with a finite labeled set \(T_N\) that may depend on \(N\), and let \(\delta_N\in(0,1)\) with \(\delta_N\to0\). Let \(L_{\cancel{\mathrm{reg}},T_N}\) denote cross-entropy averaged over \(T_N\), and let \(L_{T_N}\) denote the corresponding regularized objective with the same Frobenius penalty as in \eqref{loss_noise_det_1}. Define
-\[
-b_{N,\delta_N}(T_N):=
-\frac{2}{|T_N|}
-\sum_{s\in T_N}
-\|W_3\|_\infty\|W_1s\|_2
-\sqrt{\frac{2g(t)\log(2N|T_N|/\delta_N)}{N}}.
-\]
-If \(b_{N,\delta_N}(T_N)\to0\) in probability, then the cross-entropy loss averaged over \(T_N\) satisfies
-\[
-L_{\cancel{\mathrm{reg}},T_N}(\alpha_{S_2})
--
-L_{\cancel{\mathrm{reg}},T_N}(\alpha_{W_2})
-\to0
-\qquad\text{in probability.}
-\]
-If Assumption~\ref{as3} also holds, then
-\[
-L_{T_N}(\alpha_{S_2})
-\le
-L_{T_N}(\alpha_{W_2})
--\lambda_{\mathrm{reg}}\|R_2\|_F^2
-+o_{\PP}(1).
-\]
-\end{cor}
-\proofloc{The bound follows by applying Theorem~\ref{thm:finite_confidence_gaussian} to the finite set \(T_N\) with failure probability \(\delta_N\); the stated assumptions \(\delta_N\to0\) and \(b_{N,\delta_N}(T_N)\to0\) give the result.}
-
-\begin{thm}
-\label{theorem_reduction_of_loss}
-Suppose Assumptions~\ref{as1}--\ref{as3} hold. If \(W_2=R_2+S_2\) and we replace \(W_2\) by \(S_2\), then for every fixed training time \(t\) and every \(\eta>0\),
-\[
-\PP\!\left(
-L(\alpha_{S_2})
-\le
-L(\alpha_{W_2})
--\lambda_{\mathrm{reg}}\|R_2\|_F^2
-+\frac{4\sqrt{2}}{|T|}\sum_{s\in T}a(N,s)
-+2\lambda_{\mathrm{reg}}\eta
-\right)
-\ge
-1-\frac{|T|}{N}-2e^{-N\eta^2/(2B_N^2)}.
-\]
-In particular,
-\[
-L(\alpha_{S_2})
-=
-L(\alpha_{W_2})
--\lambda_{\mathrm{reg}}\|R_2\|_F^2
-+o_{\PP}(1)
-\qquad(N\to\infty).
-\]
-\end{thm}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Theorem~\ref{theorem_reduction_of_loss}.}
-
-\begin{cor}
-\label{cor:scaled_reduction_of_loss}
-Suppose Assumptions~\ref{as1}--\ref{as3} hold. For any \(\vartheta\in[0,1]\), define
-\[
-W_2(\vartheta)=S_2+\vartheta R_2.
-\]
-Then for every fixed training time \(t\) and every \(\eta>0\), there is an event \(E_{N,\eta}\) with
-\[
-\PP(E_{N,\eta})
-\ge
-1-\frac{|T|}{N}-2e^{-N\eta^2/(2B_N^2)}
-\]
-such that on \(E_{N,\eta}\), for every \(\vartheta\in[0,1]\),
-\[
-L(\alpha_{W_2(\vartheta)})
-\le
-L(\alpha_{W_2})
--\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R_2\|_F^2
-+\frac{4\sqrt{2}(1-\vartheta)}{|T|}\sum_{s\in T}a(N,s)
-+2\lambda_{\mathrm{reg}}(1-\vartheta)\eta.
-\]
-In particular, for each fixed \(\vartheta\in[0,1]\),
-\[
-L(\alpha_{W_2(\vartheta)})
-=
-L(\alpha_{W_2})
--\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R_2\|_F^2
-+o_{\PP}(1)
-\qquad(N\to\infty).
-\]
-The same asymptotic statement holds along any deterministic sequence \(\vartheta_N\in[0,1]\).
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:scaled_reduction_of_loss}.}
-
-\begin{thm}[Entrywise thresholding in a sparse signal-plus-noise model]
-\label{thm:entrywise_threshold_support}
-Let \(W_N=S_N+R_N\in\R^{N\times M_N}\), where \(R_{ij}\) are independent \(N(0,g_N/N)\) random variables, \(g_N\ge0\), and \(S_N\) is deterministic or independent of \(R_N\). Fix \(\delta\in(0,1)\) and set
-\[
-t_{N,\delta}
-:=
-\sqrt{\frac{2g_N\log(2NM_N/\delta)}{N}}.
-\]
-Define the entrywise hard-thresholded matrix
-\[
-\mathcal H_t(W)_{ij}:=W_{ij}\,\mathbf 1_{\{|W_{ij}|>t\}}.
-\]
-Then, with probability at least \(1-\delta\),
-\[
-\{(i,j): |(S_N)_{ij}|>2t_{N,\delta}\}
-\subseteq
-\operatorname{supp}\big(\mathcal H_{t_{N,\delta}}(W_N)\big)
-\subseteq
-\operatorname{supp}(S_N).
-\]
-Equivalently, thresholding creates no false positives and can miss only entries of \(S_N\) whose magnitude is at most \(2t_{N,\delta}\):
-\[
-\operatorname{supp}(S_N)\setminus
-\operatorname{supp}\big(\mathcal H_{t_{N,\delta}}(W_N)\big)
-\subseteq
-\{(i,j):0< |(S_N)_{ij}|\le2t_{N,\delta}\}.
-\]
-Let \(\mathcal B_{N,\delta}\) be the beta-min event
-\[
-\mathcal B_{N,\delta}:=
-\left\{
-\min_{(i,j)\in\operatorname{supp}(S_N)} |(S_N)_{ij}|>2t_{N,\delta}
-\right\},
-\]
-with the condition interpreted as vacuous if \(\operatorname{supp}(S_N)=\emptyset\). If \(\PP(\mathcal B_{N,\delta})\ge1-\gamma\), then entrywise thresholding \(W_N\) at level \(t_{N,\delta}\) recovers the support of \(S_N\) exactly with probability at least \(1-\delta-\gamma\):
-\[
-\operatorname{supp}\big(\mathcal H_{t_{N,\delta}}(W_N)\big)
-=
-\operatorname{supp}(S_N).
-\]
-In particular, if \(\mathcal B_{N,\delta}\) holds deterministically, or almost surely when \(S_N\) is random, the recovery probability is at least \(1-\delta\).
-This result is a stylized support-recovery statement. Without beta-min separation it still gives a no-false-positive and large-signal-retention certificate, but exact support recovery requires all nonzero structured entries to clear the \(2t_{N,\delta}\) noise buffer. It is not a proof that the ViT pruning masks identify the true structured support.
-\end{thm}
-\proofloc{See Appendix~\ref{app:proof_perturb}, Proof of Theorem~\ref{thm:entrywise_threshold_support}.}
-
-\subsection{Asymptotic magnitude of admissible noise}
-
-We now replace exact local minimality by a weaker one-sided stationarity condition along the denoising direction \(R_2^*(N)\).
-
-\begin{thm}
-\label{main_result_reducing_noise}
-Suppose Assumptions~\ref{as1}--\ref{as3} hold along training. Assume that:
-\begin{enumerate}[leftmargin=2em]
-\item for each \(N\), the parameter vector \(\alpha(t,N)\) converges in probability as \(t\to\infty\) to a limit \(\alpha^*(N)\);
-\item the limiting middle layer \(W_2^*(N)\) admits an admissible decomposition
-\[
-W_2^*(N)=S_2^*(N)+R_2^*(N)
-\]
-in the sense of Definition~\ref{def:admissible_decomposition}.
-\end{enumerate}
-\noindent For \(\vartheta\in[0,1]\), let \(\alpha_\vartheta^*(N)\) denote the parameter vector obtained from \(\alpha^*(N)\) by replacing \(W_2^*(N)\) with \(S_2^*(N)+\vartheta R_2^*(N)\). Assume further that there exists a sequence of nonnegative random variables \(\epsilon_N=o_{\PP}(1)\) such that the one-sided directional stationarity event
-\[
-\liminf_{h\downarrow0}
-\frac{
-L(\alpha_{1-h}^*(N))-L(\alpha^*(N))
-}{h}
-\ge -\epsilon_N
-\]
-has probability tending to one.
-Define
-\[
-\bar a_N:=\frac{4\sqrt{2}}{|T|}\sum_{s\in T}a_*(N,s).
-\]
-Then
-\[
-\|R_2^*(N)\|_F^2
-\le
-\frac{\bar a_N+\epsilon_N}{2\lambda_{\mathrm{reg}}}
-+o_{\PP}(1).
-\]
-In particular, if \(\bar a_N+\epsilon_N\to0\) in probability, then for every \(\epsilon>0\),
-\[
-\lim_{N\to\infty}\PP\big(\|R_2^*(N)\|_F\le \epsilon\big)=1.
-\]
-
-If, in addition, there exists an admissible path decomposition
-\[
-W_2(t,N)=S_2(t,N)+R_2(t,N)
-\]
-which converges locally to the limit decomposition in the sense of Definition~\ref{def:local_path_convergence}, then for every \(\epsilon>0\),
-\[
-\lim_{N\to\infty}\lim_{t\to\infty}\PP\big(\|R_2(t,N)\|_F\le \epsilon\big)=1.
-\]
-\end{thm}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Theorem~\ref{main_result_reducing_noise}.}
-
-\begin{rem}
-Theorem~\ref{main_result_reducing_noise} requires only one-sided directional stationarity at \(\vartheta=1\); a genuine local minimum gives \(\epsilon_N\equiv0\). Its second statement transfers the limit-point conclusion to any admissible training-path decomposition converging locally to the limit. Since the Gaussian \(\|R_2^*(N)\|_F\) has no atom at any \(\epsilon>0\), pathwise convergence in probability yields convergence of the corresponding distribution functions at those thresholds.
-\end{rem}
-
-\begin{cor}[Variance-scale collapse at the limit point]
-\label{cor:variance_scale_collapse}
-Under the hypotheses of Theorem~\ref{main_result_reducing_noise}, write the admissible Gaussian limit perturbation as
-\[
-R_2^*(N)_{ij}\overset{\mathrm{i.i.d.}}{\sim}
-\mathcal N\!\left(0,\frac{g_*(N)}{N}\right).
-\]
-Here \(g_*(N)\) is the deterministic variance scale of the limit perturbation.
-Then
-\[
-g_*(N)\,N\to 0.
-\]
-In particular, in the square case the MP singular-value edge of the admissible limit perturbation satisfies
-\[
-\sigma_{+,*}^{\mathrm{bulk}}(N)=2\sqrt{g_*(N)}\to 0.
-\]
-For a rectangular \(N\times M_N\) perturbation with entries \(N(0,g_*(N)/N)\), the corresponding Frobenius collapse condition is \(g_*(N)M_N\to0\); when \(M_N/N\to c\in(0,\infty)\), this is equivalent to \(g_*(N)N\to0\).
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:variance_scale_collapse}.}
-
-\begin{cor}[Bulk collapse and spike stabilization at the limit point]
-\label{cor:bulk_collapse_spike_stabilization}
-Under the hypotheses of Theorem~\ref{main_result_reducing_noise}, assume additionally that the limit decomposition is spectrally admissible in the sense of Definition~\ref{def:admissible_decomposition}. Let
-\[
-s_1\big(W_2^*(N)\big)\ge \cdots \ge s_N\big(W_2^*(N)\big)
-\]
-denote the singular values of \(W_2^*(N)\), and let
-\[
-\sigma_1^*(N)\ge \sigma_2^*(N)\ge \cdots \ge 0
-\]
-denote the singular values of \(S_2^*(N)\). Let \(k_N=o(N)\) be as in Assumption~\ref{as3spectral}.
-Then:
-\begin{enumerate}[leftmargin=2em]
-\item \(\|R_2^*(N)\|_{\op}\to 0\) in probability;
-\item for each fixed \(i\ge1\),
-\[
-\big|s_i(W_2^*(N))-\sigma_i^*(N)\big|\to 0
-\qquad\text{in probability};
-\]
-\item
-\[
-\sum_{i>k_N} s_i(W_2^*(N))^2\to 0
-\]
-in probability;
-\item for every \(\epsilon>0\),
-\[
-\nu_{W_2^*(N)}((\epsilon,\infty))\to 0
-\qquad\text{in probability},
-\]
-where \(\nu_{W_2^*(N)}\) is the singular-value empirical spectral distribution.
-\end{enumerate}
-If, in addition, \(\sigma_i^*(N)\to \bar\sigma_i\) for some constants \(\bar\sigma_i\ge 0\), then
-\[
-s_i(W_2^*(N))\to \bar\sigma_i
-\qquad\text{in probability for each fixed }i\ge1.
-\]
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:bulk_collapse_spike_stabilization}.}
-
-\begin{cor}[Singular-subspace stabilization under an asymptotic gap condition]
-\label{cor:subspace_stabilization}
-Under the hypotheses of Theorem~\ref{main_result_reducing_noise}, let
-\[
-\sigma_1^*(N)\ge \sigma_2^*(N)\ge \cdots \ge 0
-\]
-denote the singular values of \(S_2^*(N)\). Fix \(k\ge1\), and define
-\[
-\delta_k(N):=
-\sigma_k^*(N)-\sigma_{k+1}^*(N),
-\]
-with the convention \(\sigma_j^*(N)=0\) for \(j\) beyond the rank of \(S_2^*(N)\). Assume that \(\PP(\delta_k(N)>0)\to1\) and that, after setting the ratio below to \(+\infty\) on the event \(\{\delta_k(N)=0\}\),
-\[
-\frac{\|R_2^*(N)\|_{\op}}{\delta_k(N)}\to 0
-\qquad\text{in probability as }N\to\infty.
-\]
-Let \(U_{*,k}(N)\) and \(V_{*,k}(N)\) be orthonormal bases for the top-\(k\) left and right singular subspaces of \(S_2^*(N)\), respectively.
-Let \(\widehat U_k(N),\widehat V_k(N)\in\R^{N\times k}\) be matrices whose columns are orthonormal left and right singular vectors corresponding to the top \(k\) singular values of \(W_2^*(N)\), and define the orthogonal projectors
-\[
-P_{U_*,k}(N):=U_{*,k}(N)U_{*,k}(N)^\top,
-\qquad
-P_{V_*,k}(N):=V_{*,k}(N)V_{*,k}(N)^\top,
-\]
-\[
-\widehat P_{U,k}(N):=\widehat U_k(N)\widehat U_k(N)^\top,
-\qquad
-\widehat P_{V,k}(N):=\widehat V_k(N)\widehat V_k(N)^\top.
-\]
-Then
-\[
-\|\widehat P_{U,k}(N)-P_{U_*,k}(N)\|_{\op}\to0,
-\qquad
-\|\widehat P_{V,k}(N)-P_{V_*,k}(N)\|_{\op}\to0
-\]
-in probability as \(N\to\infty\).
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:subspace_stabilization}.}
-
-\begin{rem}
-Corollary~\ref{cor:subspace_stabilization} converts spectral shrinkage into geometric stability: if residual operator-norm noise is asymptotically smaller than \(\delta_k(N)\), the corresponding left/right singular subspaces become identifiable. This does not require a fixed spike floor; \(\delta_k(N)\) may tend to \(0\) if it still dominates the noise.
-\end{rem}
-
-\begin{cor}[Eventual Gaussian supercriticality of persistent spikes]
-\label{cor:gaussian_BBP_persistent_spikes}
-Under the hypotheses of Theorem~\ref{main_result_reducing_noise}, write
-\[
-R_2^*(N)_{ij}\overset{\mathrm{i.i.d.}}{\sim}
-\mathcal N\!\left(0,\frac{g_*(N)}{N}\right).
-\]
-Assume additionally that, for this corollary only, the admissible limit decomposition lies in the square Gaussian finite-rank deformation regime of Appendix~\ref{app:proofs_main}; in particular, \(S_2^*(N)\) has rank at most \(r_0\) for some deterministic \(r_0\) independent of \(N\).
-Assume that for some fixed \(k\ge1\) there exist constants
-\[
-\bar\sigma_1>\cdots>\bar\sigma_k>0
-\]
-such that
-\[
-\sigma_i^*(N)\to \bar\sigma_i
-\qquad\text{in probability as }N\to\infty
-\]
-for each \(1\le i\le k\). Then:
-\begin{enumerate}[leftmargin=2em]
-\item
-\[
-\PP\!\big(\sigma_i^*(N)>\sqrt{g_*(N)}\big)\to1
-\qquad\text{for each }1\le i\le k;
-\]
-\item in the sense of Theorem~\ref{thm:BGN_square_variable}, these \(k\) spikes are eventually supercritical, so the corresponding singular values of \(W_2^*(N)\) form BBP outlier clusters above the Gaussian bulk edge \(2\sqrt{g_*(N)}\). Moreover, if the \(i\)-th spike is separated from the other nonzero singular values of \(S_2^*(N)\) by a gap \(\Delta_i(N)>0\) with
-\[
-\frac{\|R_2^*(N)\|_{\op}}{\Delta_i(N)}\to0
-\qquad\text{in probability},
-\]
-then the rank-one left and right spectral projectors of \(W_2^*(N)\) associated with this spike converge in operator norm to the corresponding projectors of \(S_2^*(N)\);
-\item defining the inverse-BBP estimator on the event \(s_i(W_2^*(N))^2>4g_*(N)\), whose probability tends to one, by
-\[
-\widehat\sigma_i^{\mathrm{BBP}}(N)
-:=
-\frac12\left(
-s_i(W_2^*(N))
-+
-\sqrt{s_i(W_2^*(N))^2-4g_*(N)}
-\right),
-\]
-and defining it arbitrarily off that event,
-one has
-\[
-\widehat\sigma_i^{\mathrm{BBP}}(N)-\sigma_i^*(N)\to0
-\qquad\text{in probability}
-\]
-for each \(1\le i\le k\).
-\end{enumerate}
-\end{cor}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Corollary~\ref{cor:gaussian_BBP_persistent_spikes}.}
-
-\begin{rem}
-Corollary~\ref{cor:gaussian_BBP_persistent_spikes} adds persistent-spike information to bulk collapse: a macroscopic \(\bar\sigma_i>0\) survives as \(g_*(N)\to0\), eventually exceeds the BBP threshold, and, under the stated gap condition, keeps its spectral direction; the inverse-BBP map then estimates the spike strength consistently.
-\end{rem}
-
-\begin{rem}[Assumption map for the Gaussian section]
-Among the theorem-like results proved in the Gaussian section, the dependence on the hypotheses is as follows:
-\begin{enumerate}[leftmargin=2em]
-\item Theorem~\ref{RMT_MP_theorem} and Proposition~\ref{prop:mp_bulk_interpretation} are standalone random-matrix statements and do not rely on Assumptions~\ref{as1}--\ref{as3}.
-\item Lemma~\ref{lem:remove_R} and Corollary~\ref{cor:margin_accuracy} use only Assumptions~\ref{as1}--\ref{as2}.
-\item The first part of Theorem~\ref{thm:finite_confidence_gaussian} uses only Assumptions~\ref{as1}--\ref{as2}.
-\item Theorem~\ref{theorem_reduction_of_loss}, Corollary~\ref{cor:scaled_reduction_of_loss}, and the regularized part of Theorem~\ref{thm:finite_confidence_gaussian} use Assumptions~\ref{as1}--\ref{as3}; Assumption~\ref{as3} is used only to control \(\langle S_2,R_2\rangle_F\).
-\item Theorem~\ref{thm:entrywise_threshold_support} is a standalone sparse signal-plus-noise statement.
-\item Theorem~\ref{main_result_reducing_noise} uses Assumptions~\ref{as1}--\ref{as3} together with the one-sided directional stationarity hypothesis stated in the theorem; its pathwise conclusion additionally uses Definition~\ref{def:local_path_convergence}.
-\item Corollary~\ref{cor:variance_scale_collapse} is a consequence of Theorem~\ref{main_result_reducing_noise}.
-\item Corollary~\ref{cor:bulk_collapse_spike_stabilization} additionally uses Assumption~\ref{as3spectral}.
-\item Corollary~\ref{cor:subspace_stabilization} is a further consequence of Theorem~\ref{main_result_reducing_noise} plus the asymptotic gap condition
-\[
-\|R_2^*(N)\|_{\op}/\delta_k(N)\to0
-\qquad\text{in probability.}
-\]
-\item Corollary~\ref{cor:gaussian_BBP_persistent_spikes} uses Theorem~\ref{main_result_reducing_noise} together with a persistent-spike assumption \(\sigma_i^*(N)\to\bar\sigma_i>0\) and the additional exact finite-rank deformation hypothesis stated in the corollary itself.
-\end{enumerate}
-\end{rem}
-
-\begin{prop}[Spectral consequence of an MP-scale admissible random component]
-\label{prop:mp_bulk_interpretation}
-Let \(M_N/N\to c\in(0,\infty)\). Let
-\[
-W_N=R_N+S_N,
-\]
-where \(R_N\in\R^{N\times M_N}\) has i.i.d.\ \( \mathcal N(0,g_N/N)\) entries with \(g_N\to g_\infty>0\), and \(S_N\) is independent of \(R_N\) with
-\[
-\rank(S_N)=o(\min\{N,M_N\}).
-\]
-
-Then:
-\begin{enumerate}[leftmargin=2em]
-\item the singular-value ESD \(\nu_{R_N}\), defined as in Definition~\ref{ESD_Definition} over the \(\min\{N,M_N\}\) singular values of \(R_N\), converges almost surely to the pushforward of the \emph{nonzero covariance-spectrum part} of \(\mu_{\mathrm{MP}}^{c,g_\infty}\) under \(x\mapsto \sqrt{x}\); equivalently, when \(c>1\) one first removes the MP atom at \(0\) and renormalizes. Its support is
-\[
-\Big[\sqrt{g_\infty}\,\big|1-\sqrt c\big|,\,\sqrt{g_\infty}(1+\sqrt c)\Big];
-\]
-\item the singular-value ESD of \(W_N\) has the same weak limit as \(\nu_{R_N}\), because
-\[
-\sup_{x\in\R}
-\abs{
-\nu_{W_N}((-\infty,x])-\nu_{R_N}((-\infty,x])
-}
-\le
-\frac{\rank(S_N)}{\min\{N,M_N\}}
-\to0;
-\]
-\item suppose, in addition, that \(S_N\) has fixed rank \(r\), its nonzero singular values \(\theta_i(N)\) converge to positive limits, and the pair \((R_N,S_N)\) satisfies the finite-rank deformation hypotheses of Theorem~\ref{thm:abstract_inverse_D} with deterministic edge \(b_+(N)\), critical threshold \(\theta_c(N)\), and inverse-\(D\) outlier map. Then every spike for which \(\PP(\theta_i(N)>\theta_c(N)+\gamma)\to1\) for some \(\gamma>0\) produces an outlier singular value \(s_i(W_N)\) satisfying
-\[
-s_i(W_N)-D_N^{-1}\!\left(\frac1{\theta_i(N)^2}\right)\to0
-\qquad\text{in probability},
-\]
-and the inverse-\(D\) estimator from Theorem~\ref{thm:abstract_inverse_D} recovers \(\theta_i(N)\) in probability. In the square Gaussian case \(c=1\), this reduces to the usual BBP outlier transition.
-\end{enumerate}
-Thus any admissible random component that remains at MP scale leaves a persistent MP-type bulk in the singular spectrum.
-\end{prop}
-\proofloc{See Appendix~\ref{app:proofs_main}, Proof of Proposition~\ref{prop:mp_bulk_interpretation}.}
-
-In this stylized additive model, Theorem~\ref{theorem_reduction_of_loss} and Proposition~\ref{prop:mp_bulk_interpretation} say that an MP-scale \(R_2\) leaves a persistent singular-value bulk, and removing it collapses that bulk while lowering the regularized objective by \(\lambda_{\mathrm{reg}}\|R_2\|_F^2\), up to the perturbation terms. Theorem~\ref{main_result_reducing_noise} further rules out admissible sub-MP Frobenius noise at locally stationary limit points, given local-path convergence.
-
-
-% =================================================
-
-\section{Supplementary Numerical Results}
-\label{app:fc_num}
-
-The supplementary numerical material covers MP-based pruning of fully connected DNNs on Fashion MNIST, outer-layer scaling diagnostics, and the noise-perturbation experiment. The extended version appears in the companion \emph{methodology and extended-numerics} paper, \href{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning/blob/main/cast_2e/methodology.pdf}{\texttt{cast\_2e/methodology.pdf}} (LaTeX source: \href{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning/blob/main/cast_2e/methodology.tex}{\texttt{cast\_2e/methodology.tex}}). The repository root is \url{https://github.com/yspennstate/RMT_based_pruning_in_deep_learning}.
-
-\subsection{Interpretation of the ViT-B/16 sweep}
-\label{app:vitb_interpretation}
-
-For the full layerwise interpretation of why RMT is used as a budget allocator rather than direct sub-edge singular-component removal, see \methref{sec:s33-interpretation} and \methref{sec:seb-protocols}.
-
-\subsection{Multi-architecture cert connection}
-\label{app:multi_arch_cert}
-
-\paragraph{Why the slope steepens with sparsity.}
-The slope-steepening and bulk-reservoir interpretation of Figure~\ref{fig:param_vs_drop} are discussed in \methref{sec:s34-arch-validation} and \methref{sec:s35-cert-numerics}.
-
-\paragraph{Architecture and anomalous-cell provenance.}
-Architecture provenance, adaptive-variant details, and the Hiera-Base+ anomalous-cell note are in \methref{sec:s34-arch-validation}; no correction was applied to the archived checkpoint.
-
-\paragraph{Connecting the deterministic certificates to the multi-architecture numerics.}
-The deterministic mask certificate (Theorem~\ref{thm:deterministic_mask_certificate}) certifies that pruning a removed component $R$ from a layer $A=S+R$ decreases the elastic-net objective whenever the data-path budget satisfies
-\begin{equation}
-\label{eq:certificate_inequality_main}
-B_T(R)\;<\;\lambda_2\|R\|_F^2+\lambda_1\|R\|_1,
-\end{equation}
-where $B_T(R)$ is the data-path budget.
-
-The full theory-to-numerics bridge, including the iid-Gaussian \(\sigma_+\) caveat, prune--restore interpretation, operator-norm proxy audit, and 282-checkpoint correlation results, is given in \methref{sec:s35-cert-numerics}.
-
-\section{Proofs of the perturbation lemmas}
-\label{app:proof_perturb}
-
-\begin{lem}[Slack removal]
-\label{lem:slack_removal}
-Let \(X_N\) and \(Y_N\) be real random variables. Suppose that for every fixed \(\eta>0\),
-\[
-\big(X_N-Y_N-\eta\big)_+\to0
-\qquad\text{in probability}.
-\]
-Then
-\[
-\big(X_N-Y_N\big)_+\to0
-\qquad\text{in probability}.
-\]
-Equivalently, if \(X_N\le Y_N+\eta+o_{\PP}(1)\) for every fixed \(\eta>0\), then \(X_N\le Y_N+o_{\PP}(1)\).
-\end{lem}
-
-\begin{proof}
-Fix \(\delta>0\) and set \(\eta=\delta/2\). Then
-\[
-\PP(X_N-Y_N>\delta)
-\le
-\PP(X_N-Y_N-\eta>\delta-\eta)
-\le
-\PP\big((X_N-Y_N-\eta)_+>\delta/2\big),
-\]
-and the last probability tends to \(0\) by assumption.
-\end{proof}
-
-\subsection{Proofs of the deterministic pruning certificates}
-
-\begin{proof}[Proof of Lemma~\ref{lem:deterministic_ce_path_bound}]
-For each \(s\in T\), the definition of \(L_s\) gives
-\[
-\|z_{A_\theta}(s)-z_{A_1}(s)\|_\infty
-\le
-\| \psi_2(A_\theta\psi_1(s))-\psi_2(A_1\psi_1(s))\|_\infty
-\le
-(1-\theta)L_s\|R\psi_1(s)\|_\infty.
-\]
-For the single-sample cross-entropy
-\[
-\ell_s(z):=-z_{C(s)}+\log\!\left(\sum_{j=1}^K e^{z_j}\right),
-\]
-we have \(\nabla\ell_s(z)=\rho(z)-e_{C(s)}\), hence \(\|\nabla\ell_s(z)\|_1\le2\). Therefore \(\ell_s\) is \(2\)-Lipschitz with respect to \(\|\cdot\|_\infty\). Averaging over \(s\in T\) yields
-\[
-\left|
-\mathcal L_{\mathrm{CE}}(A_\theta)-\mathcal L_{\mathrm{CE}}(A_1)
-\right|
-\le
-\frac2{|T|}\sum_{s\in T}(1-\theta)L_s\|R\psi_1(s)\|_\infty
-=
-(1-\theta)B_T(R).
-\]
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:deterministic_margin_stability}]
-The logit perturbation bound in the proof of Lemma~\ref{lem:deterministic_ce_path_bound} gives
-\[
-\|z_{A_\theta}(s)-z_{A_1}(s)\|_\infty\le\eta_s(\theta).
-\]
-If the predicted label changes, then the original top logit and some competing logit must be separated by at most \(2\eta_s(\theta)\); otherwise every competing logit remains below the original top logit after perturbation. This proves the prediction-margin claim.
-
-For accuracy, correctness is determined by the sign of the true-label margin. The true class logit can move by at most \(\eta_s(\theta)\), and the maximum competing logit can move by at most \(\eta_s(\theta)\), so the true-label margin can change by at most \(2\eta_s(\theta)\). Therefore the sign of \(\Delta_{A_1}^{\mathrm{true}}(s)\) can change only if \(|\Delta_{A_1}^{\mathrm{true}}(s)|\le2\eta_s(\theta)\). Counting such samples gives the displayed bound.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_additive_frobenius_certificate}]
-By Lemma~\ref{lem:deterministic_ce_path_bound},
-\[
-\mathcal L_{\mathrm{CE}}(A_\theta)-\mathcal L_{\mathrm{CE}}(A_1)
-\le
-(1-\theta)B_T(R).
-\]
-For the Frobenius term,
-\[
-\|S+\theta R\|_F^2-\|S+R\|_F^2
-=
--(1-\theta^2)\|R\|_F^2
--2(1-\theta)\langle S,R\rangle_F.
-\]
-Multiplying this identity by \(\lambda_2\) and adding the cross-entropy bound gives the displayed path inequality. The \(\eta\)-version follows from
-\[
--2\lambda_2(1-\theta)\langle S,R\rangle_F
-\le
-2\lambda_2(1-\theta)|\langle S,R\rangle_F|.
-\]
-The full-removal sufficient condition is the case \(\theta=0\).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_mask_certificate}]
-By Lemma~\ref{lem:deterministic_ce_path_bound},
-\[
-\mathcal L_{\mathrm{CE}}(A_\theta)-\mathcal L_{\mathrm{CE}}(A_1)
-\le
-(1-\theta)B_T(R).
-\]
-Since \(S\odot R=0\),
-\[
-\|S+\theta R\|_F^2=\|S\|_F^2+\theta^2\|R\|_F^2,
-\qquad
-\|S+\theta R\|_1=\|S\|_1+\theta\|R\|_1.
-\]
-Similarly,
-\[
-\|A_1\|_F^2=\|S\|_F^2+\|R\|_F^2,
-\qquad
-\|A_1\|_1=\|S\|_1+\|R\|_1.
-\]
-Substituting these identities into \(\mathcal J(A_\theta)-\mathcal J(A_1)\) gives
-\[
-\mathcal J(A_\theta)-\mathcal J(A_1)
-\le
-(1-\theta)B_T(R)
--\lambda_2(1-\theta^2)\|R\|_F^2
--\lambda_1(1-\theta)\|R\|_1.
-\]
-Taking \(\theta=0\) proves the full-pruning statement and the sufficient decrease condition follows immediately.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_prune_restore_certificate}]
-Apply Theorem~\ref{thm:deterministic_mask_certificate} to the mask decomposition
-\[
-A=(S+Q)+P.
-\]
-The pairwise disjoint-support assumption implies \((S+Q)\odot P=0\), so the theorem applies with structured part \(S+Q\) and removed part \(P\). This gives the displayed path inequality and the full prune--restore statement by taking \(\theta=0\). The sufficient decrease condition follows immediately.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:restoration_improves_certificate}]
-The all-pruned upper bound is Theorem~\ref{thm:deterministic_mask_certificate} applied to
-\[
-A=S+R,
-\qquad R=Q+P.
-\]
-The restored upper bound is Theorem~\ref{thm:deterministic_prune_restore_certificate}. Since \(Q\odot P=0\),
-\[
-\|R\|_F^2=\|Q\|_F^2+\|P\|_F^2,
-\qquad
-\|R\|_1=\|Q\|_1+\|P\|_1.
-\]
-Therefore the restored upper bound is smaller than the all-pruned upper bound exactly when
-\[
-B_T(P)-\lambda_2\|P\|_F^2-\lambda_1\|P\|_1
-<
-B_T(R)-\lambda_2\|R\|_F^2-\lambda_1\|R\|_1,
-\]
-which is equivalent to
-\[
-B_T(R)-B_T(P)
->
-\lambda_2\|Q\|_F^2+\lambda_1\|Q\|_1.
-\]
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:weighted_mask_certificate}]
-The proof is the weighted coordinatewise version of Theorem~\ref{thm:deterministic_mask_certificate}. The same cross-entropy bound applies, and \(S\odot R=0\) gives
-\[
-(S_{ij}+\theta R_{ij})^2=(S_{ij})^2+\theta^2(R_{ij})^2,
-\qquad
-|S_{ij}+\theta R_{ij}|=|S_{ij}|+\theta|R_{ij}|.
-\]
-Multiplying by the nonnegative weights and summing yields the displayed inequality; \(\theta=0\) gives the full-pruning condition.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:weighted_mask_stationarity}]
-Set \(\theta=1-h\) in Corollary~\ref{cor:weighted_mask_certificate} and divide by \(h>0\). This gives
-\[
-\frac{\mathcal J_{\Gamma}(A_{1-h})-\mathcal J_{\Gamma}(A_1)}{h}
-\le
-B_T(R)
--(2-h)\sum_{i,j}\gamma_{2,ij}R_{ij}^2
--\sum_{i,j}\gamma_{1,ij}|R_{ij}|.
-\]
-Taking \(h\downarrow0\) and using one-sided stationarity yields
-\[
--\varepsilon
-\le
-B_T(R)
--2\sum_{i,j}\gamma_{2,ij}R_{ij}^2
--\sum_{i,j}\gamma_{1,ij}|R_{ij}|,
-\]
-which is the directional claim. If the pathwise lower bound holds for every \(\theta\), combine it with Corollary~\ref{cor:weighted_mask_certificate} and divide by \(1-\theta\) to obtain the finite-\(\theta\) inequality.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_mask_stationarity}]
-This is Corollary~\ref{cor:weighted_mask_stationarity} with \(\gamma_{2,ij}\equiv\lambda_2\) and \(\gamma_{1,ij}\equiv\lambda_1\).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_multilayer_mask_certificate}]
-Apply Theorem~\ref{thm:deterministic_mask_certificate} with \(\theta=0\) at each pruning step in the network obtained after the previous \(j-1\) pruning operations. If \(\alpha^{(j)}\) denotes the parameters after step \(j\), then
-\[
-\mathcal J(\alpha^{(j)})-\mathcal J(\alpha^{(j-1)})
-\le
--\lambda_{2,j}\|R_j\|_F^2
--\lambda_{1,j}\|R_j\|_1
-+B_j(R_j).
-\]
-Summing over \(j=1,\dots,M\) telescopes the left-hand side and proves the displayed multi-layer bound.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:deterministic_multilayer_margin_stability}]
-For each \(s\in T\), telescoping the logits gives
-\[
-\|z^{(M)}(s)-z^{(0)}(s)\|_\infty
-\le
-\sum_{j=1}^M\|z^{(j)}(s)-z^{(j-1)}(s)\|_\infty
-\le
-\eta_s^{\mathrm{tot}}.
-\]
-The cross-entropy bound follows from the \(2\)-Lipschitz estimate above, and the prediction and accuracy bounds follow by the margin argument of Corollary~\ref{cor:deterministic_margin_stability} with \(\eta_s(\theta)\) replaced by \(\eta_s^{\mathrm{tot}}\).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:deterministic_multilayer_mask_stationarity}]
-Fix \(h\in(0,1]\), and let \(\alpha_h^{(j)}\) be the network after the first \(j\) fractional pruning steps, with \(\alpha_h^{(0)}=\alpha^{(0)}\) and \(\alpha_h^{(M)}=\alpha_h\). At step \(j\), apply the one-layer deterministic certificate with \(\theta=1-h\) in the intermediate network \(\alpha_h^{(j-1)}\). By the assumed validity of the fractional budget \(B_j(R_j)\),
-\[
-\mathcal J(\alpha_h^{(j)})-\mathcal J(\alpha_h^{(j-1)})
-\le
-hB_j(R_j)
--\lambda_{2,j}(2h-h^2)\|R_j\|_F^2
--\lambda_{1,j}h\|R_j\|_1.
-\]
-Summing over \(j=1,\dots,M\) gives
-\[
-\mathcal J(\alpha_h)-\mathcal J(\alpha^{(0)})
-\le
-h\sum_{j=1}^M B_j(R_j)
--h(2-h)\sum_{j=1}^M\lambda_{2,j}\|R_j\|_F^2
--h\sum_{j=1}^M\lambda_{1,j}\|R_j\|_1.
-\]
-After division by \(h\), the one-sided directional stationarity assumption and the limit \(h\downarrow0\) imply
-\[
--\varepsilon
-\le
-\sum_{j=1}^M B_j(R_j)
--2\sum_{j=1}^M\lambda_{2,j}\|R_j\|_F^2
--\sum_{j=1}^M\lambda_{1,j}\|R_j\|_1,
-\]
-which is the first claim. If the stronger pathwise lower bound holds for every \(h\in[0,1]\), combine it with the displayed upper bound and divide by \(h\) to obtain the finite-\(h\) inequality.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:gaussian_data_path_budget}]
-Condition on the vectors \(v_s=\psi_1(s)\) and on the bounds \(L_s\). For each \(s\in T\) and row \(i\),
-\[
-\langle r_i,v_s\rangle\sim N\!\left(0,\frac{g}{n}\|v_s\|_2^2\right).
-\]
-Thus
-\[
-\PP\!\left(
-|\langle r_i,v_s\rangle|
->
-\|v_s\|_2\sqrt{\frac{2g}{n}\log\frac{2n|T|}{\delta}}
-\right)
-\le
-\frac{\delta}{n|T|}.
-\]
-A union bound over \(i=1,\dots,n\) and \(s\in T\) gives, with probability at least \(1-\delta\),
-\[
-\|Rv_s\|_\infty
-\le
-\|v_s\|_2\sqrt{\frac{2g}{n}\log\frac{2n|T|}{\delta}}
-\qquad\forall s\in T.
-\]
-Substitution into \eqref{eq:data_path_budget} proves the claim.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:mp_edge_data_path_budget}]
-For an \(n\times m\) Gaussian matrix with entries \(N(0,g/n)\), the nominal MP singular-value edge is
-\[
-\sigma_{+,R}=\sqrt g\left(1+\sqrt{\frac{m}{n}}\right).
-\]
-Equivalently,
-\[
-\sqrt g=\frac{\sigma_{+,R}}{1+\sqrt{m/n}}.
-\]
-Substituting this identity into the bound of Corollary~\ref{cor:gaussian_data_path_budget} gives the displayed inequality.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:multilayer_gaussian_data_path_budget}]
-Apply Corollary~\ref{cor:gaussian_data_path_budget} at pruning step \(j\) with failure probability \(\delta_j\), conditional on the intermediate vectors \(v_{j,s}\) and Lipschitz bounds \(L_{j,s}\). This gives the displayed bound for \(B_j(R_j)\) with conditional probability at least \(1-\delta_j\). A union bound over \(j=1,\dots,M\) gives simultaneous validity with probability at least \(1-\sum_j\delta_j\ge1-\delta\). Substituting these simultaneous budget bounds into Theorem~\ref{thm:deterministic_multilayer_mask_certificate} proves the objective inequality.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:multilayer_subgaussian_data_path_budget}]
-The proof is identical to Corollary~\ref{cor:multilayer_gaussian_data_path_budget}, using Corollary~\ref{cor:subgaussian_data_path_budget} in place of Corollary~\ref{cor:gaussian_data_path_budget}.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:subgaussian_data_path_budget}]
-Condition on the variables with respect to which \(v_s\) and \(L_s\) are measurable.
-Apply the assumed tail bound with
-\[
-t_s:=\|v_s\|_2\sqrt{\frac{g}{c n}\log\frac{2n|T|}{\delta}}.
-\]
-The assumed tail bound and the same row/sample union bound as above give
-\[
-\|Rv_s\|_\infty\le t_s
-\qquad\forall s\in T
-\]
-with probability at least \(1-\delta\). Substitution into \eqref{eq:data_path_budget} proves the corollary.
-\end{proof}
-
-\subsection{Proof of Lemma~\ref{lem:remove_R}}
-
-\begin{proof}
-Let
-\[
-\nu:=\lambda(W_1s).
-\]
-Since \(\lambda\) is either absolute value or ReLU, it is coordinatewise \(1\)-Lipschitz and satisfies \(\|\nu\|_2\le \|W_1s\|_2\). Write
-\[
-X(s,\alpha_{W_2})=\lambda\big(W_3\lambda((S_2+R_2)\nu)\big),
-\qquad
-X(s,\alpha_{S_2})=\lambda\big(W_3\lambda(S_2\nu)\big).
-\]
-Using the \(1\)-Lipschitz property of \(\lambda\) and \(\|Av\|_\infty\le \|A\|_\infty\|v\|_\infty\), we obtain
-\[
-\big\|X(s,\alpha_{W_2})-X(s,\alpha_{S_2})\big\|_\infty
-\le
-\|W_3\|_\infty\,\|R_2\nu\|_\infty.
-\]
-So it suffices to bound \(\|R_2\nu\|_\infty\).
-
-By Assumption~\ref{as2}, \(R_2\) is independent of \(W_1\), hence independent of \(\nu\). Conditioned on \(\nu\), each coordinate \((R_2\nu)_j\) is centered Gaussian with variance
-\[
-\mathrm{Var}\big((R_2\nu)_j\mid \nu\big)
-=
-\frac{g(t)}{N}\|\nu\|_2^2
-\le
-\frac{\|W_1s\|_2^2}{N}.
-\]
-Set
-\[
-u_N:=2\sqrt{2}\,\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}}.
-\]
-If \(\|W_1s\|_2=0\), then \(\nu=0\) and the claim is immediate. Otherwise, the elementary Gaussian tail bound gives, conditionally on \(\nu\),
-\[
-\PP\!\left(|(R_2\nu)_j|>u_N\,\middle|\,\nu\right)
-\le
-2\exp\!\left(
--\frac{u_N^2}{2\|W_1s\|_2^2/N}
-\right)
-=2(2N)^{-4}.
-\]
-A union bound over \(j=1,\dots,N\) gives
-\[
-\PP\!\left(
-\|R_2\nu\|_\infty >
-\;2\sqrt{2}\,\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}}
-\middle|\,\nu
-\right)
-\le
-\frac{1}{8N^3}
-\le
-\frac{1}{N}.
-\]
-The same bound holds unconditionally after averaging over \(\nu\).
-Multiplying by \(\|W_3\|_\infty\) yields the desired estimate.
-\end{proof}
-
-\subsection{Proof of Lemma~\ref{lem:remove_R_general}}
-
-\begin{proof}
-Let \(u:=\psi_1(s)\). Since
-\[
-X(s,\alpha_W)=\psi_2((R+S)u),
-\qquad
-X(s,\alpha_S)=\psi_2(Su),
-\]
-Assumption~\ref{as4} gives
-\[
-\|X(s,\alpha_W)-X(s,\alpha_S)\|_\infty
-\le
-L_{\psi_2}(s)\,\|Ru\|_\infty.
-\]
-Applying Assumption~\ref{as5} with \(v=u\) and then averaging over the conditioning variables gives
-\[
-\PP\big(\|Ru\|_\infty>d_1(N)J(u)\big)\le d_2(N).
-\]
-Therefore
-\[
-\PP\!\left(
-\|X(s,\alpha_W)-X(s,\alpha_S)\|_\infty
-\le
-d_1(N)J(\psi_1(s))\,L_{\psi_2}(s)
-\right)\ge 1-d_2(N),
-\]
-which is the claim.
-\end{proof}
-
-\subsection{Justification of Example~\ref{ex:subgaussian_rows}}
-
-The standard sub-Gaussian tail bound gives absolute constants \(c,C>0\) such that, conditionally on \(S,\psi_1,\psi_2\),
-\[
-\PP\!\left(
-|\langle r_j,v\rangle|>u
-\,\middle|\,S,\psi_1,\psi_2
-\right)
-\le
-2\exp\!\left(-c\frac{Nu^2}{\kappa^2\|v\|_2^2}\right).
-\]
-Taking
-\[
-u=C\kappa\|v\|_2\sqrt{\frac{\log(2N/\delta)}{N}}
-\]
-with \(C\) large enough and applying a union bound over \(j=1,\dots,N\) yields the displayed \(\ell_\infty\) concentration bound.
-
-\subsection{Proof of Lemma~\ref{lem:remove_R_loosandacc}}
-
-\begin{proof}
-For \(s\in T\), let \(X(\alpha,s)\in\R^K\) denote the vector of pre-softmax logits. By Lemma~\ref{lem:remove_R}, for each fixed \(s\in T\),
-\[
-\PP\Big(
-\|X(\alpha_{S_2},s)-X(\alpha_{W_2},s)\|_\infty\le \tau_N(s)
-\Big)
-\ge
-1-\frac{1}{N},
-\]
-where
-\[
-\tau_N(s)
-=
-\;2\sqrt{2}\,\|W_3\|_\infty\|W_1s\|_2\sqrt{\frac{\log(2N)}{N}}
-=2\sqrt{2}\,a(N,s).
-\]
-Let \(\ell_s(z)=-z_{C(s)}+\log\sum_j e^{z_j}\). As in the proof of Lemma~\ref{lem:deterministic_ce_path_bound}, \(\ell_s\) is \(2\)-Lipschitz with respect to \(\|\cdot\|_\infty\).
-Applying this with \(z=X(\alpha_{S_2},s)\) and \(z'=X(\alpha_{W_2},s)\), we get
-\[
-|\ell_s(X(\alpha_{S_2},s))-\ell_s(X(\alpha_{W_2},s))|
-\le
-4\sqrt{2}\,a(N,s)
-\]
-on the high-probability event from Lemma~\ref{lem:remove_R}. Since \(T\) is finite, a union bound over \(s\in T\) yields
-\[
-\PP\!\left(
-|L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})|
-\le
-\frac{4\sqrt{2}}{|T|}\sum_{s\in T}a(N,s)
-\right)
-\ge
-1-\frac{|T|}{N},
-\]
-which proves the lemma.
-\end{proof}
-
-\subsection{Proof of Theorem~\ref{thm:finite_confidence_gaussian}}
-
-\begin{proof}
-For each \(s\in T_0\), set \(\nu_s=\lambda(W_1s)\). Applying the same conditional Gaussian row bound and union bound as in Lemma~\ref{lem:remove_R}, now over \(s\in T_0\) and \(j=1,\dots,N\) with failure probability \(\delta\), gives the displayed simultaneous bound on \(\|R_2\nu_s\|_\infty\). Multiplying by \(\|W_3\|_\infty\) yields the logit bound, and the cross-entropy bound follows from the \(2\)-Lipschitz estimate for \(\ell_s\).
-
-For the regularized statement, use the exact identity
-\[
-L(\alpha_{S_2})-L(\alpha_{W_2})
-=
-L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})
--\lambda_{\mathrm{reg}}\|R_2\|_F^2
--2\lambda_{\mathrm{reg}}\langle S_2,R_2\rangle_F.
-\]
-Conditional on \(S_2\),
-\[
-\langle S_2,R_2\rangle_F
-\sim
-\mathcal N\!\left(0,\frac{g(t)}{N}\|S_2\|_F^2\right),
-\]
-and Assumption~\ref{as3} gives
-\[
-\PP\big(|\langle S_2,R_2\rangle_F|>\eta\mid S_2\big)
-\le
-2e^{-N\eta^2/(2B_N^2)}.
-\]
-Intersecting the logit event with \(\{|\langle S_2,R_2\rangle_F|\le\eta\}\) gives the claimed probability and inequality.
-\end{proof}
-
-
-
-\subsection{Proof of Theorem~\ref{thm:entrywise_threshold_support}}
-
-\begin{proof}
-Condition on \(S_N\) when it is random; the remaining probability is over \(R_N\).
-If \(g_N=0\), then \(R_N=0\) almost surely and the claim is immediate. Assume \(g_N>0\). 
-For every entry,
-\[
-\PP(|R_{ij}|>t_{N,\delta})
-\le
-2\exp\!\left(-\frac{Nt_{N,\delta}^2}{2g_N}\right)
-=
-\frac{\delta}{NM_N},
-\]
-and a union bound gives
-\[
-\PP\!\left(\max_{i,j}|R_{ij}|\le t_{N,\delta}\right)\ge1-\delta.
-\]
-On this event, if \((i,j)\notin\operatorname{supp}(S_N)\), then \(|W_{ij}|=|R_{ij}|\le t_{N,\delta}\), so \(\mathcal H_{t_{N,\delta}}\) removes that entry. Thus thresholding creates no false positives. If \(|(S_N)_{ij}|>2t_{N,\delta}\), then
-\[
-|W_{ij}|\ge |(S_N)_{ij}|-|R_{ij}|>2t_{N,\delta}-t_{N,\delta}=t_{N,\delta},
-\]
-so thresholding keeps that entry. This proves the support sandwich and the missed-support inclusion. On the beta-min event \(\mathcal B_{N,\delta}\), every element of \(\operatorname{supp}(S_N)\) has magnitude larger than \(2t_{N,\delta}\), so the support sandwich collapses to exact support recovery. Unconditionally, the exact-recovery failure probability is at most \(\delta+\PP(\mathcal B_{N,\delta}^c)\le\delta+\gamma\).
-\end{proof}
-
-\section{Low-rank deformations and proofs of the main theorems}
-\label{app:proofs_main}
-
-\subsection{External random-matrix inputs quoted in the manuscript}
-\label{app:external_rmt_inputs}
-
-The Marchenko--Pastur theorem in Theorem~\ref{RMT_MP_theorem} and the square Gaussian finite-rank deformation theorem in Theorem~\ref{thm:BGN_square} are used as standard random-matrix inputs. The statements are classical; see, for example, \cite{marchenko1967distribution,vershynin2018high} for Marchenko--Pastur theory and \cite{benaych2012singular} for the Benaych-Georges--Nadakuditi outlier theorem. All paper-specific consequences stated after these inputs are proved below.
-
-\subsection{Finite-rank deformations of random matrices}
-
-\begin{thm}[Benaych-Georges--Nadakuditi, square Gaussian case \cite{benaych2012singular}]
-\label{thm:BGN_square}
-Let \(W_N=R_N+S_N\), where \(R_N\) is an \(N\times N\) random matrix with i.i.d.\ \(N(0,1/N)\) entries and \(S_N\) is deterministic, or independent of \(R_N\), with fixed rank \(r\) and nonzero singular values \(\sigma_1>\cdots>\sigma_r>0\) independent of \(N\). Then the \(i\)-th largest singular value \(s_i(W_N)\) converges almost surely to
-\[
-s_i(W_N)\to
-\begin{cases}
-\sigma_i+\sigma_i^{-1}, & \sigma_i>1,\\[0.2em]
-2, & \sigma_i\le 1.
-\end{cases}
-\]
-In particular, subcritical spikes merge with the bulk edge \(2\).
-\end{thm}
-\proofloc{This is a classical cited input; see the source note in Appendix~\ref{app:external_rmt_inputs}. The variance-\(g\) and varying-scale consequences are proved immediately below.}
-
-\begin{cor}[Square Gaussian case with variance \(g/N\)]
-\label{cor:BGN_square_g}
-Let \(W_N=R_N+S_N\), where \(R_N\) is an \(N\times N\) random matrix with i.i.d.\ \(N(0,g/N)\) entries for some fixed \(g>0\), and \(S_N\) is deterministic, or independent of \(R_N\), with fixed rank \(r\) and distinct nonzero singular values \(\sigma_1>\cdots>\sigma_r>0\). Then
-\[
-s_i(W_N)\to
-\begin{cases}
-\sigma_i+g/\sigma_i, & \sigma_i>\sqrt g,\\[0.2em]
-2\sqrt g, & \sigma_i\le \sqrt g.
-\end{cases}
-\]
-\end{cor}
-
-\begin{proof}
-Write
-\[
-W_N=\sqrt g\,(\widetilde R_N+\widetilde S_N),
-\qquad
-\widetilde R_N:=R_N/\sqrt g,
-\qquad
-\widetilde S_N:=S_N/\sqrt g.
-\]
-Then \(\widetilde R_N\) has i.i.d.\ \(N(0,1/N)\) entries, and the nonzero singular values of \(\widetilde S_N\) are \(\sigma_i/\sqrt g\). Apply Theorem~\ref{thm:BGN_square} and multiply by \(\sqrt g\).
-\end{proof}
-
-\begin{thm}[Square Gaussian outlier map with varying spike and noise scales]
-\label{thm:BGN_square_variable}
-Let \(W_N=R_N+S_N\), where \(R_N\) is an \(N\times N\) random matrix with i.i.d.\ \(N(0,g_N/N)\) entries and \(g_N\to g_\infty\in[0,\infty)\). Assume \(S_N\) has fixed rank \(r\). Write its nonzero singular values in decreasing order,
-\[
-\sigma_1(S_N)\ge\cdots\ge\sigma_r(S_N)>0,
-\]
-and assume that for each fixed \(1\le i\le r\),
-\[
-\sigma_i(S_N)\to \bar\sigma_i\in(0,\infty)
-\qquad\text{in probability}
-\]
-where \(\bar\sigma_1\ge\cdots\ge\bar\sigma_r>0\), and that \(S_N\) is independent of \(R_N\).
-Then for each fixed \(1\le i\le r\),
-\[
-s_i(W_N)\to
-\begin{cases}
-\bar\sigma_i+g_\infty/\bar\sigma_i, & \bar\sigma_i>\sqrt{g_\infty},\\[0.2em]
-2\sqrt{g_\infty}, & \bar\sigma_i\le \sqrt{g_\infty}.
-\end{cases}
-\qquad\text{in probability.}
-\]
-Moreover, when \(g_\infty>0\), the usual BGN alignment conclusions hold for simple separated spikes: supercritical spikes have asymptotically nonzero projection onto the corresponding signal directions, while subcritical spikes have vanishing projection. For repeated or clustered spikes, these statements are understood as subspace-alignment statements. When \(g_\infty=0\), any separated spike cluster has convergent spectral projectors under the Wedin gap condition \(\|R_N\|_{\op}/\mathrm{gap}_N\to0\).
-\end{thm}
-
-\begin{proof}
-Condition on \(S_N\). First suppose \(g_\infty>0\). Then \(g_N>0\) for all large \(N\), and after dividing by \(\sqrt{g_N}\) one reduces to the unit-variance square Gaussian finite-rank deformation theorem of Benaych-Georges and Nadakuditi \cite{benaych2012singular}. On events whose probability tends to one, the conditioned spike values are arbitrarily close to their deterministic limits; the BGN outlier map is continuous away from the threshold, and at the threshold both branches give the edge. Thus the conditional deterministic-spike result and Slutsky's theorem give the displayed convergence in probability. The limiting outlier map in the unit-variance scaling is
-\[
-\theta\mapsto \theta+\theta^{-1},
-\]
-so in the original scaling it becomes
-\[
-\sigma\mapsto \sigma+\frac{g_\infty}{\sigma},
-\]
-with critical threshold \(\sqrt{g_\infty}\) and edge \(2\sqrt{g_\infty}\). The singular-vector and spike-subspace alignment statements in the positive-noise case are exactly the corresponding supercritical/subcritical BGN conclusions.
-
-Now suppose \(g_\infty=0\). Write \(R_N=\sqrt{g_N}\,Z_N\), where \(Z_N\) has i.i.d.\ \(N(0,1/N)\) entries. By the standard Gaussian operator-norm bound, \(\|Z_N\|_{\op}=O_{\PP}(1)\), hence
-\[
-\|R_N\|_{\op}\to0
-\qquad\text{in probability}.
-\]
-Weyl's singular-value inequality gives, for each fixed \(i\),
-\[
-|s_i(W_N)-s_i(S_N)|\le \|R_N\|_{\op}\to0
-\qquad\text{in probability}.
-\]
-Since \(s_i(S_N)\to\bar\sigma_i\), we obtain \(s_i(W_N)\to\bar\sigma_i\), which is the asserted formula with \(g_\infty=0\). The stated projector convergence in the separated-cluster case follows from Wedin's theorem.
-\end{proof}
-
-\begin{thm}[Abstract inverse-\(D\) spike recovery]
-\label{thm:abstract_inverse_D}
-Let \(W_N=R_N+S_N\). Assume that for each fixed \(1\le i\le r\), the \(i\)-th nonzero singular value of \(S_N\) is \(\theta_i(N)>0\). Assume further that there exist deterministic quantities \(b_+(N)\), \(\theta_c(N)\), and a strictly decreasing map
-\[
-D_N:(b_+(N),\infty)\to (0,D_N(b_+(N)^+))
-\]
-with the following properties:
-\begin{enumerate}[leftmargin=2em]
-\item on supercritical spike sequences, meaning \(\PP(\theta_i(N)>\theta_c(N))\to1\), one has
-\[
-s_i(W_N)-\rho_N(\theta_i(N))\to0
-\qquad\text{in probability},
-\]
-where
-\[
-\rho_N(\theta):=D_N^{-1}\!\left(\frac1{\theta^2}\right);
-\]
-\item on subcritical spike sequences, meaning \(\PP(\theta_i(N)\le \theta_c(N))\to1\), one has
-\[
-s_i(W_N)-b_+(N)\to0
-\qquad\text{in probability};
-\]
-\item in the supercritical case, the singular vectors associated with \(s_i(W_N)\) have asymptotically nonvanishing projection onto the corresponding singular directions of \(S_N\);
-\item for each fixed supercritical spike under consideration, \(\PP(\theta_i(N)>\theta_c(N))\to1\), \(\theta_i(N)\to\bar\theta_i\in(0,\infty)\), and there exist deterministic intervals
-\[
-I_{i,N}\subset (b_+(N),\infty)
-\]
-and deterministic constants \(L_{i,N}<\infty\) such that \(D_N\) is \(L_{i,N}\)-Lipschitz on \(I_{i,N}\) and
-\[
-\begin{aligned}
-&\PP\big(\rho_N(\theta_i(N))\in I_{i,N}\big)\to1,
-\qquad
-\PP\big(s_i(W_N)\in I_{i,N}\big)\to1,\\
-&L_{i,N}\big|s_i(W_N)-\rho_N(\theta_i(N))\big|\to0
-\quad\text{in probability.}
-\end{aligned}
-\]
-\end{enumerate}
-Define the inverse-\(D\) estimator on the event \(s_i(W_N)>b_+(N)\), whose probability tends to one for every fixed supercritical spike under consideration, by
-\[
-\widehat\theta_i^{(D)}(N):=D_N(s_i(W_N))^{-1/2},
-\]
-and define it arbitrarily off this event. Then for every fixed supercritical spike,
-\[
-\widehat\theta_i^{(D)}(N)-\theta_i(N)\to0
-\qquad\text{in probability}.
-\]
-\end{thm}
-
-\begin{proof}
-On the event \(\{s_i(W_N)\in I_{i,N},\ \rho_N(\theta_i(N))\in I_{i,N}\}\), whose probability tends to one, the Lipschitz assumption gives
-\[
-\big|D_N(s_i(W_N))-D_N(\rho_N(\theta_i(N)))\big|
-\le
-L_{i,N}\big|s_i(W_N)-\rho_N(\theta_i(N))\big|.
-\]
-Therefore
-\[
-D_N(s_i(W_N))
-=
-D_N(\rho_N(\theta_i(N)))+o_{\PP}(1)
-=
-\frac1{\theta_i(N)^2}+o_{\PP}(1).
-\]
-Since \(\theta_i(N)\to\bar\theta_i\in(0,\infty)\), the quantity \(\theta_i(N)^{-2}\) stays in a compact subinterval of \((0,\infty)\) for all large \(N\). Applying the continuous map \(x\mapsto x^{-1/2}\) on that compact interval yields
-\[
-\widehat\theta_i^{(D)}(N)-\theta_i(N)\to0
-\qquad\text{in probability.}
-\]
-This is the inverse-outlier-map viewpoint underlying \(D\)-transform shrinkage methods such as OptShrink \cite{nadakuditi2014optshrink}.
-\end{proof}
-
-\subsection{Proof of Proposition~\ref{prop:mp_bulk_interpretation}}
-
-\begin{proof}
-Part (i) is the MP law on the covariance scale together with the pushforward \(x\mapsto \sqrt x\) to the singular-value scale. Because \(\nu_{R_N}\) averages over only \(\min\{N,M_N\}\) singular values, when \(c>1\) one removes the covariance-side zero atom of the full MP law before pushing forward and renormalizes the remaining mass. Part (ii) follows from the rank inequality for empirical spectral distributions: if \(A,B\) are matrices of the same dimensions, then
-\[
-\sup_x \abs{\nu_A((-\infty,x])-\nu_B((-\infty,x])}
-\le
-\frac{\rank(A-B)}{\min\{N,M_N\}}.
-\]
-Applying this with \(A=W_N\), \(B=R_N\), and \(A-B=S_N\) gives the claimed bound. Part (iii) is the rectangular outlier principle encoded by the inverse-\(D\) transform in Theorem~\ref{thm:abstract_inverse_D}; the square Gaussian BBP statement follows as the special case \(c=1\).
-\end{proof}
-
-\subsection{Proofs of Theorem~\ref{theorem_reduction_of_loss}, Corollary~\ref{cor:scaled_reduction_of_loss}, Corollary~\ref{cor:margin_accuracy}, and Theorem~\ref{main_result_reducing_noise} (Gaussian instances)}
-
-\begin{proof}[Proof of Theorem~\ref{theorem_reduction_of_loss}]
-Conditional on \(S_2(t)\), Assumption~\ref{as2} gives
-\[
-\langle S_2(t),R_2(t)\rangle_F
-=
-\tr(S_2(t)^\top R_2(t))
-\sim
-\mathcal N\!\left(0,\frac{g(t)}{N}\|S_2(t)\|_F^2\right).
-\]
-Since \(\|S_2(t)\|_F\le B_N\) and \(g(t)\le1\), for every \(\eta>0\),
-\begin{equation}
-\label{eq:cross-term-concentration-app}
-\PP\!\left(
-|\langle S_2(t),R_2(t)\rangle_F|>\eta
-\,\middle|\,S_2(t)
-\right)
-\le
-2e^{-N\eta^2/(2B_N^2)}.
-\end{equation}
-Hence
-\begin{equation}
-\label{eq:cross-term-oP-app}
-\langle S_2(t),R_2(t)\rangle_F\to 0
-\qquad\text{in probability as }N\to\infty.
-\end{equation}
-
-Write
-\[
-L(\alpha)=L_{\cancel{\mathrm{reg}}}(\alpha)+\lambda_{\mathrm{reg}}\sum_{i=1}^L \|W_i\|_F^2.
-\]
-If \(W_2=R_2+S_2\) and we replace \(W_2\) by \(S_2\), then
-\begin{align}
-L(\alpha_{S_2})-L(\alpha_{W_2})
-&=
-\big(L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})\big)
--
-\lambda_{\mathrm{reg}}\big(\|W_2\|_F^2-\|S_2\|_F^2\big)\notag\\
-&=
-\big(L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})\big)
--
-\lambda_{\mathrm{reg}}\|R_2\|_F^2
--
-2\lambda_{\mathrm{reg}}\langle S_2,R_2\rangle_F.
-\label{eq:loss-diff-exact-app}
-\end{align}
-By Lemma~\ref{lem:remove_R_loosandacc},
-\[
-\PP\!\left(
-|L_{\cancel{\mathrm{reg}}}(\alpha_{S_2})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})|
-\le
-\frac{4\sqrt{2}}{|T|}\sum_{s\in T}a(N,s)
-\right)
-\ge
-1-\frac{|T|}{N}.
-\]
-Intersecting this event with \(|\langle S_2,R_2\rangle_F|\le \eta\), whose probability is bounded below by \(1-2e^{-N\eta^2/(2B_N^2)}\), yields the finite-\(N\) inequality in the theorem. Letting \(N\to\infty\) and using \eqref{eq:cross-term-oP-app} gives the asymptotic expansion.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:scaled_reduction_of_loss}]
-Let \(W_2(\vartheta)=S_2+\vartheta R_2\). Then
-\begin{align}
-L(\alpha_{W_2(\vartheta)})-L(\alpha_{W_2})
-&=
-\big(L_{\cancel{\mathrm{reg}}}(\alpha_{W_2(\vartheta)})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})\big)\notag\\
-&\quad-
-\lambda_{\mathrm{reg}}
-\Big(
-(1-\vartheta^2)\|R_2\|_F^2
-+
-2(1-\vartheta)\langle S_2,R_2\rangle_F
-\Big).
-\label{eq:scaled-loss-diff-app}
-\end{align}
-For each \(s\in T\), write \(\nu_s=\lambda(W_1s)\). Let \(E_N^{\mathrm{logit}}\) be the event on which
-\[
-\|W_3\|_\infty\|R_2\nu_s\|_\infty\le \tau_N(s)
-\qquad\forall s\in T.
-\]
-By the same samplewise Gaussian estimate as in Lemma~\ref{lem:remove_R} and a union bound over \(T\),
-\[
-\PP(E_N^{\mathrm{logit}})\ge 1-\frac{|T|}{N}.
-\]
-On \(E_N^{\mathrm{logit}}\), for every \(\vartheta\in[0,1]\) and every \(s\in T\),
-\[
-\big\|X(s,\alpha_{W_2(\vartheta)})-X(s,\alpha_{W_2})\big\|_\infty
-\le
-(1-\vartheta)\|W_3\|_\infty \|R_2\nu_s\|_\infty
-\le
-(1-\vartheta)\tau_N(s).
-\]
-The \(2\)-Lipschitz property of the cross-entropy therefore gives, on the same event,
-\[
-\big|L_{\cancel{\mathrm{reg}}}(\alpha_{W_2(\vartheta)})-L_{\cancel{\mathrm{reg}}}(\alpha_{W_2})\big|
-\le
-\frac{4\sqrt{2}(1-\vartheta)}{|T|}\sum_{s\in T}a(N,s)
-\]
-for every \(\vartheta\in[0,1]\). Combining \(E_N^{\mathrm{logit}}\) with \(|\langle S_2,R_2\rangle_F|\le \eta\) proves the finite-\(N\) bound. The asymptotic expansion follows from \eqref{eq:scaled-loss-diff-app} and \eqref{eq:cross-term-oP-app}. Since the finite-\(N\) event is uniform in \(\vartheta\), the same expansion also holds for deterministic sequences \(\vartheta_N\in[0,1]\).
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:margin_accuracy}]
-By Lemma~\ref{lem:remove_R}, for each fixed \(s\in T'\),
-\[
-\PP\!\left(
-\|X(s,\alpha_{W_2})-X(s,\alpha_{S_2})\|_\infty\le \tau_N(s)
-\right)\ge 1-\frac{1}{N}.
-\]
-A union bound over \(s\in T'\) gives simultaneous vector control with probability at least \(1-\frac{|T'|}{N}\). On that event,
-\[
-|\delta X(s,\alpha_{W_2})-\delta X(s,\alpha_{S_2})|\le 2\tau_N(s)
-\qquad\forall s\in T'.
-\]
-Therefore labels can only change on samples with \(|\delta X(s,\alpha_{W_2})|\le 2\tau_N(s)\), which yields the claim.
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{main_result_reducing_noise}]
-Set
-\[
-b_N:=\frac{4\sqrt{2}}{|T|}\sum_{s\in T}a_*(N,s)\to 0.
-\]
-Choose a deterministic sequence \(\eta_N\downarrow0\) such that
-\[
-\frac{N\eta_N^2}{B_N^2}\to\infty;
-\]
-such a sequence exists because \(B_N=o(\sqrt N)\). By Corollary~\ref{cor:scaled_reduction_of_loss} applied at the limit point, there exists an event \(E_N\) with \(\PP(E_N)\to1\) such that on \(E_N\), for every \(\vartheta\in[0,1]\),
-\[
-L(\alpha_\vartheta^*(N))-L(\alpha^*(N))
-\le
--\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R_2^*(N)\|_F^2
-+(1-\vartheta)b_N
-+2\lambda_{\mathrm{reg}}(1-\vartheta)\eta_N
-\]
-Write \(\vartheta=1-h\). Dividing by \(h>0\) gives
-\[
-\frac{L(\alpha_{1-h}^*(N))-L(\alpha^*(N))}{h}
-\le
--\lambda_{\mathrm{reg}}(2-h)\|R_2^*(N)\|_F^2
-+b_N
-+2\lambda_{\mathrm{reg}}\eta_N
-\]
-for every \(h\in(0,1]\). On the high-probability event where the one-sided directional stationarity hypothesis also holds, taking \(\liminf_{h\downarrow0}\) yields
-\[
-2\lambda_{\mathrm{reg}}\|R_2^*(N)\|_F^2
-\le
-b_N+\epsilon_N+2\lambda_{\mathrm{reg}}\eta_N.
-\]
-Therefore
-\[
-\|R_2^*(N)\|_F^2
-\le
-\frac{b_N+\epsilon_N}{2\lambda_{\mathrm{reg}}}+\eta_N
-+o_{\PP}(1).
-\]
-Since \(\eta_N\to0\), this proves the quantitative estimate in the theorem. The vanishing-in-probability statement follows immediately when \(b_N+\epsilon_N\to0\) in probability.
-
-Now assume the local-path convergence hypothesis from Definition~\ref{def:local_path_convergence}. Fix \(\epsilon>0\). For each fixed \(N\),
-\[
-\|R_2(t,N)\|_F\to \|R_2^*(N)\|_F
-\qquad\text{in probability as }t\to\infty
-\]
-by the continuous mapping theorem. Since \(R_2^*(N)\) is Gaussian (possibly degenerate if \(g_*(N)=0\)), the random variable \(\|R_2^*(N)\|_F\) has no atom at any positive \(\epsilon\). Hence
-\[
-\PP\big(\|R_2(t,N)\|_F\le \epsilon\big)\to \PP\big(\|R_2^*(N)\|_F\le \epsilon\big)
-\qquad\text{as }t\to\infty.
-\]
-Letting \(N\to\infty\) and using the limit-point statement proves the theorem.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:variance_scale_collapse}]
-Suppose, toward a contradiction, that there exist \(\eta_0>0\) and a subsequence such that \(g_*(N)N\ge \eta_0\). Since
-\[
-\|R_2^*(N)\|_F^2
-=
-\frac{g_*(N)}{N}\sum_{i,j=1}^{N} Z_{ij}^2,
-\qquad
-Z_{ij}\overset{\mathrm{i.i.d.}}{\sim}N(0,1),
-\]
-we have
-\[
-\frac{\|R_2^*(N)\|_F^2}{g_*(N)N}
-=
-\frac{1}{N^2}\sum_{i,j=1}^{N}Z_{ij}^2
-\to 1
-\qquad\text{in probability}.
-\]
-Therefore
-\[
-\PP\!\left(\|R_2^*(N)\|_F^2\ge \eta_0/2\right)\to 1,
-\]
-contradicting Theorem~\ref{main_result_reducing_noise}. Hence \(g_*(N)N\to0\). The edge statement follows from the square-case MP singular-value edge \(2\sqrt{g_*(N)}\).
-In the rectangular \(N\times M_N\) case,
-\[
-\|R_2^*(N)\|_F^2
-=
-\frac{g_*(N)}{N}\sum_{i=1}^{N}\sum_{j=1}^{M_N}Z_{ij}^2,
-\qquad
-\frac{1}{NM_N}\sum_{i,j}Z_{ij}^2\to1
-\]
-in probability. Thus \(\|R_2^*(N)\|_F\to0\) forces \(g_*(N)M_N\to0\), and if \(M_N/N\to c\in(0,\infty)\) this is equivalent to \(g_*(N)N\to0\).
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:bulk_collapse_spike_stabilization}]
-Since \(\|R_2^*(N)\|_{\op}\le \|R_2^*(N)\|_F\), Theorem~\ref{main_result_reducing_noise} immediately gives
-\[
-\|R_2^*(N)\|_{\op}\to 0
-\qquad\text{in probability}.
-\]
-This proves (i).
-
-For (ii), singular-value Weyl perturbation gives
-\[
-\big|s_i(W_2^*(N))-s_i(S_2^*(N))\big|
-\le
-\|R_2^*(N)\|_{\op}
-\qquad\forall i.
-\]
-Hence for each fixed \(i\ge1\),
-\[
-\big|s_i(W_2^*(N))-\sigma_i^*(N)\big|
-\le
-\|R_2^*(N)\|_{\op}\to0
-\]
-in probability.
-
-Let \(S_{2,\le k_N}^*(N)\) denote the best rank-\(k_N\) approximation of \(S_2^*(N)\). By the Eckart--Young theorem,
-\[
-\sum_{i>k_N} s_i(W_2^*(N))^2
-=
-\inf_{\rank(A)\le k_N}\|W_2^*(N)-A\|_F^2
-\le
-\|W_2^*(N)-S_{2,\le k_N}^*(N)\|_F^2
-\]
-\[
-=
-\|R_2^*(N)+(S_2^*(N)-S_{2,\le k_N}^*(N))\|_F^2
-\le
-2\|R_2^*(N)\|_F^2+2\sum_{i>k_N}\sigma_i^*(N)^2,
-\]
-which proves (iii) using Theorem~\ref{main_result_reducing_noise} and Assumption~\ref{as3spectral}.
-
-For (iv), fix \(\epsilon>0\). Since \(\|W_2^*(N)\|_F\le \|S_2^*(N)\|_F+\|R_2^*(N)\|_F\), we have
-\[
-\nu_{W_2^*(N)}((\epsilon,\infty))
-\le
-\frac{\|W_2^*(N)\|_F^2}{N\epsilon^2}
-\le
-\frac{2B_N^2+2\|R_2^*(N)\|_F^2}{N\epsilon^2},
-\]
-which converges to \(0\) in probability because \(B_N=o(\sqrt N)\) and \(\|R_2^*(N)\|_F\to0\) in probability. The final claim follows from (ii).
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:subspace_stabilization}]
-By Corollary~\ref{cor:bulk_collapse_spike_stabilization}(i),
-\[
-\|R_2^*(N)\|_{\op}\to0
-\qquad\text{in probability.}
-\]
-Hence the event
-\[
-F_N:=\left\{\|R_2^*(N)\|_{\op}\le \frac{\delta_k(N)}{4}\right\}
-\]
-satisfies \(\PP(F_N)\to1\).
-
-On \(F_N\), Weyl's singular-value inequality gives
-\[
-s_k(W_2^*(N))
-\ge
-\sigma_k^*(N)-\|R_2^*(N)\|_{\op},
-\]
-while
-\[
-s_{k+1}(W_2^*(N))
-\le
-\sigma_{k+1}^*(N)+\|R_2^*(N)\|_{\op},
-\]
-with the convention \(\sigma_j^*(N)=0\) beyond the rank of \(S_2^*(N)\). Therefore,
-\[
-s_k(W_2^*(N))-s_{k+1}(W_2^*(N))
-\ge
-\delta_k(N)-2\|R_2^*(N)\|_{\op}
-\ge
-\frac{\delta_k(N)}{2}
-\]
-on \(F_N\). Thus on \(F_N\), the top-\(k\) singular subspace of \(W_2^*(N)\) is separated from the rest by a positive gap.
-
-Applying Wedin's \(\sin\Theta\) theorem for singular subspaces \cite{wedin1972perturbation,stewart1990matrix} to
-\[
-W_2^*(N)=S_2^*(N)+R_2^*(N),
-\]
-with target rank \(k\), yields a universal constant \(C>0\) such that on \(F_N\),
-\[
-\|\widehat P_{U,k}(N)-P_{U_*,k}(N)\|_{\op}
-\le
-C\frac{\|R_2^*(N)\|_{\op}}{\delta_k(N)},
-\qquad
-\|\widehat P_{V,k}(N)-P_{V_*,k}(N)\|_{\op}
-\le
-C\frac{\|R_2^*(N)\|_{\op}}{\delta_k(N)}.
-\]
-Since \(\|R_2^*(N)\|_{\op}/\delta_k(N)\to0\) in probability and \(\PP(F_N)\to1\), both projector differences converge to \(0\) in probability.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:gaussian_BBP_persistent_spikes}]
-By Corollary~\ref{cor:variance_scale_collapse},
-\[
-g_*(N)N\to0,
-\]
-hence \(g_*(N)\to0\). Since \(\sigma_i^*(N)\to\bar\sigma_i>0\) in probability for each \(1\le i\le k\),
-\[
-\PP\!\big(\sigma_i^*(N)>\sqrt{g_*(N)}\big)\to1,
-\]
-which proves (i).
-
-By Corollary~\ref{cor:bulk_collapse_spike_stabilization}(i),
-\[
-\|R_2^*(N)\|_{\op}\to0
-\qquad\text{in probability}.
-\]
-Hence Weyl's inequality gives
-\[
-s_i(W_2^*(N))-\sigma_i^*(N)\to0
-\qquad\text{in probability}
-\]
-for each fixed \(1\le i\le k\). Since \(\sigma_i^*(N)\to\bar\sigma_i>0\) and \(2\sqrt{g_*(N)}\to0\), these singular values lie above the Gaussian bulk edge \(2\sqrt{g_*(N)}\) with probability tending to one. Equivalently, in the exact finite-rank Gaussian deformation language of Theorem~\ref{thm:BGN_square_variable}, the persistent spikes are eventually supercritical. If the additional gap condition in (ii) holds for a spike, Wedin's theorem applied to \(W_2^*(N)=S_2^*(N)+R_2^*(N)\) gives, for the associated left and right rank-one projectors,
-\[
-\|\widehat P_i(N)-P_i^*(N)\|_{\op}
-\le
-C\frac{\|R_2^*(N)\|_{\op}}{\Delta_i(N)}
-\to0
-\qquad\text{in probability},
-\]
-and similarly for the right projector. This proves the strengthened projector statement in (ii).
-
-Set \(y_N=s_i(W_2^*(N))\). The preceding Weyl estimate gives \(y_N-\sigma_i^*(N)\to0\) in probability, hence \(y_N\to\bar\sigma_i>0\). Also \(g_*(N)\to0\), so the event \(y_N^2>4g_*(N)\) has probability tending to one. On this event,
-\[
-0\le
-y_N-\widehat\sigma_i^{\mathrm{BBP}}(N)
-=
-\frac12\left(y_N-\sqrt{y_N^2-4g_*(N)}\right)
-=
-\frac{2g_*(N)}{y_N+\sqrt{y_N^2-4g_*(N)}}
-\to0
-\]
-in probability. Therefore
-\[
-\widehat\sigma_i^{\mathrm{BBP}}(N)-\sigma_i^*(N)\to0
-\qquad\text{in probability},
-\]
-which proves (iii).
-\end{proof}
-
-\subsection{Proofs of the abstract-generalization corollaries and theorems}
-\label{app:proofs_abstract_generalizations}
-
-The results below are the abstract additive-perturbation analogues of the Gaussian-instance proofs of Appendix~\ref{app:proofs_main}.  Each is obtained by substituting the abstract logit-perturbation lemma (Lemma~\ref{lem:remove_R_general}) for the Gaussian logit perturbation bound (Lemma~\ref{lem:remove_R}) and applying the abstract Assumptions~\ref{as4}--\ref{as6} in place of Gaussian Assumptions~\ref{as2}--\ref{as3}.
-
-\begin{proof}[Proof of Theorem~\ref{theorem_reduction_of_loss_general}]
-For \(s\in T\), let \(X(\alpha,s)\) denote the vector of pre-softmax logits. By Lemma~\ref{lem:remove_R_general}, for each fixed \(s\in T\),
-\[
-\PP\big(\|X(\alpha_S,s)-X(\alpha_W,s)\|_\infty\le a_\phi(N,s)\big)\ge 1-d_2(N),
-\]
-where \(a_\phi(N,s)=h_\phi(s)d_1(N)\). The single-sample cross-entropy is \(2\)-Lipschitz in \(\|\cdot\|_\infty\), so on this event \(|\ell_s(X(\alpha_S,s))-\ell_s(X(\alpha_W,s))|\le 2a_\phi(N,s)\). A union bound over \(s\in T\) gives
-\[
-\PP\!\left(|L_{\cancel{\mathrm{reg}}}(\alpha_S)-L_{\cancel{\mathrm{reg}}}(\alpha_W)|\le\tfrac{2}{|T|}\sum_{s\in T}a_\phi(N,s)\right)\ge 1-|T|d_2(N).
-\]
-Since \(a_\phi(N,s)\to0\), \(L_{\cancel{\mathrm{reg}}}(\alpha_S)-L_{\cancel{\mathrm{reg}}}(\alpha_W)\to0\) in probability. Combined with the exact regularizer identity \(\|W\|_F^2-\|S\|_F^2=\|R\|_F^2+2\langle S,R\rangle_F=\|R\|_F^2+o_{\PP}(1)\), this gives
-\(
-L(\alpha_S)=L(\alpha_W)-\lambda_{\mathrm{reg}}\|R\|_F^2+o_{\PP}(1).
-\)
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:scaled_reduction_of_loss_general_finiteN}]
-Let \(E_N^{\mathrm{logit}}\) be the samplewise logit event \(\|X(\alpha_S,s)-X(\alpha_W,s)\|_\infty\le a_\phi(N,s)\) for all \(s\in T\). By Lemma~\ref{lem:remove_R_general} and a union bound, \(\PP(E_N^{\mathrm{logit}})\ge1-|T|d_2(N)\). On this event the samplewise perturbation argument with \((1-\vartheta)R\) in place of \(R\) gives, for every \(\vartheta\in[0,1]\),
-\[
-|L_{\cancel{\mathrm{reg}}}(\alpha_{W(\vartheta)})-L_{\cancel{\mathrm{reg}}}(\alpha_W)|\le (1-\vartheta)\tfrac{2}{|T|}\sum_{s\in T}a_\phi(N,s).
-\]
-Let \(E_N^{\mathrm{cross}}(\eta):=\{|\langle S,R\rangle_F|\le\eta\}\) and \(E_{N,\eta}:=E_N^{\mathrm{logit}}\cap E_N^{\mathrm{cross}}(\eta)\). Then \(\PP(E_{N,\eta})\ge 1-|T|d_2(N)-\PP(|\langle S,R\rangle_F|>\eta)\). On \(E_{N,\eta}\), the exact regularizer identity \(\|W\|_F^2-\|W(\vartheta)\|_F^2=(1-\vartheta^2)\|R\|_F^2+2(1-\vartheta)\langle S,R\rangle_F\) implies
-\[
-L(\alpha_{W(\vartheta)})\le L(\alpha_W)-\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R\|_F^2+(1-\vartheta)\tfrac{2}{|T|}\sum_{s\in T}a_\phi(N,s)+2\lambda_{\mathrm{reg}}(1-\vartheta)\eta
-\]
-for every \(\vartheta\in[0,1]\), which is exactly the claim.
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:general_BGN_persistent_spikes}]
-Since \(\theta_c(N)\to0\) and \(\sigma_i^*(N)\to\bar\sigma_i>0\) in probability, \(\PP(\sigma_i^*(N)>\theta_c(N))\to1\) for each \(1\le i\le k\), which proves (i). On the same high-probability event, the assumed BGN-type deformation regime places the \(i\)-th spike above the critical threshold, so the corresponding singular value cluster of \(W^*(N)\) lies above the bulk edge. If the gap condition in (ii) holds for a spike, Wedin's theorem gives \(\|\widehat P_i(N)-P_i^*(N)\|_{\mathrm{op}}\le C\|R^*(N)\|_{\mathrm{op}}/\Delta_i(N)\to0\) in probability, for the left rank-one projectors (and similarly for the right projectors), proving (ii). Applying Theorem~\ref{thm:abstract_inverse_D} with \(\theta_i(N)=\sigma_i^*(N)\) then gives \(\widehat\sigma_i^{(D)}(N)-\sigma_i^*(N)\to0\) in probability for each fixed \(1\le i\le k\), which is (iii).
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:growing_set_abstract_loss}]
-By Lemma~\ref{lem:remove_R_general} and a union bound over \(s\in T_N\), with probability at least \(1-|T_N|d_2(N)\),
-\[
-\|X(\alpha_S,s)-X(\alpha_W,s)\|_\infty\le a_\phi(N,s)
-\qquad\forall s\in T_N.
-\]
-On this event, the \(2\)-Lipschitz property of cross-entropy gives
-\[
-\left|
-L_{\cancel{\mathrm{reg}},T_N}(\alpha_S)
--
-L_{\cancel{\mathrm{reg}},T_N}(\alpha_W)
-\right|
-\le
-\frac{2}{|T_N|}\sum_{s\in T_N}a_\phi(N,s).
-\]
-The right-hand side is \(o_{\PP}(1)\), and the event has probability tending to one because \(|T_N|d_2(N)\to0\). The regularized identity
-\[
-\|W\|_F^2-\|S\|_F^2
-=
-\|R\|_F^2+2\langle S,R\rangle_F
-\]
-and the cross-term hypothesis then yield
-\[
-L_{T_N}(\alpha_S)
-=
-L_{T_N}(\alpha_W)
--\lambda_{\mathrm{reg}}\|R\|_F^2
-+o_{\PP}(1).
-\]
-\end{proof}
-
-\begin{proof}[Proof of Corollary~\ref{cor:scaled_reduction_of_loss_general}]
-Set \(W(\vartheta)=S+\vartheta R\). Repeating the argument above with perturbation \((1-\vartheta)R\) in place of \(R\), we get
-\[
-L_{\cancel{\mathrm{reg}}}(\alpha_{W(\vartheta)})-L_{\cancel{\mathrm{reg}}}(\alpha_W)=o_{\PP}(1).
-\]
-Also,
-\[
-\|W\|_F^2-\|W(\vartheta)\|_F^2
-=
-(1-\vartheta^2)\|R\|_F^2+2(1-\vartheta)\langle S,R\rangle_F
-=
-(1-\vartheta^2)\|R\|_F^2+o_{\PP}(1).
-\]
-Hence
-\[
-L(\alpha_{W(\vartheta)})
-=
-L(\alpha_W)-\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R\|_F^2+o_{\PP}(1).
-\]
-The same argument, or the uniform finite-\(N\) pathwise bound of Corollary~\ref{cor:scaled_reduction_of_loss_general_finiteN}, gives the statement along any deterministic sequence \(\vartheta_N\in[0,1]\).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{thm:multilayer_telescoping}]
-Order the pruned layers as \(\mathcal P=\{\ell_1,\dots,\ell_m\}\). Let \(\alpha^{(j)}\) denote the network parameters after the first \(j\) replacements, so \(\alpha^{(0)}\) is the original network and \(\alpha^{(m)}=\alpha^{(|\mathcal P|)}\). By assumption, at stage \(j\) the hypotheses of Theorem~\ref{theorem_reduction_of_loss_general} apply to layer \(\ell_j\), hence
-\[
-L(\alpha^{(j)})
-=
-L(\alpha^{(j-1)})-\lambda_{\mathrm{reg}}\|R_{\ell_j}\|_F^2+o_{\PP}(1).
-\]
-Summing these identities over \(j=1,\dots,m\) and using that \(m=|\mathcal P|\) is fixed gives
-\[
-L(\alpha^{(m)})
-=
-L(\alpha^{(0)})-\lambda_{\mathrm{reg}}\sum_{j=1}^{m}\|R_{\ell_j}\|_F^2+o_{\PP}(1),
-\]
-which is the claimed finite-layer telescoping formula.
-
-For the growing-layer version, use the finite-\(N\) single-layer bound on the intersection \(\bigcap_{\ell\in\mathcal P_N}E_{\ell,N}\), whose probability tends to one by the assumed summability of the failure probabilities. Summing the exact loss identities over the ordered layers gives the accumulated regularization decrease \(-\lambda_{\mathrm{reg}}\sum_{\ell\in\mathcal P_N}\|R_\ell\|_F^2\) plus the sum of the cross-entropy perturbation errors and the accumulated cross term. The two summability hypotheses make these remainders \(o_{\PP}(1)\), yielding the same formula with \(\mathcal P_N\).
-\end{proof}
-
-\begin{proof}[Proof of Theorem~\ref{main_result_reducing_noise_general}]
-Let \(b_N:=(2/|T|)\sum_{s\in T}a_\phi(N,s)\to0\).
-Since \(\langle S^*(N),R^*(N)\rangle_F=o_{\PP}(1)\), choose a deterministic sequence \(\eta_N\downarrow0\) such that \(\PP(|\langle S^*(N),R^*(N)\rangle_F|>\eta_N)\to0\).
-By Corollary~\ref{cor:scaled_reduction_of_loss_general_finiteN} applied at the limit point, there is an event \(E_N\) with \(\PP(E_N)\to1\) such that on \(E_N\), for every \(\vartheta\in[0,1]\),
-\[
-L(\alpha_\vartheta^*(N))-L(\alpha^*(N))
-\le
--\lambda_{\mathrm{reg}}(1-\vartheta^2)\|R^*(N)\|_F^2
-+(1-\vartheta)b_N
-+2\lambda_{\mathrm{reg}}(1-\vartheta)\eta_N.
-\]
-Write \(\vartheta=1-h\) and divide by \(h>0\):
-\[
-\frac{L(\alpha_{1-h}^*(N))-L(\alpha^*(N))}{h}
-\le
--\lambda_{\mathrm{reg}}(2-h)\|R^*(N)\|_F^2
-+b_N+2\lambda_{\mathrm{reg}}\eta_N
-\quad\forall h\in(0,1].
-\]
-On the high-probability event where the one-sided directional stationarity hypothesis also holds, taking \(\liminf_{h\downarrow0}\) yields
-\(
-2\lambda_{\mathrm{reg}}\|R^*(N)\|_F^2
-\le
-b_N+\epsilon_N+2\lambda_{\mathrm{reg}}\eta_N,
-\)
-so
-\[
-\|R^*(N)\|_F^2
-\le
-(b_N+\epsilon_N)/(2\lambda_{\mathrm{reg}})+\eta_N+o_{\PP}(1).
-\]
-Since \(\eta_N\to0\), this proves the quantitative estimate; the vanishing-in-probability statement follows whenever \(b_N+\epsilon_N\to0\) in probability. The pathwise conclusion under the convergence/continuity hypotheses follows because \(\|R(t,N)\|_F\to\|R^*(N)\|_F\) in probability and \(\PP(\|R^*(N)\|_F=\epsilon)=0\).
-\end{proof}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{Algorithms for RMT-based pruning diagnostics}
-\label{numerics_updated}
-
-The BEMA edge estimator, spectral-fit test, and cycle-based pruning algorithms for the classical RMT baseline are specified in the companion methodology paper introduced above.
-
-\section{Spectral Edge Budgeting and hybrid RMT pruning protocols}
-\label{app:splus_budget}
-
-Operational SEB/SER protocols, four-regime strategy, layer-type extension, SEB final comparison, Haar-SV preprocessing sweep, Hybrid Magnitude--SER protocol, and checkpoint validation ledgers used in Table~\ref{tab:multi_arch_hybrid} are specified in the companion methodology paper.
-
-The algorithm below is the SER step used after the exact-magnitude low-sparsity prefix in Hybrid Magnitude--SER.
-
-\begin{algorithm}[!htbp]
-\caption{Spectral Edge Reallocation (SER) algorithm. The step prunes weights, restores selected weights from the removed-weight reservoir, and uses MP-budget allocation in Hybrid Magnitude--SER.}
-\label{alg:ser}
-\begin{algorithmic}[1]
-\Require
-    Trained network with weights $\{W_\ell\}_{\ell=1}^L$;
-    target sparsity $s \in (0,1)$;
-    over-prune ratio $\rho \in (1, 1+\epsilon]$;
-    layerwise MP edge signal $\{\sigma_+(\ell)\}_{\ell=1}^L$;
-    budget-allocation parameters $(\beta, s_{\mathrm d}, p)$;
-    short FT schedule $\mathcal{T}_{\rm FT}$.
-\Statex
-\Function{SER\_prune\_restore}{network, $s$, $\rho$, $\sigma_+$, $\beta, s_{\rm d}, p$}
-\State Compute layerwise weights $w_\ell(s) = \max(0.1, 1 + \beta\,d(s)\,z_\ell)$ where
-       $z_\ell = (\sigma_+(\ell) - \bar\sigma_+) / \mathrm{sd}(\sigma_+)$ and
-       $d(s) = (1 - s/s_{\rm d})_+^p$. \Comment{Section~\ref{sec:pruning_VITs}}
-\State Score each parameter $|W_\ell|_{ij} / w_\ell(s)$ and prune the smallest
-       $\rho \cdot s$ fraction globally. \Comment{Over-prune}
-\State Define the reservoir $\mathcal{R} = \{(\ell, i, j) : (W_\ell)_{ij} \text{ pruned}\}$.
-\State With kept weights frozen, run a short selection phase (one ImageNet-1k epoch
-       at the same optimiser/LR/batch as the eventual fine-tune) that allows only the
-       reservoir entries to receive gradients. Record the absolute movement
-       $|\Delta_{ij}^{(\ell)}|$ of each reservoir entry from its pre-selection value.
-\State Rank reservoir entries by $|\Delta_{ij}^{(\ell)}| \cdot \rho_\ell(s)$ where
-       $\rho_\ell(s) = w_\ell(s)$ is the layer's $\sigma_+$-derived budget weight
-       from Step~1, recomputed at the post-prune sparsity. \Comment{RMT-ranked reinsertion}
-\State Restore the top entries until realised post-restoration sparsity equals $s$.
-\State Freeze the resulting zero mask $M$ on all layers. Run $\mathcal{T}_{\rm FT}$
-       (one fine-tuning epoch in our schedule) with $W_\ell \leftarrow W_\ell \odot M$
-       re-applied at each step.
-\State \Return restored network and final mask $M$.
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-\section{CAST: certificate-aware 2:4 + ToMe conversion}
-\label{app:cast}
-
-The original CAST \(2{:}4{+}\)ToMe pipeline, generalized CAST-2E \(k{:}n\) pipeline, permutation alignment, and inline-FT runner are specified in the companion methodology paper.
-
-\begin{algorithm}[!htbp]
-\caption{CAST \(k{:}n\) structured-projection algorithm. The projection selects row-wise structured masks; Stage~2 applies frozen-mask distillation.}
-\label{alg:cast_kn}
-\begin{algorithmic}[1]
-\Require
-    Linear layer $W \in \mathbb{R}^{d_{\rm out}\times d_{\rm in}}$ with $d_{\rm in} = nG$;
-    SER source mask $M^{\rm SER} \in \{0,1\}^{d_{\rm out}\times d_{\rm in}}$ and SER weight $W^{\rm SER}$;
-    dense pretrained $W^{\rm dense}$;
-    calibration set $\mathcal{C}$ (row-specific size in Table~\ref{tab:reproduce_recipe});
-    $k{:}n$ pattern; flag \texttt{free\_restoration}; $\alpha_{\rm ser} \ge 0$.
-\Statex
-\Function{CAST\_project\_kn}{$W$, $M^{\rm SER}$, $W^{\rm SER}$, $W^{\rm dense}$, $\mathcal{C}$, $k$, $n$, $\alpha_{\rm ser}$, \texttt{free\_restoration}}
-\State Reshape rows of $W$ into $G$ contiguous $n$-tuples; let $W_{i,g,k}$ index the $k$-th weight
-       of group $g$ in output row $i$.
-\State For each input-channel group $g$, capture activations $h_g(x) \in \mathbb{R}^n$ over $\mathcal{C}$
-       and form within-group covariance
-       $C_g = \frac{1}{|\mathcal{C}|}\sum_{x\in\mathcal{C}} h_g(x) h_g(x)^\top$.
-\For{each output row $i = 1,\dots,d_{\rm out}$ and group $g = 1,\dots,G$ in parallel}
-    \For{each candidate keep pattern $m \in \{0,1\}^n$ with $|m|_0 = k$}
-        \State Define source tuple $u_{i,g,k} = \begin{cases}
-                                W^{\rm SER}_{i,g,k} & \text{if } M^{\rm SER}_{i,g,k}=1, \\
-                                W^{\rm dense}_{i,g,k} & \text{if } M^{\rm SER}_{i,g,k}=0 \text{ and \texttt{free\_restoration}}, \\
-                                0 & \text{otherwise.}
-                              \end{cases}$
-        \State Materialise retained tuple $v_{i,g,k}(m) = m_k \cdot u_{i,g,k}$.
-        \State Compute removed tuple $r_{i,g}(m) = (1-m) \odot u_{i,g}$ \Comment{entries not retained}
-        \State Compute cost $c_{i,g}(m) = r_{i,g}(m)^\top C_g\, r_{i,g}(m) + \alpha_{\rm ser}\,\bar c_g\,|m - M^{\rm SER}_{i,g,:}|_1$,\\ where $\bar c_g = \mathrm{mean}_{i,k}\, u_{i,g,k}^2 \cdot \mathbb{E}_x [h_{g,k}(x)^2]$ normalises the prior to the cost magnitude.
-    \EndFor
-    \State $m^*_{i,g} \leftarrow \arg\min_{m\in\mathcal{M}_{k:n}} c_{i,g}(m)$.
-    \State Set the new weight tuple $W'_{i,g,:} \leftarrow v_{i,g,:}(m^*_{i,g})$.
-\EndFor
-\State \Return projected layer $W'$ and the per-row $k{:}n$ mask
-       $M^{\rm CAST}_{i,g,k} = m^*_{i,g}[k]$.
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-\paragraph{Justification of Algorithm~\ref{alg:cast_kn}.}
-The cost \(c_{i,g}(m)\) is the squared \(\ell^2\) form of the removed-mass contribution
-to output channel \(i\) of layer \(\ell\), evaluated on the calibration set.
-Lemma~\ref{lem:deterministic_ce_path_bound} bounds \(|\Delta\,\mathrm{CE}|\)
-through the literal quantity \(L_s\|R\psi_1(s)\|_\infty\). CAST does not
-estimate \(L_s\); it minimises the calibration-set \(\ell^2\) surrogate
-\(r^\top C_g r\) for \(R=W-W'\), treating it as a certificate-inspired proxy
-under the activation distribution captured by \(C_g\). The free-restoration step
-materialises the slot-value rule of
-Theorem~\ref{thm:deterministic_prune_restore_certificate}: slots that the unstructured
-mask had zeroed but the chosen $k{:}n$ pattern keeps are filled from the dense
-checkpoint at zero sparse-execution FLOP cost, which can improve the certificate
-bound under the conditions of Corollary~\ref{cor:restoration_improves_certificate}. The $\alpha_{\rm ser}$ prior pulls the chosen pattern towards the
-RMT-allocated SER mask used in the ViT-B experiments.
 
 \end{document}

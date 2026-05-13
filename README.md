@@ -8,16 +8,13 @@ Distribution"*.
 
 | Paper | PDF | TeX source |
 |---|---|---|
-| **Main manuscript** (theory + results, 69 pages) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
-| **Methodology companion** (full methodology + extended numerics + migrated appendices, 60 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
+| **Main manuscript** (NPL letter-style paper, 24 pages including references) | [`paper/main.pdf`](paper/main.pdf) | [`paper/main.tex`](paper/main.tex) |
+| **Online Resource 1** (proofs and mathematical supplement, 32 pages) | [`paper/ESM_1.pdf`](paper/ESM_1.pdf) | [`paper/ESM_1.tex`](paper/ESM_1.tex) |
+| **Online Resource 2** (methodology, protocols, and numerical supplement, 72 pages) | [`cast_2e/methodology.pdf`](cast_2e/methodology.pdf) | [`cast_2e/methodology.tex`](cast_2e/methodology.tex) |
 
-The main manuscript contains all theoretical statements, proofs, and
-empirical results (Table 2, the new FLOP table, the theory↔numerics map). The
-methodology paper contains everything operational: the full RMT protocol stack
-(BEMA, SEB, SER, Hybrid Magnitude–SER), the CAST-2E pipeline (cert-aware $k{:}n$
-projection, permutation alignment, free restoration, frozen-mask distillation),
-A100/L4 throughput measurements, the 282-cell certification audit, and the
-extended fully-connected MP-pruning experiments.
+The main manuscript is the concise Neural Processing Letters submission. It keeps the main corollaries, the main ImageNet tables, the compact closest-work comparison table, Springer-style declarations, and explicit citations to Online Resource 1 and Online Resource 2. The complete proof stack is in Online Resource 1. Online Resource 2 contains the full RMT protocol stack (BEMA, SEB, SER, Hybrid Magnitude-SER), the CAST-2E pipeline (cert-aware $k{:}n$ projection, permutation alignment, free restoration, frozen-mask distillation), timing-audit details, checkpoint/protocol ledgers, migrated numerical appendix material, and the complete literature-context table.
+
+The Overleaf-ready same-folder package is [`final_submission/NPL_Overleaf_20260513_ready.zip`](final_submission/NPL_Overleaf_20260513_ready.zip). It contains `main.tex`, `ESM_1.tex`, `ESM_2.tex`, the merged bibliography, required figures, cross-resource aux files, and the three compiled PDFs.
 
 ## Methods covered
 
@@ -140,7 +137,7 @@ The `adaptive_rmt/` package implements layer-aware RMT budget allocation used by
 
 ### Utility / inherited from the prior RMT-ViT repository
 
-`src/` mirrors the `src/` directory of the earlier *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code, which lives in a separate public repository: **https://github.com/yspennstate/RMT_pruning_ViT** (this repo). The two repositories are deliberately layered:
+`src/` mirrors the `src/` directory of the prior *“Efficient Pruning of Vision Transformers using Random Matrix Theory”* code, which lives in a separate public repository: **https://github.com/yspennstate/RMT_pruning_ViT** (this repo). The two repositories are deliberately layered:
 
 - The prior repo is the **single-architecture (ViT-Base) implementation** of the original Marchenko–Pastur–based pruning algorithm (Algorithm 3 of the prior paper). It is small, focused, and intended for someone who wants to reproduce the ViT-Base figure in 1–2 commands.
 - The current repo is the **multi-architecture / multi-protocol successor.** It re-uses the prior repo’s Marchenko–Pastur, splittable-layer, and validation infrastructure unchanged, and builds the new protocols (SER, Hybrid Magnitude–SER, drop-threshold variant, SEB / S+) on top of that foundation.
