@@ -439,7 +439,7 @@ Table~\ref{tab:result_comparison} is literature context, not matched baseline ev
 \label{tab:result_comparison}
 \scriptsize
 \setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{1.04}
+\renewcommand{\arraystretch}{0.87}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.35cm}
                   >{\raggedright\arraybackslash}p{1.9cm}
                   >{\raggedright\arraybackslash}p{2.3cm}
@@ -457,11 +457,13 @@ SparseFormer \cite{gao2024sparseformer} & ViT-B/16 AugReg & latent-token reducti
 CAST 8:16 dense+perm (ours) & ViT-L/16 & 8:16 = 50\% & \(85.33\) & \(-0.51\) & 3 & Main wider-pattern accuracy/MAC row; no native 8:16 endpoint audit. \\
 ToMe \cite{bolya2023tome} & ViT-L/16 MAE & token merging & 85.05 & \(-0.61\) & MAE FT & Closest token-merging accuracy/speed context; not weight sparsity. \\
 UniPTS \cite{xie2024unipts} & ResNet-50 & 50/60/70\% unstructured & 75.76/75.37/74.73 & \(-0.36/-0.75/-1.39\) & 16k iters & Closest post-training unstructured ResNet row with limited calibration. \\
+Hybrid Mag--SER (ours) & ResNet50 & 50/60/70\% unstructured & \(75.76/74.83/74.15\) & \(-0.37/-1.30/-1.98\) & 1/cycle & This paper's matched short-cycle unstructured ResNet sweep. \\
 AC/DC \cite{peste2021acdc} & ResNet-50 & 50\% unstructured & 77.05 & \(+0.21\) & 100 train & Strong global sparse-training baseline; much longer training. \\
 Mishra et al. \cite{mishra2021accelerating} & ResNet-50 & 2:4 FP16 & 76.20 & \(+0.10\) & repeated train & Original \(2{:}4\) sparse Tensor Core reference; up to \(2\times\) sparse math. \\
 Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4\)+perm & 76.29 & \(+0.13\) & 90 FT & Closest channel-permutation semi-structured ResNet context. \\
 CAST-conv+perm (ours) & ResNet152d & 2:4 im2col & 81.33 & \(-1.53\) & 3 & Main CNN sparse-GEMM audit; \(1.617\times\) A40 im2col, not cuDNN Conv2d. \\
 CAP \cite{kuznedelev2023cap} & ConvNeXt-L CLIP & 50/60/70\% unstructured & 87.5/87.1/86.8 & \(-0.3/-0.7/-1.0\) & 0 & Closest high-accuracy ConvNeXt unstructured one-shot context; no endpoint speed row. \\
+Hybrid Mag--SER (ours) & ConvNeXtV2-B & 50/60/70\% unstructured & \(85.33/84.61/81.40\) & \(-1.39/-2.11/-5.32\) & 1/cycle & This paper's ConvNeXtV2 unstructured row with short-cycle FT. \\
 CAST 12:16 (ours) & ConvNeXtV2-B & \(\sim\)25\% MAC-accounting & 86.35 & \(-0.37\) & 3 & Main ConvNeXtV2 wider-pattern accuracy/MAC row; no native 12:16 endpoint audit. \\
 \bottomrule
 \end{tabularx}
@@ -509,6 +511,8 @@ Assume that for every \(v\) measurable with respect to the conditioning variable
 \end{equation}
 where \(d_1(N),d_2(N)\to0\) and \(J(v)\) depends only on \(v\). When a spectral interpretation is desired, we additionally assume that the singular-value ESD of \(R\) converges to a deterministic law with finite right edge \(b_+<\infty\).
 \end{assumption}
+
+For example, if \(R\in\mathbb R^{N\times N}\) has iid \(N(0,1/N)\) entries and \(v\) is fixed conditional on \(S,\psi_1,\psi_2\), then a Gaussian union bound gives Assumption~\ref{as5} with \(J(v)=\|v\|_2\), \(d_1(N)=2\sqrt{2\log(2N)/N}\), and \(d_2(N)=1/N\). Gaussian/RMT specializations and proofs are in Online Resource 1.
 
 \begin{assumption}[Structured component for spectral conclusions]
 \label{as6}
