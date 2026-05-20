@@ -119,7 +119,7 @@
 \maketitle
 
 \begin{abstract}
-This file is Online Resource 2 for the manuscript \emph{Pruning Deep Neural Networks via the Marchenko--Pastur Distribution} (henceforth \mainpaper{}) submitted to \emph{Neural Processing Letters}. Online Resource 1 contains the mathematical proofs and random-matrix supplement. This file contains the methodology and numerical supplement: repository architecture, projection and fine-tuning code paths, speedup-measurement protocols, migrated numerical appendices, and the full literature-context table. A main contribution of the numerical package is that the reported small accuracy drops use very limited post-pruning fine-tuning: one epoch per unstructured pruning cycle and three distillation epochs for the CAST/CAST-conv rows, rather than long retraining schedules. The main manuscript cites this file as ``Online Resource 2.''
+This file is Online Resource 2 for the manuscript \emph{Pruning Deep Neural Networks via the Marchenko--Pastur Distribution} (henceforth \mainpaper{}). Online Resource 1 contains the mathematical proofs and random-matrix supplement. This file contains the methodology and numerical supplement: repository architecture, projection and fine-tuning code paths, speedup-measurement protocols, migrated numerical appendices, and the full literature-context table. A main contribution of the numerical package is that the reported small accuracy drops use very limited post-pruning fine-tuning: one epoch per unstructured pruning cycle and three distillation epochs for the CAST/CAST-conv rows, rather than long retraining schedules. The main manuscript cites this file as ``Online Resource 2.''
 
 \medskip
 \noindent\textbf{Companion repository.}\quad
@@ -132,6 +132,10 @@ This file is Online Resource 2 for the manuscript \emph{Pruning Deep Neural Netw
 \medskip
 \noindent\textbf{17-model checkpoint archive (Hybrid Magnitude--SER).}\quad
 \url{https://drive.google.com/drive/folders/1mm990SHAHlYdISHxirvMRdVQEAjpIxDd}
+
+\medskip
+\noindent\textbf{Artifact provenance.}\quad
+The release manifest at \path{data/release_manifest.json} in the companion repository records file sizes for the mirrored checkpoints and points to the per-row \texttt{final\_eval.json} files used to populate the tables. SHA-256 checksums for the mirrored 17-model bundle have not been recomputed after the most recent mirroring; readers wishing to verify integrity should regenerate them from the upstream Drive copy linked above. For the ViT-L \(8{:}16\) dense+perm \(85.33\%\) row the archived evidence is the \texttt{final\_eval.json}, intermediate checkpoints, and logs; final post-FT weights for that single row are not mirrored, and that row is reported on the basis of its evaluation JSON and intermediate-checkpoint trail rather than a stored final state dict. The remaining headline rows are backed by stored final checkpoints.
 \end{abstract}
 
 \noindent\textbf{Cross-resource conventions.}\quad
@@ -373,13 +377,15 @@ Projection registers Cin-permutation forward pre-hooks on the model, but those h
 Beyond the foundational 2:4 sparse Tensor Core work \citep{mishra2021accelerating} and the ToMe token merging \citep{bolya2023tome} cited in the main paper, several recent works are directly relevant to CAST-2E:
 \begin{itemize}[leftmargin=2em]
 \item \textbf{GPUSQ-ViT} \citep{gpusq_vit2023} couples GPU-friendly N:M sparsity with quantization for ViT, providing the closest deployment-time baseline to our cert-aware $k{:}n$ projection followed by 2:4 native kernel acceleration;
-\item \textbf{UniPTS} \citep{unipts2024} unifies post-training sparsity across vision architectures, addressing per-architecture tuning; our cert-aware allocator is shared across families;
+\item \textbf{UniPTS} \citep{xie2024unipts} unifies post-training sparsity across vision architectures, addressing per-architecture tuning; our cert-aware allocator is shared across families;
 \item \textbf{ELSA} \citep{elsa2024} reports uniform-$2{:}4$ and layer-wise $N{:}4$ sparsity entries for DeiT-Base under a 150-epoch training/fine-tuning budget, a complementary direction to our 3-epoch frozen-mask distillation;
 \item \textbf{LPViT} \citep{lpvit2024} explores block-structured, semi-structured ViT weight pruning with hardware-aware FLOP/power objectives, in the same total-MAC-reduction lane;
 \item \textbf{Beyond 2:4 / V:N:M} \citep{beyond_24_2024} generalises the 2:4 hardware pattern to V:N:M, providing one motivation for our generalised $k{:}n$ projection;
 \item \textbf{SERo} \citep{sero2025} performs sparse-structure exploration, compression by deleting pruned units, and re-optimization for ViTs; it is adjacent to structured pruning but is not a reordering/permutation method.
 \end{itemize}
 Our work differs from each of these in starting from a deterministic certificate of the data-path budget \(B_T(R)\) in Eq.~(\mainref{eq:data_path_budget}) of the main manuscript, empirically probed by the diagnostic audit of \S\ref{sec:cert-audit}, rather than from a heuristic mask choice, and in reporting ImageNet-1k checkpoints whose final masks pass either a native \(2{:}4\) Linear audit or an exact im2col+\(2{:}4\) sparse-GEMM audit, while wider \(k{:}n\) rows remain MAC-accounting rows.
+
+Low-bit and binary-parameter networks compress along an axis that is orthogonal to ours: they reduce the precision of stored weights rather than the support of the weight tensors. Recent binary-normalized networks \citep{cabral2025bit} constrain final layer parameters to one bit while using full-precision training states, reporting Food-101 and WikiText-103 experiments; this direction is complementary to our MP-guided pruning and \(k{:}n\) sparse-execution setting, could in principle be composed with it, and is therefore not included as an ImageNet pruning baseline.
 
 \section{Fine-tuning recipe}
 \label{sec:ft-recipe}
@@ -1744,7 +1750,7 @@ ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}$^{\ddagger}$ & 86.72 & 86.67 & 8
 \begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{figures_param_vs_drop.pdf}
-\caption{Top-1 accuracy drop after Hybrid Magnitude--SER pruning, plotted against dense parameter count on a log scale, for the 17 model rows retained in Table~\mainref{tab:multi_arch_hybrid} after removing the two partial ViT-Small/16 and Swin-Small rows.  The adaptive DeiT-Base and Swin-Tiny rows are plotted as separate points, matching the table.  Each row is one point; no within-family averaging.  All three panels contain 17 points.  Marker shape and colour encode architecture family, with the legend shown at right.  Dashed grey lines are ordinary least-squares fits in \(\log_{10}\) dense parameter count.  The fitted slopes are \(-0.73\), \(-2.40\), and \(-4.18\) pp per decade of parameters at \(s=0.50\), \(s=0.60\), and \(s=0.70\), with \(R=-0.31\), \(R=-0.43\), and \(R=-0.41\), respectively.  In these fits, the slope is negative and its magnitude increases with sparsity.}
+\caption{Top-1 accuracy drop after Hybrid Magnitude--SER pruning, plotted against dense parameter count on a log scale, for the 17 model rows retained in Table~\mainref{tab:multi_arch_hybrid} after removing the two partial ViT-Small/16 and Swin-Small rows.  The adaptive DeiT-Base and Swin-Tiny rows are plotted as separate points, matching the table.  Each row is one point; no within-family averaging.  All three panels contain 17 points.  Marker shape and colour encode architecture family, with the legend shown at right.  Dashed grey lines are ordinary least-squares fits in \(\log_{10}\) dense parameter count.  Sign convention: the vertical axis is the unsigned top-1 \emph{drop} (dense\,$-$\,post-FT, positive when the pruned network is worse), and the regression labels in the panels report the same unsigned drop, so a slope whose magnitude grows with sparsity but whose sign appears with the opposite token in the in-panel labels is the unsigned version of the signed fit reported here.  The signed fitted slopes are \(-0.73\), \(-2.40\), and \(-4.18\) pp per decade of parameters at \(s=0.50\), \(s=0.60\), and \(s=0.70\), with Pearson \(R=-0.31\), \(R=-0.43\), and \(R=-0.41\), respectively.  In the signed convention, the slope is negative (larger models have smaller drops) and its magnitude increases with sparsity.}
 \label{fig:param_vs_drop}
 \end{figure}
 
@@ -2505,7 +2511,7 @@ CP-ViT \cite{song2022cp} & ViT-B/16 & \(32.34\%\) FLOP red. & 75.09 & $-2.82$ & 
 CP-ViT \cite{song2022cp} & ViT-B/16 & \(33.62\%\) FLOP red. & 77.36 & $\mathbf{-0.55}$ & 30 & CP-ViT Table~3, same baseline \\
 SNOWS \cite{lucas2025snows} & ViT-B/16 & \(2{:}4\) QKV+Out+MLP & 76.57 & $-3.85$ & 0 & one-shot on MiniImageNet-1k; \(1.97\times\) FLOP-count estimate \\
 SNOWS \cite{lucas2025snows} & ViT-L/16 & \(2{:}4\) QKV & 81.01 & $-3.16$ & 0 & one-shot on MiniImageNet-1k; no ViT-L endpoint speedup reported \\
-MaskLLM-4V \cite{fang2024maskllm} & ViT-B/16 & \(2{:}4\) learned mask & \(\mathbf{79.46}\) & $\mathbf{+0.31}$ & 20 mask ep. & weights frozen; no ViT endpoint speedup reported \\
+MaskLLM (vision/4V) \cite{fang2024maskllm} & ViT-B/16 & \(2{:}4\) learned mask & \(\mathbf{79.46}\) & $\mathbf{+0.31}$ & 20 mask ep. & MaskLLM vision/4V setting (the source paper's title is ``MaskLLM''); weights frozen; no ViT endpoint speedup reported \\
 PaPr \cite{mahmud2024papr} & ViT-B/16 AugReg & patch pruning + ToMe & 82.34 & $-2.25$ & 0 & PaPr Table~1; \(53.3\%\) FLOP red.; \(2.15\times\) throughput; token pruning, not weight sparsity \\
 PaPr \cite{mahmud2024papr} & ViT-L/16 MAE & patch pruning & \(\mathbf{85.06}\) & $-0.89$ & 0 & PaPr Table~2; \(50.0\%\) FLOP red.; \(\mathbf{2.01\times}\) throughput; token pruning, not weight sparsity \\
 ToMe \cite{bolya2023tome} & ViT-L/16 MAE & token merging & \(\mathbf{85.05}\) & $\mathbf{-0.61}$ & MAE FT & ToMe Tables~3/10; \(49.7\%\) FLOP red.; \(\mathbf{1.96\times}\) V100 throughput; token merging, not weight sparsity \\
@@ -2534,7 +2540,7 @@ DepGraph \cite{fang2023depgraph} & ResNet-50 & \(51.8\%\) MACs & \(\mathbf{75.83
 Mishra et al. \cite{mishra2021accelerating} & ResNet-50 & 2:4 FP16 & \(\mathbf{76.20}\) & $\mathbf{+0.10}$ & repeated train & original \(2{:}4\) paper; up to \(\mathbf{2\times}\) sparse Tensor Core math \\
 Mishra et al. \cite{mishra2021accelerating} & ResNet-50 SWSL & 2:4 FP16 & \(\mathbf{80.90}\) & $\mathbf{-0.20}$ & repeated train & high-accuracy original-paper reference; up to \(\mathbf{2\times}\) math \\
 Mishra et al. \cite{mishra2021accelerating} & ResNet-101 & 2:4 FP16 & \(\mathbf{78.00}\) & $\mathbf{+0.30}$ & repeated train & original \(2{:}4\) paper; up to \(\mathbf{2\times}\) math \\
-Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4{+}\)perm & \(\mathbf{76.29}\) & $\mathbf{+0.13}$ & 90 FT & no runtime overhead; V100 search time \(02{:}13\) = \(0.10\%\) of train+FT \\
+Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4{+}\)perm & \(\mathbf{76.29}\) & $\mathbf{+0.13}$ & repeated train/FT & no inference-time overhead; V100 permutation search time \(02{:}13\) is small relative to a full train+FT cycle \\
 SR-STE \cite{zhou2021nm} & ResNet-50 & 2:4 & 77.00 & $-0.30$ & 120 train & \(N{:}M\) sparse training from scratch; 2.15G test FLOPs \\
 LBC \cite{zhang2022lbc} & ResNet-50 & 2:4 & \(\mathbf{77.20}\) & $\mathbf{+0.10}$ & 120 train & learns \(N{:}M\) combinations; \(0.72\times\) training FLOPs \\
 AC/DC \cite{peste2021acdc} & ResNet-50 & \(2{:}4\) & \(\mathbf{76.64}\) & $\mathbf{-0.20}$ & 100 train & semi-structured AC/DC sparse training; no endpoint speed reported \\
@@ -2766,6 +2772,8 @@ RMT-allocated SER mask used in the ViT-B experiments.
 
 
 
+\FloatBarrier
+\clearpage
 \bibliographystyle{plainnat}
 \bibliography{rmt_vit_pruning}
 

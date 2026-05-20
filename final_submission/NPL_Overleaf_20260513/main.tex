@@ -428,7 +428,7 @@ Several CAST rows start from denser, higher-accuracy checkpoints than the cited 
 \subsection{Comparison with published pruning and structured-sparsity baselines}
 \label{subsec:result_comparison}
 
-Table~\ref{tab:result_comparison} is literature context, not matched baseline evidence. Its main purpose is to show that the small accuracy drops reported here are obtained with very limited fine-tuning compared with many published pruning pipelines; matched evidence is Table~\ref{tab:vitb_current_methods}, Table~\ref{tab:multi_arch_hybrid}, and the caveats in Online Resource 2. We separate unstructured or fine-grained weight sparsity from deployable sparse-kernel claims: parameter sparsity and FLOP accounting are useful compression proxies, but do not by themselves imply latency or throughput gains on a given backend \cite{gale2019state,blalock2020state,hoefler2021sparsity}.
+Table~\ref{tab:result_comparison} is literature context, not matched baseline evidence. Its main purpose is to show that the small accuracy drops reported here are obtained with very limited fine-tuning compared with many published pruning pipelines; matched evidence is Table~\ref{tab:vitb_current_methods}, Table~\ref{tab:multi_arch_hybrid}, and the caveats in Online Resource 2. Reference rows in this table and in the extended Online Resource 2 comparison table were checked against the corresponding source-paper tables; protocol-mismatched rows (different baseline checkpoint, different sparsity axis, different fine-tuning budget, or different deployability claim) are included only as context, not as apples-to-apples baselines. We separate unstructured or fine-grained weight sparsity from deployable sparse-kernel claims: parameter sparsity and FLOP accounting are useful compression proxies, but do not by themselves imply latency or throughput gains on a given backend \cite{gale2019state,blalock2020state,hoefler2021sparsity}.
 
 
 \begin{table}[!htbp]
@@ -450,7 +450,7 @@ Method & Architecture & Compression & Top-1 & \(\Delta\) & FT/train & Main compa
 Hybrid Mag--SER (ours) & ViT-B/16 & 50\% unstructured & \(83.37\) & \(-1.74\) & 1/cycle & MP-budgeted unstructured row with short-cycle FT. \\
 CAST 2:4+ToMe (ours) & ViT-B/16 & \(2{:}4\)+ToMe & \(83.41\) & \(-1.70\) & 3 & Native A40 \(2{:}4\) endpoint \(1.388\times\); separate no-ToMe A100 endpoint \(2.705\times\). \\
 SNOWS \cite{lucas2025snows} & ViT-B/16 & \(2{:}4\) QKV+Out+MLP & 76.57 & \(-3.85\) & 0 & Closest one-shot ViT \(2{:}4\) row; MiniImageNet-1k subset, no endpoint speed row. \\
-MaskLLM-4V \cite{fang2024maskllm} & ViT-B/16 & \(2{:}4\) learned mask & 79.46 & \(+0.31\) & 20 mask ep. & Learned-mask ViT \(2{:}4\) context; weights frozen, no ViT endpoint speed reported. \\
+MaskLLM (vision/4V) \cite{fang2024maskllm} & ViT-B/16 & \(2{:}4\) learned mask & 79.46 & \(+0.31\) & 20 mask ep. & Learned-mask ViT \(2{:}4\) context (MaskLLM vision/4V setting); weights frozen, no ViT endpoint speed reported. \\
 SparseFormer \cite{gao2024sparseformer} & ViT-B/16 AugReg & latent-token reduction & 83.40 & \(-1.20\) & 20+5 ep. & Similar accuracy but token reduction, not weight sparsity; \(1.85\times\) throughput. \\
 CAST 8:16 dense+perm (ours) & ViT-L/16 & 8:16 = 50\% & \(85.33\) & \(-0.51\) & 3 & Main wider-pattern accuracy/MAC row; no native 8:16 endpoint audit. \\
 ToMe \cite{bolya2023tome} & ViT-L/16 MAE & token merging & 85.05 & \(-0.61\) & MAE FT & Closest token-merging accuracy/speed context; not weight sparsity. \\
@@ -458,7 +458,7 @@ UniPTS \cite{xie2024unipts} & ResNet-50 & 50/60/70\% unstructured & 75.76/75.37/
 Hybrid Mag--SER (ours) & ResNet50 & 50/60/70\% unstructured & \(75.76/74.83/74.15\) & \(-0.37/-1.30/-1.98\) & 1/cycle & This paper's matched short-cycle unstructured ResNet sweep. \\
 AC/DC \cite{peste2021acdc} & ResNet-50 & 50\% unstructured & 77.05 & \(+0.21\) & 100 train & Strong global sparse-training baseline; much longer training. \\
 Mishra et al. \cite{mishra2021accelerating} & ResNet-50 & 2:4 FP16 & 76.20 & \(+0.10\) & repeated train & Original \(2{:}4\) sparse Tensor Core reference; up to \(2\times\) sparse math. \\
-Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4\)+perm & 76.29 & \(+0.13\) & 90 FT & Closest channel-permutation semi-structured ResNet context. \\
+Pool--Yu perm. \cite{pool2021channel} & ResNet-50 & \(2{:}4\)+perm & 76.29 & \(+0.13\) & repeated train/FT & Closest channel-permutation semi-structured ResNet context (no inference-time overhead). \\
 CAST-conv+perm (ours) & ResNet152d & 2:4 im2col & 81.33 & \(-1.53\) & 3 & Main CNN sparse-GEMM audit; \(1.617\times\) A40 im2col, not cuDNN Conv2d. \\
 CAP \cite{kuznedelev2023cap} & ConvNeXt-L CLIP & 50/60/70\% unstructured & 87.5/87.1/86.8 & \(-0.3/-0.7/-1.0\) & 0 & Closest high-accuracy ConvNeXt unstructured one-shot context; no endpoint speed row. \\
 Hybrid Mag--SER (ours) & ConvNeXtV2-B & 50/60/70\% unstructured & \(85.33/84.61/81.40\) & \(-1.39/-2.11/-5.32\) & 1/cycle & This paper's ConvNeXtV2 unstructured row with short-cycle FT. \\
