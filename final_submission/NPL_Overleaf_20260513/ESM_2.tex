@@ -20,6 +20,7 @@
 \usepackage{placeins}
 \usepackage{xcolor}
 \usepackage{enumitem}
+\usepackage{float}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{cancel}
@@ -311,16 +312,23 @@ For each pair $(i,g)$ the $k{:}n$ search enumerates the $\binom{n}{k}$ keep patt
 \]
 For $n=4, k=2$ this is the 6 patterns of CAST (Section~\ref{sec:cast-old-app}); for $n=16, k=8$ it is $\binom{16}{8}=12870$ patterns. When the enumeration becomes prohibitive, \texttt{project\_kn\_sampled.py} provides a sampled variant.
 
-The materialised slot value retains CAST's three-case rule (Eq.~\ref{eq:cast_slot_values}):
+Define the unmasked per-slot source tuple
 \begin{equation}
-\label{eq:kn-slot-values}
-v_{i,g,k}(m) = m_k \cdot \begin{cases}
+\label{eq:kn-source-tuple}
+u_{i,g,k} = \begin{cases}
 W^{\mathrm{SER}}_{i,g,k}, & M^{\mathrm{SER}}_{i,g,k} = 1, \\
 W^{\mathrm{dense}}_{i,g,k}, & M^{\mathrm{SER}}_{i,g,k} = 0 \text{ and free-restoration enabled}, \\
-0, & \text{otherwise}.
+0, & \text{otherwise},
 \end{cases}
 \end{equation}
-The ``dense'' source corresponds to setting $W^{\mathrm{SER}} \equiv W^{\mathrm{dense}}$ and $M^{\mathrm{SER}} \equiv 0$, in which case Eq.~\eqref{eq:kn-slot-values} reduces to $v_{i,g,k}(m) = m_k W^{\mathrm{dense}}_{i,g,k}$.
+and write the materialised retained value and removed value with respect to a candidate pattern $m\in\mathcal{M}_{k:n}$ as
+\begin{equation}
+\label{eq:kn-slot-values}
+v_{i,g,k}(m) = m_k\,u_{i,g,k},
+\qquad
+r_{i,g,k}(m) = (1-m_k)\,u_{i,g,k}.
+\end{equation}
+The ``dense'' source corresponds to setting $W^{\mathrm{SER}} \equiv W^{\mathrm{dense}}$ and $M^{\mathrm{SER}} \equiv 0$, in which case $u_{i,g,k} = W^{\mathrm{dense}}_{i,g,k}$.
 
 The within-group calibration covariance and cert-inspired cost are inherited from Eqs.~\ref{eq:cast_covariance}--\ref{eq:cast_cost}:
 \begin{equation}
@@ -329,7 +337,7 @@ C_g = \frac{1}{|\mathcal{C}|} \sum_{x \in \mathcal{C}} h_g(x) h_g(x)^\top,
 \qquad
 c_{i,g}(m) = r_{i,g}(m)^\top C_g\, r_{i,g}(m),
 \qquad
-r_{i,g}(m) = (1 - m) \odot v_{i,g,:}(m).
+r_{i,g}(m) = (1 - m) \odot u_{i,g,:}.
 \end{equation}
 The argmin is solved by enumeration; tensor-shape $(\binom{n}{k},\, d_{\mathrm{out}},\, G_\ell)$. For $\binom{n}{k}\ge 5{,}000$ the sampled variant draws $\binom{n}{k}_{\mathrm{eff}} = 1024$ candidates uniformly without replacement.
 
@@ -353,7 +361,7 @@ To bias the per-row cert-cost minimiser toward the Hybrid Magnitude--SER mask wi
 \label{eq:alpha-ser}
 c^{\mathrm{prior}}_{i,g}(m) = \alpha_{\mathrm{ser}} \cdot \bar{c}_g \cdot \bigl| m - M^{\mathrm{SER}}_{i,g,:} \bigr|_1,
 \qquad
-\bar{c}_g = \mathrm{mean}_{i,k}\, v_{i,g,k}^2 \cdot \EE_x\bigl[h_{g,k}(x)^2\bigr].
+\bar{c}_g = \mathrm{mean}_{i,k}\, u_{i,g,k}^2 \cdot \EE_x\bigl[h_{g,k}(x)^2\bigr].
 \end{equation}
 Setting $\alpha_{\mathrm{ser}}=0$ recovers pure cert-aware projection; $\alpha_{\mathrm{ser}} \to \infty$ forces the SER mask. We sweep $\alpha_{\mathrm{ser}} \in \{0, 0.1, 0.25, 0.5, 1.0, 2.0\}$ in the cell sweeps reported in \S\ref{sec:kn-sweeps}; the empirical sweet spot is $\alpha_{\mathrm{ser}} = 0.5$ for ViT-B with the SER-source variant.
 
@@ -383,7 +391,7 @@ Beyond the foundational 2:4 sparse Tensor Core work \citep{mishra2021acceleratin
 \item \textbf{Beyond 2:4 / V:N:M} \citep{beyond_24_2024} generalises the 2:4 hardware pattern to V:N:M, providing one motivation for our generalised $k{:}n$ projection;
 \item \textbf{SERo} \citep{sero2025} performs sparse-structure exploration, compression by deleting pruned units, and re-optimization for ViTs; it is adjacent to structured pruning but is not a reordering/permutation method.
 \end{itemize}
-Our work differs from each of these in starting from a deterministic certificate of the data-path budget \(B_T(R)\) in Eq.~(\mainref{eq:data_path_budget}) of the main manuscript, empirically probed by the diagnostic audit of \S\ref{sec:cert-audit}, rather than from a heuristic mask choice, and in reporting ImageNet-1k checkpoints whose final masks pass either a native \(2{:}4\) Linear audit or an exact im2col+\(2{:}4\) sparse-GEMM audit, while wider \(k{:}n\) rows remain MAC-accounting rows.
+Our work differs from each of these in starting from a deterministic certificate of the data-path budget \(B_T(R)\) in Eq.~(\mainref{eq:data_path_budget}) of the main manuscript, empirically probed by the diagnostic audit of \S\ref{sec:cert-audit}, rather than solely from heuristic mask selection, and in reporting ImageNet-1k checkpoints whose final masks pass either a native \(2{:}4\) Linear audit or an exact im2col+\(2{:}4\) sparse-GEMM audit, while wider \(k{:}n\) rows remain MAC-accounting rows.
 
 Low-bit and binary-parameter networks compress along an axis that is orthogonal to ours: they reduce the precision of stored weights rather than the support of the weight tensors. Recent binary-normalized networks \citep{cabral2025bit} constrain final layer parameters to one bit while using full-precision training states, reporting Food-101 and WikiText-103 experiments; this direction is complementary to our MP-guided pruning and \(k{:}n\) sparse-execution setting, could in principle be composed with it, and is therefore not included as an ImageNet pruning baseline.
 
@@ -1466,17 +1474,24 @@ For each (\(i,g\)) we search over the six 2-of-4 keep patterns
 \mathcal M_{2:4}=\bigl\{m\in\{0,1\}^4 : |m|_0=2\bigr\},
 \qquad |\mathcal M_{2:4}|=\binom{4}{2}=6.
 \]
-For a chosen pattern \(m\) we materialize the slot value via
+Define first the unmasked source tuple
 \begin{equation}
-\label{eq:cast_slot_values}
-v_{i,g,k}(m) \;=\; m_k\cdot
+\label{eq:cast_source_tuple}
+u_{i,g,k} \;=\;
 \begin{cases}
 W^{\mathrm{SER}}_{i,g,k} & \text{if } M^{\mathrm{SER}}_{i,g,k}=1,\\
 W^{\mathrm{dense}}_{i,g,k} & \text{if } M^{\mathrm{SER}}_{i,g,k}=0\text{ and ``free restoration'' is enabled,}\\
-0 & \text{otherwise.}
+0 & \text{otherwise,}
 \end{cases}
 \end{equation}
-Eq.~\eqref{eq:cast_slot_values} formalises CAST's two semantic rules: SER-kept slots retain their fine-tuned SER values; slots that the unstructured mask had zeroed but the chosen 2:4 pattern wishes to keep are \emph{restored} to the dense pretrained value, at zero sparse-execution FLOP cost.  This realises the prune--restore framing of Theorem~\mainref{thm:deterministic_prune_restore_certificate} at the 2:4-pattern granularity: the kept reservoir \(Q\) is exactly the set of restored slots, and the budget reduction \(B_T(P)\) decreases when restoration is selected.
+and, for a chosen pattern \(m\), materialise the retained slot value and the removed slot value as
+\begin{equation}
+\label{eq:cast_slot_values}
+v_{i,g,k}(m) \;=\; m_k\,u_{i,g,k},
+\qquad
+r_{i,g,k}(m) \;=\; (1-m_k)\,u_{i,g,k}.
+\end{equation}
+Eq.~\eqref{eq:cast_source_tuple} formalises CAST's two semantic rules: SER-kept slots retain their fine-tuned SER values; slots that the unstructured mask had zeroed but the chosen 2:4 pattern wishes to keep are \emph{restored} to the dense pretrained value, at zero sparse-execution FLOP cost.  This realises the prune--restore framing of Theorem~\mainref{thm:deterministic_prune_restore_certificate} at the 2:4-pattern granularity: the kept reservoir \(Q\) is exactly the set of restored slots, and the budget reduction \(B_T(P)\) decreases when restoration is selected.
 
 The chosen pattern minimises a Lemma~\mainref{lem:deterministic_ce_path_bound}-inspired activation-weighted cost on the calibration set.  Let \(h_{g,k}(x)\in\mathbb R\) be the slot-\(k\) activation of group \(g\) on calibration input \(x\), and let \(C_g\in\mathbb R^{4\times 4}\) be the within-group input covariance,
 \begin{equation}
@@ -1485,14 +1500,14 @@ C_g \;=\; \frac{1}{|\mathcal C|}\sum_{x\in\mathcal C} h_g(x)\,h_g(x)^\top,
 \qquad
 h_g(x):=\bigl(h_{g,1}(x),\ldots,h_{g,4}(x)\bigr).
 \end{equation}
-Define the per-row removed-weight vector \(r_{i,g}(m)\in\mathbb R^4\) and the within-group covariance cost
+With the removed slot value $r_{i,g,k}(m)=(1-m_k)\,u_{i,g,k}$ from Eq.~\eqref{eq:cast_slot_values}, gather the per-row removed-weight vector \(r_{i,g}(m)\in\mathbb R^4\) and define the within-group covariance cost
 \begin{equation}
 \label{eq:cast_cost}
-r_{i,g}(m) \;=\; (1-m)\odot v_{i,g,:}(m),
+r_{i,g}(m) \;=\; (1-m)\odot u_{i,g,:},
 \qquad
 c_{i,g}(m) \;=\; r_{i,g}(m)^\top C_g\, r_{i,g}(m)
 \;=\;
-\frac{1}{|\mathcal C|}\sum_{x\in\mathcal C}\Bigl(\sum_{k:m_k=0} v_{i,g,k}(m)\,h_{g,k}(x)\Bigr)^{\!2}.
+\frac{1}{|\mathcal C|}\sum_{x\in\mathcal C}\Bigl(\sum_{k:m_k=0} u_{i,g,k}\,h_{g,k}(x)\Bigr)^{\!2}.
 \end{equation}
 Eq.~\eqref{eq:cast_cost} is the squared \(\ell^2\) norm of the contribution that the \emph{removed} slots would make to the layer's output channel \(i\), averaged over \(\mathcal C\).  In particular, summing \(c_{i,g}(m)\) over all output rows and groups gives the block-separable squared-\(\ell^2\) proxy used to rank layer-output perturbations \(R\,h\); it is not the literal \(L_s\|R\psi_1(s)\|_\infty\) budget.  CAST's cost is therefore the \(\ell^2\) form of the same algebraic object the lemma controls in \(\ell^\infty\); it is \emph{certificate-inspired}.  The reported implementation does not rescore the highest-risk groups with the literal \(\ell^\infty\) form.
 
@@ -1501,7 +1516,7 @@ Finally CAST adds a small SER-prior term scaled to the cost magnitude,
 \label{eq:cast_prior}
 c^{\mathrm{prior}}_{i,g}(m) \;=\; \alpha\cdot \bar c_g \cdot \bigl|\,m - M^{\mathrm{SER}}_{i,g,:}\bigr|_1,
 \qquad
-\bar c_g = \mathrm{mean}_{i,k}\, v_{i,g,k}^2\,\mathrm E_x[h_{g,k}(x)^2],
+\bar c_g = \mathrm{mean}_{i,k}\, u_{i,g,k}^2\,\mathrm E_x[h_{g,k}(x)^2],
 \end{equation}
 where the Hamming distance pulls the chosen mask towards the RMT-allocated SER mask and \(\bar c_g\) makes \(\alpha=O(1)\) a comparable weight rather than swamping or vanishing.  The full per-(row, group) optimisation is
 \begin{equation}
@@ -1757,7 +1772,7 @@ ConvNeXtV2-Base \texttt{fcmae\_ft\_in22k\_in1k}$^{\ddagger}$ & 86.72 & 86.67 & 8
 \paragraph{Why the slope steepens with sparsity: a suggestive RMT-consistent pattern.}
 Figure~\mainref{fig:param_vs_drop} is consistent with the random-matrix view of pruning, but remains suggestive rather than confirmatory.  In the unsigned-drop convention, the fitted slope in \(\log_{10}\) parameter count moves from \(-0.77\) pp per decade (\(R=-0.31\)) at \(s=0.50\) to \(-4.21\) pp per decade (\(R=-0.41\)) at \(s=0.70\) (equivalently, the in-panel signed-\(\Delta\)Top-1 slopes \(+0.77\) and \(+4.21\)).  Cross-architecture correlations over the 17 rows are modest, and the larger-model/smaller-drop pattern can also reflect overparameterization, training recipes, architecture family, baseline accuracy, layer width, or parameter-distribution effects.  The narrower result is monotone slope steepening with sparsity, matching the random-matrix prediction that each weight matrix decomposes approximately into a deterministic spike component carrying task signal and a Marchenko--Pastur-like bulk carrying random-matrix noise.
 
-If that decomposition holds, the bulk fraction of a matrix is roughly invariant within an architecture family, but the \emph{absolute} number of bulk components scales with the smaller matrix dimension, model width, and parameter count.  A \(\sim 6\) M-parameter model and a \(\sim 90\) M-parameter model can both drop the same fraction of bulk components without crossing the spike-detection threshold, but at \(s=0.70\) the small model reaches the spike subspace at a lower absolute pruning budget.  The slope magnitude moving from \(0.77\) to \(4.21\) pp per decade quantifies this effect.
+If that decomposition holds, the bulk fraction of a matrix is roughly invariant within an architecture family, but the \emph{absolute} number of bulk components scales with the smaller matrix dimension, model width, and parameter count.  A \(\sim 6\) M-parameter model and a \(\sim 90\) M-parameter model can both drop the same fraction of bulk components without crossing the spike-detection threshold, but at \(s=0.70\) the small model reaches the spike subspace at a lower absolute pruning budget.  The slope magnitude moving from \(0.77\) to \(4.21\) pp per decade summarises this trend.
 
 The predicted sign, larger model and smaller drop, appears in every panel, with slope magnitude increasing with sparsity.  Moderate sparsities remain close to dense baselines; large departures emerge once the protocol removes components near or beyond the MP edge.  Figure~\mainref{fig:param_vs_drop} is not direct confirmation of the bulk-vs-spike decomposition; the direct per-layer certificate audit is in Section~\ref{subsec:theory_numerics_alignment_meth}.  It supports the premise that larger networks have a larger bulk reservoir, making SER more accuracy-preserving at scale.
 
@@ -2678,7 +2693,7 @@ Operational SEB/SER protocols, four-regime strategy, layer-type extension, SEB f
 
 The algorithm below is the SER step used after the exact-magnitude low-sparsity prefix in Hybrid Magnitude--SER.
 
-\begin{algorithm}[!htbp]
+\begin{algorithm}[H]
 \caption{Spectral Edge Reallocation (SER) algorithm. The step prunes weights, restores selected weights from the removed-weight reservoir, and uses MP-budget allocation in Hybrid Magnitude--SER.}
 \label{alg:ser}
 \begin{algorithmic}[1]
@@ -2718,7 +2733,7 @@ The algorithm below is the SER step used after the exact-magnitude low-sparsity 
 
 The original CAST \(2{:}4{+}\)ToMe pipeline, generalized CAST-2E \(k{:}n\) pipeline, permutation alignment, and inline-FT runner are specified in Online Resource 2.
 
-\begin{algorithm}[!htbp]
+\begin{algorithm}[H]
 \caption{CAST \(k{:}n\) structured-projection algorithm. The projection selects row-wise structured masks; Stage~2 applies frozen-mask distillation.}
 \label{alg:cast_kn}
 \begin{algorithmic}[1]
